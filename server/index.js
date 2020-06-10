@@ -23,8 +23,10 @@ const main = () => {
 
 	// Start everything else once the DB is initialized
 	db.once("open", () => {
-		// Set up the web server app and routing
+		// Set up the web server app
 		const app = initHTTP();
+		// Set up routing
+		initRoutes(app);
 	});
 };
 
@@ -91,12 +93,11 @@ const initHTTP = (callback) => {
 
 	server.listen(port, () => {
 		console.log(
-			`Server listening on port ${port}! Go to https://${hostname}:${port}/`
+			`Server listening on port ${port}! Go to ${(config.server.https) ? 'https' : 'http'}://${hostname}:${port}/`
 		);
 	});
 
 	// Return the express application
-	initRoutes(app);
 	return app;
 };
 
@@ -130,6 +131,10 @@ const initDB = () => {
 							"An error occurred initializing the database."
 						);
 					console.log("Database initialized with user");
+					// Let's create the default organization now
+					const newOrg = new Organization(config.default.organization);
+					newOrg.users.push(newUser._id);
+					newOrg.save();
 				});
 			}
 		});
@@ -147,9 +152,7 @@ const initRoutes = (app) => {
 	app.use(express.static(path.join(__dirname, "/../client/build")));
 
 	// Set up routing
-	app.get("/users", (req, res) => {
-		res.send(req.user);
-	});
+	app.get("/users", User.resetPassword);
 
 	// Default static files
 	app.get("*", (req, res) => {
