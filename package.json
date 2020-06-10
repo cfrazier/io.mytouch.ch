@@ -1,0 +1,36 @@
+{
+  "name": "io.mytouch.ch",
+  "version": "1.0.0",
+  "description": "COVID-19 Mitigation Tools for Organizations",
+  "main": "./server/index.js",
+  "scripts": {
+    "dev": "nodemon ./server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfrazier/io.mytouch.ch.git"
+  },
+  "author": "Christopher Frazier <chris.frazier@managedword.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/cfrazier/io.mytouch.ch/issues"
+  },
+  "homepage": "https://github.com/cfrazier/io.mytouch.ch#readme",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "csv": "^5.3.2",
+    "csv-parse": "^4.10.1",
+    "express": "^4.17.1",
+    "fuzzball": "^1.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.18",
+    "socket.io": "^2.3.0",
+    "ws": "^7.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

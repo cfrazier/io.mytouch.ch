@@ -1,0 +1,25 @@
+{
+    "server": {
+        "hostname": "localhost",
+        "port": 80,
+        "https": false,
+        "ssl": {
+            "keyPath": "ssl/server.key",
+            "certPath": "ssl/server.cert"
+        }
+    },
+    "db": {
+        "url": "mongodb://localhost/databaseName"
+    },
+    "default": {
+        "user": {
+            "email": "user@organization.org",
+            "password": "MyPassword",
+            "isAdmin": true
+        }
+    },
+    "jwt": {
+        "secret": "jwtSalt",
+        "exp": "48h"
+    }
+}
