@@ -9,11 +9,8 @@ const mongoose = require("mongoose");
 const path = require("path");
 const socketIO = require("socket.io");
 
-const { User } = require("../lib/user");
-const { Group } = require("../lib/group");
-const { Organization } = require("../lib/organization");
-const { Venue } = require("../lib/venue");
-const { Person } = require("../lib/person");
+const Routes = require("./routes");
+const { User } = require("../lib/models/user");
 
 const config = require("../config.json");
 
@@ -93,7 +90,9 @@ const initHTTP = (callback) => {
 
 	server.listen(port, () => {
 		console.log(
-			`Server listening on port ${port}! Go to ${(config.server.https) ? 'https' : 'http'}://${hostname}:${port}/`
+			`Server listening on port ${port}! Go to ${
+				config.server.https ? "https" : "http"
+			}://${hostname}:${port}/`
 		);
 	});
 
@@ -108,6 +107,7 @@ const initDB = () => {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useFindAndModify: false,
+		useCreateIndex: true,
 	});
 
 	// Create an async connection
@@ -132,7 +132,9 @@ const initDB = () => {
 						);
 					console.log("Database initialized with user");
 					// Let's create the default organization now
-					const newOrg = new Organization(config.default.organization);
+					const newOrg = new Organization(
+						config.default.organization
+					);
 					newOrg.users.push(newUser._id);
 					newOrg.save();
 				});
@@ -146,13 +148,17 @@ const initDB = () => {
 
 const initRoutes = (app) => {
 	// Set up the authenticator middleware
-	app.use(User.authenticate);
+	app.use(Routes.user.authenticate);
 
 	// Set up the front-end static client
 	app.use(express.static(path.join(__dirname, "/../client/build")));
 
 	// Set up routing
-	app.get("/users", User.resetPassword);
+	app.post("/api/organizations/:organizationId/users", Routes.user.create);
+	app.get("/api/users/:userId", Routes.user.read);
+	app.put("/api/users/:userId", Routes.user.update);
+	app.delete("/api/users/:userId", Routes.user.delete);
+	app.get("/api/users/reset", Routes.user.resetPassword);
 
 	// Default static files
 	app.get("*", (req, res) => {
