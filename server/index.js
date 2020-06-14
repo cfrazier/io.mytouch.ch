@@ -11,6 +11,7 @@ const socketIO = require("socket.io");
 
 const Routes = require("./routes");
 const { User } = require("../lib/models/user");
+const { Organization } = require("../lib/models/organization");
 
 const config = require("../config.json");
 
@@ -153,12 +154,87 @@ const initRoutes = (app) => {
 	// Set up the front-end static client
 	app.use(express.static(path.join(__dirname, "/../client/build")));
 
-	// Set up routing
+	// Routing
+
+	// Group
+	app.get("/api/organizations/:organizationId/groups/", Routes.group.list);
+	app.post("/api/organizations/:organizationId/groups/", Routes.group.create);
+	app.get(
+		"/api/organizations/:organizationId/groups/:groupId",
+		Routes.group.read
+	);
+	app.put(
+		"/api/organizations/:organizationId/groups/:groupId",
+		Routes.group.update
+	);
+	app.delete(
+		"/api/organizations/:organizationId/groups/:groupId",
+		Routes.group.delete
+	);
+
+	// Organization
+	app.get("/api/organizations/", Routes.organization.list);
+	app.post("/api/organizations/", Routes.organization.create);
+	app.get("/api/organizations/:organizationId", Routes.organization.read);
+	app.put("/api/organizations/:organizationId", Routes.organization.update);
+	app.delete(
+		"/api/organizations/:organizationId",
+		Routes.organization.delete
+	);
+
+	// Person
+	app.get(
+		"/api/organizations/:organizationId/groups/:groupId/people",
+		Routes.person.list
+	);
+	app.post(
+		"/api/organizations/:organizationId/groups/:groupId/people",
+		Routes.person.create
+	);
+	app.get(
+		"/api/organizations/:organizationId/groups/:groupId/people/:personId",
+		Routes.person.read
+	);
+	app.put(
+		"/api/organizations/:organizationId/groups/:groupId/people/:personId",
+		Routes.person.update
+	);
+	app.delete(
+		"/api/organizations/:organizationId/groups/:groupId/people/:personId",
+		Routes.person.delete
+	);
+
+	// User
 	app.post("/api/organizations/:organizationId/users", Routes.user.create);
+	app.get("/api/organizations/:organizationId/users", Routes.user.list);
+
 	app.get("/api/users/:userId", Routes.user.read);
 	app.put("/api/users/:userId", Routes.user.update);
 	app.delete("/api/users/:userId", Routes.user.delete);
-	app.get("/api/users/reset", Routes.user.resetPassword);
+
+	app.get("/api/login", Routes.user.login);
+	app.get("/api/logout", Routes.user.logout);
+	app.get("/api/reset", Routes.user.resetPassword);
+
+	// Venue
+	app.get("/api/organizations/:organizationId/venues", Routes.venue.list);
+	app.post("/api/organizations/:organizationId/venues", Routes.venue.create);
+	app.get(
+		"/api/organizations/:organizationId/venues/:venueId",
+		Routes.venue.read
+	);
+	app.put(
+		"/api/organizations/:organizationId/venues/:venueId",
+		Routes.venue.update
+	);
+	app.delete(
+		"/api/organizations/:organizationId/venues/:venueId",
+		Routes.venue.delete
+	);
+	app.get(
+		"/api/organizations/:organizationId/venues/:venueId/clear",
+		Routes.venue.clearVenueCheckIns
+	);
 
 	// Default static files
 	app.get("*", (req, res) => {
