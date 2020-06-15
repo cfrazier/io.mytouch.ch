@@ -1,9 +1,9 @@
 import React, { useGlobal, useState, useEffect } from "reactn";
 
-export const Home = () => {
+export const CheckIn = () => {
 	return (
-		<div className="Home">
-			<h1>Home</h1>
+		<div className="CheckIn">
+			<h1>CheckIn</h1>
 		</div>
 	);
 };

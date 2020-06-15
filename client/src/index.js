@@ -1,23 +1,20 @@
-import React, { setGlobal } from 'reactn';
-import ReactDOM from 'react-dom';
-import './styles/index.scss';
-import App from './routes/App';
-import * as serviceWorker from './serviceWorker';
-import websocket from './services/websocket';
+import React, { setGlobal } from "reactn";
+import ReactDOM from "react-dom";
+import "./styles/index.scss";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
 
-setGlobal({
-	ws: websocket(),
-	user: {
-		name: "Christopher Frazer"
-	},
-	organization: null
-});
+const clientURL = new URL(process.env.PUBLIC_URL, window.location.href);
+const { hostname } = clientURL;
+const serverURL = `https://${hostname}`;
+
+setGlobal({ clientURL, hostname, serverURL });
 
 ReactDOM.render(
 	<React.StrictMode>
 		<App />
 	</React.StrictMode>,
-	document.getElementById('root')
+	document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
