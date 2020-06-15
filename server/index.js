@@ -201,6 +201,11 @@ const initRoutes = (app) => {
 		Routes.venue.delete
 	);
 	app.get(
+		"/api/organizations/:organizationId/venues/:venueId/checkins",
+		Routes.venue.listCheckIns
+	);
+	app.post("/api/checkin", Routes.venue.createCheckIn);
+	app.put(
 		"/api/organizations/:organizationId/venues/:venueId/clear",
 		Routes.venue.clearVenueCheckIns
 	);
