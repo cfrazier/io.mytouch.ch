@@ -1,25 +1,49 @@
 {
-    "server": {
-        "hostname": "localhost",
-        "port": 80,
-        "https": false,
-        "ssl": {
-            "keyPath": "ssl/server.key",
-            "certPath": "ssl/server.cert"
-        }
-    },
-    "db": {
-        "url": "mongodb://localhost/databaseName"
-    },
-    "default": {
-        "user": {
-            "email": "user@organization.org",
-            "password": "MyPassword",
-            "isAdmin": true
-        }
-    },
-    "jwt": {
-        "secret": "jwtSalt",
-        "exp": "48h"
-    }
+	"server": {
+		"hostname": "localhost",
+		"port": 443,
+		"https": true,
+		"ssl": {
+			"keyPath": "ssl/server.key",
+			"certPath": "ssl/server.cert"
+		}
+	},
+	"db": {
+		"url": "mongodb://localhost/io-mytouch-ch"
+	},
+	"mailgun": {
+		"domain": "",
+		"apiKey": "",
+		"from": {
+			"email": "noreply@organization.org",
+			"name": "Organization Name"
+		}
+	},
+	"default": {
+		"user": {
+			"email": "user@organization.org",
+			"name": "Full User Name",
+			"password": "password",
+			"isAdmin": true
+		},
+		"organization": {
+			"name": "First Organization",
+			"description": "Your initial organization to help setup go faster",
+			"url": "https://yourdomain.org",
+			"active": true,
+			"address": {
+				"street1": "",
+				"street2": "",
+				"city": "",
+				"state": "",
+				"postal": "",
+				"country": ""
+			},
+			"colors": ["#391B2C", "#9C3C10", "#FA9A35", "#E1D18C", "#299380"]
+		}
+	},
+	"jwt": {
+		"secret": "jwtSalt",
+		"exp": "48h"
+	}
 }
