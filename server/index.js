@@ -157,51 +157,20 @@ const initRoutes = (app) => {
 	// Routing
 
 	// Group
-	app.get("/api/organizations/:organizationId/groups/", Routes.group.list);
-	app.post("/api/organizations/:organizationId/groups/", Routes.group.create);
-	app.get(
-		"/api/organizations/:organizationId/groups/:groupId",
-		Routes.group.read
-	);
-	app.put(
-		"/api/organizations/:organizationId/groups/:groupId",
-		Routes.group.update
-	);
-	app.delete(
-		"/api/organizations/:organizationId/groups/:groupId",
-		Routes.group.delete
-	);
+	app.get("/api/groups", Routes.group.list);
+	app.post("/api/groups", Routes.group.create);
+	app.get("/api/groups/:groupId", Routes.group.read);
+	app.put("/api/groups/:groupId", Routes.group.update);
+	app.delete("/api/groups/:groupId", Routes.group.delete);
 
 	// Organization
-	app.get("/api/organizations/", Routes.organization.list);
-	app.post("/api/organizations/", Routes.organization.create);
+	app.get("/api/organizations", Routes.organization.list);
+	app.post("/api/organizations", Routes.organization.create);
 	app.get("/api/organizations/:organizationId", Routes.organization.read);
 	app.put("/api/organizations/:organizationId", Routes.organization.update);
 	app.delete(
 		"/api/organizations/:organizationId",
 		Routes.organization.delete
-	);
-
-	// Person
-	app.get(
-		"/api/organizations/:organizationId/groups/:groupId/people",
-		Routes.person.list
-	);
-	app.post(
-		"/api/organizations/:organizationId/groups/:groupId/people",
-		Routes.person.create
-	);
-	app.get(
-		"/api/organizations/:organizationId/groups/:groupId/people/:personId",
-		Routes.person.read
-	);
-	app.put(
-		"/api/organizations/:organizationId/groups/:groupId/people/:personId",
-		Routes.person.update
-	);
-	app.delete(
-		"/api/organizations/:organizationId/groups/:groupId/people/:personId",
-		Routes.person.delete
 	);
 
 	// User
