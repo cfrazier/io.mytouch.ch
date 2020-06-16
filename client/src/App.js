@@ -1,13 +1,12 @@
-import React, { useGlobal, useState, useEffect } from "reactn";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Container } from "@material-ui/core";
+import React from "reactn";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // Primary Routes
 import { Admin } from "./routes/Admin";
 import { Home } from "./routes/Home";
 import { CheckIn } from "./routes/CheckIn";
 import { Kiosk } from "./routes/Kiosk";
-import { Registration } from "./routes/Registration";
+import { Group } from "./routes/Group";
 
 const App = () => {
 	return (
@@ -16,8 +15,8 @@ const App = () => {
 				<Route path="/admin">
 					<Admin />
 				</Route>
-				<Route path="/register">
-					<Registration />
+				<Route path="/group">
+					<Group />
 				</Route>
 				<Route path="/checkin">
 					<CheckIn />

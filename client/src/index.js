@@ -8,7 +8,7 @@ const clientURL = new URL(process.env.PUBLIC_URL, window.location.href);
 const { hostname } = clientURL;
 const serverURL = `https://${hostname}`;
 
-setGlobal({ clientURL, hostname, serverURL });
+setGlobal({ http: { clientURL, hostname, serverURL } });
 
 ReactDOM.render(
 	<React.StrictMode>

@@ -1,4 +1,4 @@
-import React, { useGlobal, useState, useEffect } from "reactn";
+import React from "reactn";
 
 export const Home = () => {
 	return (
