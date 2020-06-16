@@ -31,7 +31,7 @@ export const Create = () => {
 		name: "",
 		phone: "",
 		email: "",
-		pin: "",
+		pin: "1234",
 		people: [{ name: "", birthdate: "" }],
 	});
 

@@ -25,10 +25,12 @@ import httpFetch from "../services/http";
 
 export const GroupEditor = (props) => {
 	const { group, setGroup } = props;
-	const [people, setPeople] = useState(group.people);
+	const [pin, setPin] = useState(props.group.pin.split(""));
+	const [people, setPeople] = useState(props.group.people);
 	const { register, handleSubmit, errors, control } = useForm();
 
 	const onSubmit = (data) => {
+		data.pin = pin.join("");
 		setGroup(data);
 	};
 
@@ -51,6 +53,14 @@ export const GroupEditor = (props) => {
 			oldPeople[rowIndex][key] = value;
 			return oldPeople;
 		});
+	};
+
+	const updatePIN = (event, index) => {
+		const num = String.fromCharCode(event.charCode);
+		
+		if (/\d/g.test(num)) {
+			setPin((pin) => pin.map((value, pindex) => (pindex == index ? num : value)));
+		}
 	};
 
 	const formatPhone = ([e]) => {
@@ -86,6 +96,7 @@ export const GroupEditor = (props) => {
 								<TextField
 									label="Group Name"
 									name="name"
+									defaultValue={group.name}
 									fullWidth
 									inputRef={register({ required: true })}
 									helperText={errors.name ? "A group name is required." : ""}
@@ -105,7 +116,7 @@ export const GroupEditor = (props) => {
 									name="phone"
 									type="tel"
 									fullWidth
-									defaultValue=""
+									defaultValue={group.phone}
 									control={control}
 									rules={{
 										required: true,
@@ -120,26 +131,61 @@ export const GroupEditor = (props) => {
 									label="Email Address"
 									name="email"
 									type="email"
+									defaultValue={group.email}
 									fullWidth
 									inputRef={register}
 								/>
 							</Grid>
-							<Grid item xs={12} sm={6}>
-								<Controller
+							<Grid item xs={12} className="PINFieldset">
+								<Typography variant="h6">4-Digit PIN</Typography>
+								<TextField
 									as={TextField}
-									control={control}
-									label="4-Digit PIN"
-									name="pin"
+									name="pin[0]"
 									type="number"
-									fullWidth
+									className="PINField"
+									value={pin[0]}
+									variant="outlined"
 									autoComplete="off"
-									defaultValue=""
-									rules={{
-										required: true,
-										pattern: /[0-9]{4}/i,
-										maxLength: 4,
+									style={{ maxWidth: "3em" }}
+									onKeyPress={(e) => {
+										updatePIN(e, 0);
 									}}
-									helperText={errors.pin ? "A 4-digit PIN is required." : ""}
+								/>
+								<TextField
+									as={TextField}
+									type="number"
+									className="PINField"
+									value={pin[1]}
+									variant="outlined"
+									autoComplete="off"
+									style={{ maxWidth: "3em" }}
+									onKeyPress={(e) => {
+										updatePIN(e, 1);
+									}}
+								/>
+								<TextField
+									as={TextField}
+									type="number"
+									className="PINField"
+									value={pin[2]}
+									variant="outlined"
+									autoComplete="off"
+									style={{ maxWidth: "3em" }}
+									onKeyPress={(e) => {
+										updatePIN(e, 2);
+									}}
+								/>
+								<TextField
+									as={TextField}
+									type="number"
+									className="PINField"
+									value={pin[3]}
+									variant="outlined"
+									autoComplete="off"
+									style={{ maxWidth: "3em" }}
+									onKeyPress={(e) => {
+										updatePIN(e, 3);
+									}}
 								/>
 							</Grid>
 							<Grid item xs={12}>
