@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "reactn";
+import React, { useState, useEffect, useRef } from "reactn";
 import MaskedInput from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
 import "../styles/GroupEditor.scss";
@@ -28,6 +28,7 @@ export const GroupEditor = (props) => {
 	const [pin, setPin] = useState(props.group.pin.split(""));
 	const [people, setPeople] = useState(props.group.people);
 	const { register, handleSubmit, errors, control } = useForm();
+	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
 	const onSubmit = (data) => {
 		data.pin = pin.join("");
@@ -57,7 +58,7 @@ export const GroupEditor = (props) => {
 
 	const updatePIN = (event, index) => {
 		const num = String.fromCharCode(event.charCode);
-		
+		if (index < 3) pinInput[index + 1].current.focus();
 		if (/\d/g.test(num)) {
 			setPin((pin) => pin.map((value, pindex) => (pindex == index ? num : value)));
 		}
@@ -137,63 +138,81 @@ export const GroupEditor = (props) => {
 								/>
 							</Grid>
 							<Grid item xs={12} className="PINFieldset">
-								<Typography variant="h6">4-Digit PIN</Typography>
-								<TextField
-									as={TextField}
-									name="pin[0]"
-									type="number"
-									className="PINField"
-									value={pin[0]}
-									variant="outlined"
-									autoComplete="off"
-									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
-										updatePIN(e, 0);
-									}}
-								/>
-								<TextField
-									as={TextField}
-									type="number"
-									className="PINField"
-									value={pin[1]}
-									variant="outlined"
-									autoComplete="off"
-									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
-										updatePIN(e, 1);
-									}}
-								/>
-								<TextField
-									as={TextField}
-									type="number"
-									className="PINField"
-									value={pin[2]}
-									variant="outlined"
-									autoComplete="off"
-									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
-										updatePIN(e, 2);
-									}}
-								/>
-								<TextField
-									as={TextField}
-									type="number"
-									className="PINField"
-									value={pin[3]}
-									variant="outlined"
-									autoComplete="off"
-									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
-										updatePIN(e, 3);
-									}}
-								/>
+								<div className="Header">
+									<Typography variant="h6">4-Digit PIN</Typography>
+									<Typography variant="caption">
+										Please choose a four-digit PIN that you will use when
+										checking in.
+									</Typography>
+								</div>
+								<div className="Fields">
+									<TextField
+										as={TextField}
+										inputRef={pinInput[0]}
+										type="number"
+										className="PINField"
+										value={pin[0]}
+										variant="outlined"
+										autoComplete="off"
+										style={{ maxWidth: "3em" }}
+										onKeyPress={(e) => {
+											updatePIN(e, 0);
+										}}
+									/>
+									<TextField
+										as={TextField}
+										inputRef={pinInput[1]}
+										type="number"
+										className="PINField"
+										value={pin[1]}
+										variant="outlined"
+										autoComplete="off"
+										style={{ maxWidth: "3em" }}
+										onKeyPress={(e) => {
+											updatePIN(e, 1);
+										}}
+									/>
+									<TextField
+										as={TextField}
+										inputRef={pinInput[2]}
+										type="number"
+										className="PINField"
+										value={pin[2]}
+										variant="outlined"
+										autoComplete="off"
+										style={{ maxWidth: "3em" }}
+										onKeyPress={(e) => {
+											updatePIN(e, 2);
+										}}
+									/>
+									<TextField
+										as={TextField}
+										inputRef={pinInput[3]}
+										type="number"
+										className="PINField"
+										value={pin[3]}
+										variant="outlined"
+										autoComplete="off"
+										style={{ maxWidth: "3em" }}
+										onKeyPress={(e) => {
+											updatePIN(e, 3);
+										}}
+									/>
+								</div>
 							</Grid>
 							<Grid item xs={12}>
+								<div className="Header">
+									<Typography variant="h6">Group Members</Typography>
+									<Typography variant="caption">
+										Provide the names and birthdates of the people who may
+										attend events in your group. Make sure to include yourself.
+									</Typography>
+								</div>
 								<TableContainer component={Paper}>
 									<Table className="People">
 										<TableHead>
 											<TableRow>
-												<TableCell>Group Member</TableCell>
+												<TableCell>Individual</TableCell>
 												<TableCell>Birthdate</TableCell>
 												<TableCell></TableCell>
 											</TableRow>

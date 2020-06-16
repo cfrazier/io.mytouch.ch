@@ -5,7 +5,9 @@
 	.PINFieldset {
 		margin: 1em 0;
 		text-align: center;
-		h6 {margin-bottom: 1em;}
+		.Header {
+			margin-bottom: 1em;
+		}
 	}
 	.PINField {
 		input::-webkit-outer-spin-button,
