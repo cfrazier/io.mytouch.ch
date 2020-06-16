@@ -35,6 +35,10 @@ export const Create = () => {
 		people: [{ name: "", birthdate: "" }],
 	});
 
+	useEffect(() => {
+		console.log(group);
+	}, [group]);
+
 	return (
 		<Container className="Create">
 			<GroupEditor {...{ group, setGroup }} />

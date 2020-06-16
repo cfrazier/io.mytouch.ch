@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "reactn";
 import MaskedInput from "react-input-mask";
 import { useForm, Controller } from "react-hook-form";
+import "../styles/GroupEditor.scss";
+
 import {
 	Button,
 	Card,
@@ -15,6 +17,7 @@ import {
 	TableRow,
 	TableCell,
 	TableBody,
+	TableFooter,
 } from "@material-ui/core";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 
@@ -26,7 +29,7 @@ export const GroupEditor = (props) => {
 	const { register, handleSubmit, errors, control } = useForm();
 
 	const onSubmit = (data) => {
-		console.log(data);
+		setGroup(data);
 	};
 
 	const addPerson = () => {
@@ -35,10 +38,11 @@ export const GroupEditor = (props) => {
 
 	const removePerson = (rowIndex) => {
 		setPeople((oldPeople) => {
-			const update = oldPeople.filter(
-				(person, personIndex) => rowIndex !== personIndex
-			);
-			return update;
+			if (oldPeople.length > 1) {
+				const update = oldPeople.filter((person, personIndex) => rowIndex !== personIndex);
+				return update;
+			}
+			return oldPeople;
 		});
 	};
 
@@ -49,22 +53,32 @@ export const GroupEditor = (props) => {
 		});
 	};
 
-	useEffect(() => {
-	}, [people]);
+	const formatPhone = ([e]) => {
+		const {
+			target: { value },
+		} = e;
+		// Numbers only
+		const clean = value.replace(/\D/g, "");
+		let output = "";
+		// Do some formatting
+		output += clean.length >= 3 ? `${clean.substring(0, 3)}` : clean;
+		output += clean.length >= 4 ? `-${clean.substring(3, 6)}` : clean.substring(3);
+		output += clean.length >= 7 ? `-${clean.substring(6)}` : "";
+		return output;
+	};
 
 	return (
 		<Card className="GroupEditor">
 			<CardContent>
-				<Typography variant="h5" gutterBottom>
-					Your Group Information
-				</Typography>
-				<Typography variant="body2" gutterBottom>
-					We take your privacy seriously and will not share your
-					information with anyone without your permission. Keeping
-					that in mind, when you choose to check in with an
-					organization, your information will be shared so they can
-					contact you per our terms.
-				</Typography>
+				<div className="Header">
+					<Typography variant="h5">Your Group Information</Typography>
+					<Typography variant="body2">
+						We take your privacy seriously and will not share your information with
+						anyone without your permission. Keeping that in mind, when you choose to
+						check in with an organization, your information will be shared so they can
+						contact you per our terms.
+					</Typography>
+				</div>
 				{group && (
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Grid container spacing={3}>
@@ -74,19 +88,13 @@ export const GroupEditor = (props) => {
 									name="name"
 									fullWidth
 									inputRef={register({ required: true })}
-									helperText={
-										errors.name
-											? "A group name is required."
-											: ""
-									}
+									helperText={errors.name ? "A group name is required." : ""}
 								/>
 								<Typography variant="caption">
-									Your group name can be the name of your
-									family or the name of an individual.
+									Your group name can be the name of your family or the name of an
+									individual.
 									{errors.name && (
-										<span className="Error">
-											A group name is required.
-										</span>
+										<span className="Error">A group name is required.</span>
 									)}
 								</Typography>
 							</Grid>
@@ -103,31 +111,8 @@ export const GroupEditor = (props) => {
 										required: true,
 										pattern: /\d{3}-\d{3}-\d{4}/i,
 									}}
-									onChange={([e]) => {
-										const {
-											target: { value },
-										} = e;
-										const s = value.replace(/\D/g, "");
-										let o = "";
-										o +=
-											s.length >= 3
-												? `${s.substring(0, 3)}`
-												: s;
-										o +=
-											s.length >= 4
-												? `-${s.substring(3, 6)}`
-												: s.substring(3);
-										o +=
-											s.length >= 7
-												? `-${s.substring(6)}`
-												: "";
-										return o;
-									}}
-									helperText={
-										errors.phone
-											? "A phone number is required."
-											: ""
-									}
+									onChange={formatPhone}
+									helperText={errors.phone ? "A phone number is required." : ""}
 								/>
 							</Grid>
 							<Grid item xs={12} sm={6}>
@@ -154,11 +139,7 @@ export const GroupEditor = (props) => {
 										pattern: /[0-9]{4}/i,
 										maxLength: 4,
 									}}
-									helperText={
-										errors.pin
-											? "A 4-digit PIN is required."
-											: ""
-									}
+									helperText={errors.pin ? "A 4-digit PIN is required." : ""}
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -166,36 +147,35 @@ export const GroupEditor = (props) => {
 									<Table className="People">
 										<TableHead>
 											<TableRow>
-												<TableCell>
-													Group Member
-												</TableCell>
+												<TableCell>Group Member</TableCell>
 												<TableCell>Birthdate</TableCell>
 												<TableCell></TableCell>
 											</TableRow>
 										</TableHead>
 										<TableBody>
 											{people.map((person, index) => (
-												<TableRow
-													key={person.name + index}
-												>
+												<TableRow key={person.name + index}>
 													<TableCell>
 														<TextField
 															label="Full Name"
 															name={`people[${index}][name]`}
-															defaultValue={
-																person.name
-															}
+															defaultValue={person.name}
 															fullWidth
 															size="small"
 															onChange={(e) => {
 																updatePerson(
 																	index,
 																	"name",
-																	e.target
-																		.value
+																	e.target.value
 																);
 															}}
-															inputRef={register}
+															helperText={
+																errors.people &&
+																errors.people[index].name
+																	? "This is required"
+																	: ""
+															}
+															inputRef={register({ required: true })}
 														/>
 													</TableCell>
 													<TableCell align="right">
@@ -203,45 +183,52 @@ export const GroupEditor = (props) => {
 															label="Birthdate"
 															name={`people[${index}][birthdate]`}
 															type="date"
-															defaultValue={
-																person.birthdate
-															}
+															defaultValue={person.birthdate}
 															fullWidth
 															size="small"
 															InputLabelProps={{
 																shrink: true,
 															}}
+															helperText={
+																errors.people &&
+																errors.people[index].birthdate
+																	? "This is required"
+																	: ""
+															}
 															onChange={(e) => {
 																updatePerson(
 																	index,
 																	"birthdate",
-																	e.target
-																		.value
+																	e.target.value
 																);
 															}}
-															inputRef={register}
+															inputRef={register({ required: true })}
 														/>
 													</TableCell>
-													<TableCell align="right">
-														<DeleteIcon
-															color="action"
-															onClick={(e) => {
-																removePerson(
-																	index
-																);
-															}}
-														/>
+													<TableCell align="center" padding="checkbox">
+														{people.length > 1 && (
+															<DeleteIcon
+																color="action"
+																onClick={(e) => {
+																	removePerson(index);
+																}}
+															/>
+														)}
 													</TableCell>
 												</TableRow>
 											))}
 										</TableBody>
+										<TableFooter>
+											<TableRow>
+												<TableCell colSpan="3" align="right">
+													<Button color="default" onClick={addPerson}>
+														Add Person
+													</Button>
+												</TableCell>
+											</TableRow>
+										</TableFooter>
 									</Table>
 								</TableContainer>
-							</Grid>
-							<Grid item xs={12}>
-								<Button color="default" onClick={addPerson}>
-									Add Person
-								</Button>
 							</Grid>
 							<Grid item xs={12}>
 								<Button
