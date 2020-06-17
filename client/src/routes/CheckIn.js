@@ -3,10 +3,10 @@ import { Switch, Route } from "react-router-dom";
 import { Container, CssBaseline } from "@material-ui/core";
 
 // Styles
-import '../styles/CheckIn/CheckIn.scss';
+import "../styles/CheckIn/CheckIn.scss";
 
 // Components
-import { Editor } from "../components/CheckIn/Editor";
+import { Account } from "../components/CheckIn/Account";
 import { Login } from "../components/CheckIn/Login";
 import { Alert } from "../components/Alert";
 
@@ -28,11 +28,11 @@ export const CheckIn = () => {
 			<Container component="main" maxWidth="sm" className="CheckIn">
 				<CssBaseline />
 				<Switch>
-					<Route path="/checkin/register">
-						<Editor {...{ group, setGroup, setAlert }} />
+					<Route path="/checkin/account">
+						<Account {...{ group, setGroup, setAlert }} />
 					</Route>
 					<Route path="/checkin">
-						<Login />
+						<Login {...{ setGroup, setAlert }} />
 					</Route>
 				</Switch>
 			</Container>

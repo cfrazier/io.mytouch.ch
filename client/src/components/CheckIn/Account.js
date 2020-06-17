@@ -20,9 +20,9 @@ import {
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import httpFetch from "../../services/http";
 
-import "../../styles/CheckIn/Editor.scss";
+import "../../styles/CheckIn/Account.scss";
 
-export const Editor = (props) => {
+export const Account = (props) => {
 	const { group, setGroup, setAlert } = props;
 	const history = useHistory();
 	const { register, handleSubmit, errors, control } = useForm();
@@ -125,7 +125,7 @@ export const Editor = (props) => {
 	};
 
 	return (
-		<Card className="Editor">
+		<Card className="Account">
 			<CardContent>
 				<div className="Header">
 					<Typography variant="h4" align="center" gutterBottom>

@@ -5,8 +5,10 @@ import { useForm, Controller } from "react-hook-form";
 import "../../styles/CheckIn/Login.scss";
 
 import { Button, Card, CardContent, Grid, TextField, Typography } from "@material-ui/core";
+import httpFetch from "../../services/http";
 
 export const Login = (props) => {
+	const { setGroup, setAlert } = props;
 	const history = useHistory();
 	const { handleSubmit, errors, control } = useForm();
 
@@ -14,7 +16,54 @@ export const Login = (props) => {
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
 	const onSubmit = (data) => {
-		data.pin = pin.join();
+		data.pin = pin.join("");
+		if (data.phone && /\d{4}/g.test(data.pin)) {
+			httpFetch(
+				"get",
+				`/api/groups?phone=${data.phone}&pin=${data.pin}`,
+				null,
+				(error, response) => {
+					if (error) {
+						console.log(error);
+						return setAlert({
+							title: "A System Error Occurred",
+							message:
+								"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
+							button: "OK",
+						});
+					}
+					const { error: resError, groups } = response;
+					if (resError) {
+						console.log(resError);
+						return setAlert({
+							title: "A System Error Occurred",
+							message:
+								"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
+							button: "OK",
+						});
+					} else if (response.length) {
+						const group = response[0];
+						setGroup(response[0]);
+						return setAlert({
+							title: `Welcome Back, ${group.name}!`,
+							message:
+								"We're glad to have you back. To complete your check-in process, you will need a venue code, usually displayed at the entrance of the venue. If you need assistance, please feel free to ask for help.",
+							button: "OK",
+							onClose: () => {
+								history.push("/checkin/account");
+							},
+						});
+					} else {
+						return setAlert({
+							title: "We Couldn't Find You...",
+							message:
+								"We couldn't find a group that matches both the phone number and PIN. If you haven't registered yet, please click the register link below to get started.",
+							button: "OK",
+						});
+					}
+				}
+			);
+		}
 	};
 
 	const updatePIN = (event, index) => {
@@ -144,7 +193,7 @@ export const Login = (props) => {
 							<Button
 								color="default"
 								onClick={() => {
-									history.push("/checkin/register");
+									history.push("/checkin/account");
 								}}
 							>
 								Register
