@@ -1,4 +1,4 @@
-.GroupEditor {
+.Editor {
 	.Header {
 		margin-bottom: 1em;
 	}
@@ -19,5 +19,8 @@
 			text-align: center;
 		}
 		margin: 0 0.5em;
+	}
+	.MuiFormHelperText-root {
+		color: red;
 	}
 }

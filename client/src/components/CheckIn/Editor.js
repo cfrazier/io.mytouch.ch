@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from "reactn";
-import MaskedInput from "react-input-mask";
+import React, { useState, useRef } from "reactn";
 import { useForm, Controller } from "react-hook-form";
-import "../styles/GroupEditor.scss";
-
+import { useHistory } from "react-router-dom";
 import {
 	Button,
 	Card,
@@ -20,19 +18,39 @@ import {
 	TableFooter,
 } from "@material-ui/core";
 import { Delete as DeleteIcon } from "@material-ui/icons";
+import httpFetch from "../../services/http";
 
-import httpFetch from "../services/http";
+import "../../styles/CheckIn/Editor.scss";
 
-export const GroupEditor = (props) => {
-	const { group, setGroup } = props;
+export const Editor = (props) => {
+	const { group, setGroup, setAlert } = props;
+	const history = useHistory();
+	const { register, handleSubmit, errors, control } = useForm();
+
 	const [pin, setPin] = useState(props.group.pin.split(""));
 	const [people, setPeople] = useState(props.group.people);
-	const { register, handleSubmit, errors, control } = useForm();
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
-	const onSubmit = (data) => {
-		data.pin = pin.join("");
-		setGroup(data);
+	const updatePIN = (event, index) => {
+		const num = String.fromCharCode(event.charCode);
+		if (index < 3) pinInput[index + 1].current.focus();
+		if (/\d/g.test(num)) {
+			setPin((pin) => pin.map((value, pindex) => (pindex === index ? num : value)));
+		}
+	};
+
+	const formatPhone = ([e]) => {
+		const {
+			target: { value },
+		} = e;
+		// Numbers only
+		const clean = value.replace(/\D/g, "");
+		let output = "";
+		// Do some formatting
+		output += clean.length >= 3 ? `${clean.substring(0, 3)}` : clean;
+		output += clean.length >= 4 ? `-${clean.substring(3, 6)}` : clean.substring(3);
+		output += clean.length >= 7 ? `-${clean.substring(6)}` : "";
+		return output;
 	};
 
 	const addPerson = () => {
@@ -56,38 +74,68 @@ export const GroupEditor = (props) => {
 		});
 	};
 
-	const updatePIN = (event, index) => {
-		const num = String.fromCharCode(event.charCode);
-		if (index < 3) pinInput[index + 1].current.focus();
-		if (/\d/g.test(num)) {
-			setPin((pin) => pin.map((value, pindex) => (pindex == index ? num : value)));
-		}
-	};
+	const onSubmit = (updatedGroup) => {
+		// Join up the PIN into something... pin-ish
+		updatedGroup.pin = pin.join("");
 
-	const formatPhone = ([e]) => {
-		const {
-			target: { value },
-		} = e;
-		// Numbers only
-		const clean = value.replace(/\D/g, "");
-		let output = "";
-		// Do some formatting
-		output += clean.length >= 3 ? `${clean.substring(0, 3)}` : clean;
-		output += clean.length >= 4 ? `-${clean.substring(3, 6)}` : clean.substring(3);
-		output += clean.length >= 7 ? `-${clean.substring(6)}` : "";
-		return output;
+		// Save the ID so we can sync things back up
+		if (group._id) updatedGroup._id = group._id;
+
+		// Update the group
+		const options = group._id
+			? { method: "put", path: `/api/groups/${group._id}?pin=${group.pin}` }
+			: { method: "post", path: `/api/groups` };
+
+		httpFetch(options.method, options.path, { group: updatedGroup }, (error, response) => {
+			// An actual HTTP error occurred
+			if (error) {
+				setAlert({
+					title: "An Error Occurred",
+					message:
+						"Unfortunately, this happens sometimes. There was a problem communicating with the server and your information wasn't saved correctly. You can close this window and try again.",
+					button: "Close",
+				});
+				return console.log(error);
+			}
+			// A server error occurred
+			if (response.error) {
+				const { errors } = response.error;
+				// console.log(response);
+				if (errors && errors.phone)
+					setAlert({
+						title: "Duplicate Phone Number",
+						message:
+							"Your group could not be created because the phone number is already in use. Please change the number or log in instead.",
+						button: "Close",
+					});
+			} else {
+				// Only update the saved group if things actually worked
+				setAlert({
+					title: "Group Updated",
+					message:
+						"Your group was saved to our system and can be accessed later by returning to this page and logging in using your phone number and PIN.",
+					button: "Continue",
+					onClose: () => {
+						setGroup(response);
+						history.push("/checkin");
+					},
+				});
+			}
+		});
 	};
 
 	return (
-		<Card className="GroupEditor">
+		<Card className="Editor">
 			<CardContent>
 				<div className="Header">
-					<Typography variant="h5">Your Group Information</Typography>
-					<Typography variant="body2">
+					<Typography variant="h4" align="center" gutterBottom>
+						Group Information
+					</Typography>
+					<Typography variant="body2" align="center">
 						We take your privacy seriously and will not share your information with
 						anyone without your permission. Keeping that in mind, when you choose to
 						check in with an organization, your information will be shared so they can
-						contact you per our terms.
+						contact you.
 					</Typography>
 				</div>
 				{group && (
@@ -105,9 +153,6 @@ export const GroupEditor = (props) => {
 								<Typography variant="caption">
 									Your group name can be the name of your family or the name of an
 									individual.
-									{errors.name && (
-										<span className="Error">A group name is required.</span>
-									)}
 								</Typography>
 							</Grid>
 							<Grid item xs={12} sm={6}>
@@ -202,10 +247,13 @@ export const GroupEditor = (props) => {
 							</Grid>
 							<Grid item xs={12}>
 								<div className="Header">
-									<Typography variant="h6">Group Members</Typography>
-									<Typography variant="caption">
-										Provide the names and birthdates of the people who may
-										attend events in your group. Make sure to include yourself.
+									<Typography variant="h6" align="center">
+										Group Members
+									</Typography>
+									<Typography variant="body2" align="center">
+										To help keep track of who is attending each event we need to
+										know who will be attending with you. Make sure to include
+										yourself!
 									</Typography>
 								</div>
 								<TableContainer component={Paper}>
@@ -248,7 +296,10 @@ export const GroupEditor = (props) => {
 															label="Birthdate"
 															name={`people[${index}][birthdate]`}
 															type="date"
-															defaultValue={person.birthdate}
+															defaultValue={person.birthdate.substring(
+																0,
+																10
+															)}
 															fullWidth
 															size="small"
 															InputLabelProps={{
@@ -295,14 +346,24 @@ export const GroupEditor = (props) => {
 									</Table>
 								</TableContainer>
 							</Grid>
-							<Grid item xs={12}>
+							<Grid item xs={12} className="Actions">
 								<Button
 									variant="contained"
 									color="primary"
 									onClick={handleSubmit(onSubmit)}
 								>
-									Submit
+									Save
 								</Button>
+								{!group._id && (
+									<Button
+										color="default"
+										onClick={() => {
+											history.push("/checkin");
+										}}
+									>
+										Log In
+									</Button>
+								)}
 							</Grid>
 						</Grid>
 					</form>
