@@ -146,6 +146,7 @@ export const Account = (props) => {
 									label="Group Name"
 									name="name"
 									defaultValue={group.name}
+									autoComplete="off"
 									fullWidth
 									inputRef={register({ required: true })}
 									helperText={errors.name ? "A group name is required." : ""}
@@ -163,6 +164,7 @@ export const Account = (props) => {
 									type="tel"
 									fullWidth
 									defaultValue={group.phone}
+									autoComplete="off"
 									control={control}
 									rules={{
 										required: true,
@@ -177,6 +179,7 @@ export const Account = (props) => {
 									label="Email Address"
 									name="email"
 									type="email"
+									autoComplete="off"
 									defaultValue={group.email}
 									fullWidth
 									inputRef={register}
