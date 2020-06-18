@@ -20,8 +20,8 @@ import {
 	FormHelperText,
 } from "@material-ui/core";
 
-import httpFetch from "../../services/http";
-import "../../styles/CheckIn/Manage.scss";
+import httpFetch from "../services/http";
+import "../styles/Manage.scss";
 import { Close } from "@material-ui/icons";
 
 export const Manage = (props) => {

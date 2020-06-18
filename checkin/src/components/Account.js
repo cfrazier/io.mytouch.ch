@@ -18,9 +18,9 @@ import {
 	TableFooter,
 } from "@material-ui/core";
 import { Delete as DeleteIcon } from "@material-ui/icons";
-import httpFetch from "../../services/http";
+import httpFetch from "../services/http";
 
-import "../../styles/CheckIn/Account.scss";
+import "../styles/Account.scss";
 
 export const Account = (props) => {
 	const { group, setGroup, setAlert } = props;

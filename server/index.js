@@ -62,12 +62,8 @@ const initHTTP = (callback) => {
 	const server = config.server.https
 		? https.createServer(
 				{
-					key: fs.readFileSync(
-						path.join(__dirname) + `/../${ssl.keyPath}`
-					),
-					cert: fs.readFileSync(
-						path.join(__dirname) + `/../${ssl.certPath}`
-					),
+					key: fs.readFileSync(path.join(__dirname) + `/../${ssl.keyPath}`),
+					cert: fs.readFileSync(path.join(__dirname) + `/../${ssl.certPath}`),
 				},
 				app
 		  )
@@ -120,22 +116,15 @@ const initDB = () => {
 		// Check for an existing user and organization
 		User.findOne({}, (error, result) => {
 			if (error)
-				return console.log(
-					"An error occurred while confirming the database connection."
-				);
+				return console.log("An error occurred while confirming the database connection.");
 			// Create a new user in the DB so we can log in
 			if (!result) {
 				const newUser = new User(config.default.user);
 				newUser.save((error, user) => {
-					if (error)
-						return console.log(
-							"An error occurred initializing the database."
-						);
+					if (error) return console.log("An error occurred initializing the database.");
 					console.log("Database initialized with user");
 					// Let's create the default organization now
-					const newOrg = new Organization(
-						config.default.organization
-					);
+					const newOrg = new Organization(config.default.organization);
 					newOrg.users.push(newUser._id);
 					newOrg.save();
 				});
@@ -151,9 +140,6 @@ const initRoutes = (app) => {
 	// Set up the authenticator middleware
 	app.use(Routes.user.authenticate);
 
-	// Set up the front-end static client
-	app.use(express.static(path.join(__dirname, "/../client/build")));
-
 	// Routing
 
 	// Group
@@ -168,10 +154,7 @@ const initRoutes = (app) => {
 	app.post("/api/organizations", Routes.organization.create);
 	app.get("/api/organizations/:organizationId", Routes.organization.read);
 	app.put("/api/organizations/:organizationId", Routes.organization.update);
-	app.delete(
-		"/api/organizations/:organizationId",
-		Routes.organization.delete
-	);
+	app.delete("/api/organizations/:organizationId", Routes.organization.delete);
 
 	// User
 	app.post("/api/organizations/:organizationId/users", Routes.user.create);
@@ -188,18 +171,9 @@ const initRoutes = (app) => {
 	// Venue
 	app.get("/api/organizations/:organizationId/venues", Routes.venue.list);
 	app.post("/api/organizations/:organizationId/venues", Routes.venue.create);
-	app.get(
-		"/api/organizations/:organizationId/venues/:venueId",
-		Routes.venue.read
-	);
-	app.put(
-		"/api/organizations/:organizationId/venues/:venueId",
-		Routes.venue.update
-	);
-	app.delete(
-		"/api/organizations/:organizationId/venues/:venueId",
-		Routes.venue.delete
-	);
+	app.get("/api/organizations/:organizationId/venues/:venueId", Routes.venue.read);
+	app.put("/api/organizations/:organizationId/venues/:venueId", Routes.venue.update);
+	app.delete("/api/organizations/:organizationId/venues/:venueId", Routes.venue.delete);
 	app.get(
 		"/api/organizations/:organizationId/venues/:venueId/checkins",
 		Routes.venue.listCheckIns
@@ -210,9 +184,20 @@ const initRoutes = (app) => {
 		Routes.venue.clearVenueCheckIns
 	);
 
-	// Default static files
-	app.get("*", (req, res) => {
-		res.sendFile(path.join(__dirname + "/../client/build/index.html"));
+	// Set up the front-end static client
+	app.use("/admin", express.static(path.join(__dirname, "/../admin/build")));
+	app.get("/admin/*", (req, res) => {
+		res.sendFile(path.join(__dirname + "/../admin/build/index.html"));
+	});
+
+	app.use("/checkin", express.static(path.join(__dirname, "/../checkin/build")));
+	app.get("/checkin/*", (req, res) => {
+		res.sendFile(path.join(__dirname + "/../checkin/build/index.html"));
+	});
+
+	app.use("/kiosk", express.static(path.join(__dirname, "/../kiosk/build")));
+	app.get("/kiosk/*", (req, res) => {
+		res.sendFile(path.join(__dirname + "/../kiosk/build/index.html"));
 	});
 };
 

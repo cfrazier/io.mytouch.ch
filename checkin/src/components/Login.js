@@ -2,10 +2,10 @@ import React, { useState, useRef } from "reactn";
 import { Link, useHistory } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
-import "../../styles/CheckIn/Login.scss";
+import "../styles/Login.scss";
 
 import { Button, Card, CardContent, Grid, TextField, Typography } from "@material-ui/core";
-import httpFetch from "../../services/http";
+import httpFetch from "../services/http";
 
 export const Login = (props) => {
 	const { setGroup, setAlert } = props;
@@ -100,7 +100,7 @@ export const Login = (props) => {
 						Check In
 					</Typography>
 					<Typography variant="body2" align="center">
-						Before checking in, we need to know hwo you are so we can access your group
+						Before checking in, we need to know who you are so we can access your group
 						information. If you have not already registered, you can{" "}
 						<Link to="/checkin/register">get started here</Link>.
 					</Typography>

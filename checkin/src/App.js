@@ -1,17 +1,17 @@
 import React, { useState } from "reactn";
-import { Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { Container, CssBaseline } from "@material-ui/core";
 
 // Styles
-import "../styles/CheckIn/CheckIn.scss";
+import "./styles/CheckIn.scss";
 
 // Components
-import { Account } from "../components/CheckIn/Account";
-import { Login } from "../components/CheckIn/Login";
-import { Alert } from "../components/Alert";
-import { Manage } from "../components/CheckIn/Manage";
+import { Account } from "./components/Account";
+import { Login } from "./components/Login";
+import { Alert } from "./components/Alert";
+import { Manage } from "./components/Manage";
 
-export const CheckIn = () => {
+const App = () => {
 	// State
 	const [group, setGroup] = useState({
 		name: "",
@@ -24,7 +24,7 @@ export const CheckIn = () => {
 	const [alert, setAlert] = useState();
 
 	return (
-		<>
+		<Router className="App">
 			<Container component="main" maxWidth="sm" className="CheckIn">
 				<CssBaseline />
 				<Switch>
@@ -37,9 +37,14 @@ export const CheckIn = () => {
 					<Route path="/checkin">
 						<Login {...{ setGroup, setAlert }} />
 					</Route>
+					<Route exact="/">
+						<Redirect to="/checkin" />
+					</Route>
 				</Switch>
 			</Container>
 			{alert && <Alert {...{ alert, setAlert }} />}
-		</>
+		</Router>
 	);
 };
+
+export default App;
