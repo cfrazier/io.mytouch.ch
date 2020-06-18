@@ -20,7 +20,7 @@ export const Login = (props) => {
 		if (data.phone && /\d{4}/g.test(data.pin)) {
 			httpFetch(
 				"get",
-				`/api/groups?phone=${data.phone}&pin=${data.pin}`,
+				`/api/groups/1?phone=${data.phone}&pin=${data.pin}`,
 				null,
 				(error, response) => {
 					if (error) {
@@ -32,35 +32,39 @@ export const Login = (props) => {
 							button: "OK",
 						});
 					}
-					const { error: resError, groups } = response;
+					const { error: resError, message } = response;
+					// Check for some errors
 					if (resError) {
 						console.log(resError);
-						return setAlert({
-							title: "A System Error Occurred",
-							message:
-								"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
-							button: "OK",
-						});
-					} else if (response.length) {
-						const group = response[0];
-						setGroup(response[0]);
-						return setAlert({
-							title: `Welcome Back, ${group.name}!`,
-							message:
-								"We're glad to have you back. To complete your check-in process, you will need a venue code, usually displayed at the entrance of the venue. If you need assistance, please feel free to ask for help.",
-							button: "OK",
-							onClose: () => {
-								history.push("/checkin/account");
-							},
-						});
-					} else {
-						return setAlert({
-							title: "We Couldn't Find You...",
-							message:
-								"We couldn't find a group that matches both the phone number and PIN. If you haven't registered yet, please click the register link below to get started.",
-							button: "OK",
-						});
+						// Set an alert message
+						switch (message) {
+							case "Group not found.":
+								return setAlert({
+									title: "We Couldn't Find You...",
+									message:
+										"We couldn't find a group that matches both the phone number and PIN. If you haven't registered yet, please click the register link below to get started.",
+									button: "OK",
+								});
+							default:
+								return setAlert({
+									title: "A System Error Occurred",
+									message:
+										"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
+									button: "OK",
+								});
+						}
 					}
+					// We've got a group!
+					setGroup(response);
+					return setAlert({
+						title: `Welcome Back, ${response.name}!`,
+						message:
+							"We're glad to have you back. To complete your check-in process, you will need a venue code, usually displayed at the entrance of the venue. If you need assistance, please feel free to ask for help.",
+						button: "OK",
+						onClose: () => {
+							history.push("/checkin/manage");
+						},
+					});
 				}
 			);
 		}

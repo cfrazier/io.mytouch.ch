@@ -258,17 +258,24 @@ export const Account = (props) => {
 								</div>
 								<TableContainer component={Paper}>
 									<Table className="People">
-										<TableHead>
+										<TableHead style={{ backgroundColor: "#fafafa" }}>
 											<TableRow>
-												<TableCell>Individual</TableCell>
-												<TableCell>Birthdate</TableCell>
-												<TableCell></TableCell>
+												<TableCell>Group Member</TableCell>
+												{people.length > 1 && <TableCell></TableCell>}
 											</TableRow>
 										</TableHead>
 										<TableBody>
 											{people.map((person, index) => (
 												<TableRow key={person.name + index}>
 													<TableCell>
+														{person._id && (
+															<input
+																type="hidden"
+																name={`people[${index}][_id]`}
+																value={person._id}
+																ref={register}
+															/>
+														)}
 														<TextField
 															label="Full Name"
 															name={`people[${index}][name]`}
@@ -291,46 +298,19 @@ export const Account = (props) => {
 															inputRef={register({ required: true })}
 														/>
 													</TableCell>
-													<TableCell align="right">
-														<TextField
-															label="Birthdate"
-															name={`people[${index}][birthdate]`}
-															type="date"
-															defaultValue={person.birthdate.substring(
-																0,
-																10
-															)}
-															fullWidth
-															size="small"
-															InputLabelProps={{
-																shrink: true,
-															}}
-															helperText={
-																errors.people &&
-																errors.people[index].birthdate
-																	? "This is required"
-																	: ""
-															}
-															onChange={(e) => {
-																updatePerson(
-																	index,
-																	"birthdate",
-																	e.target.value
-																);
-															}}
-															inputRef={register({ required: true })}
-														/>
-													</TableCell>
-													<TableCell align="center" padding="checkbox">
-														{people.length > 1 && (
+													{people.length > 1 && (
+														<TableCell
+															align="center"
+															padding="checkbox"
+														>
 															<DeleteIcon
 																color="action"
 																onClick={(e) => {
 																	removePerson(index);
 																}}
 															/>
-														)}
-													</TableCell>
+														</TableCell>
+													)}
 												</TableRow>
 											))}
 										</TableBody>

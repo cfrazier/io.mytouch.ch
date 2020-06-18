@@ -9,6 +9,7 @@ import "../styles/CheckIn/CheckIn.scss";
 import { Account } from "../components/CheckIn/Account";
 import { Login } from "../components/CheckIn/Login";
 import { Alert } from "../components/Alert";
+import { Manage } from "../components/CheckIn/Manage";
 
 export const CheckIn = () => {
 	// State
@@ -21,7 +22,6 @@ export const CheckIn = () => {
 	});
 
 	const [alert, setAlert] = useState();
-	const [checkins, setCheckins] = useState([]);
 
 	return (
 		<>
@@ -30,6 +30,9 @@ export const CheckIn = () => {
 				<Switch>
 					<Route path="/checkin/account">
 						<Account {...{ group, setGroup, setAlert }} />
+					</Route>
+					<Route path="/checkin/manage">
+						<Manage {...{ group, setGroup, setAlert }} />
 					</Route>
 					<Route path="/checkin">
 						<Login {...{ setGroup, setAlert }} />
