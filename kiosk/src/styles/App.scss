@@ -40,7 +40,7 @@
 		}
 		.Venue {
 			.Main {
-				width: 50%;
+				width: 60%;
 				.Name {
 					margin-bottom: 0.25em;
 					text-align: left;
@@ -49,8 +49,11 @@
 					text-align: left;
 					font-size: 0.4em;
 					font-weight: 400;
-					opacity: 60%;
+					color: rgba(255,255,255,0.5);
 				}
+			}
+			.Code {
+				font-size: 1.4em;
 			}
 			.Badge {
 				width: 8vw;
