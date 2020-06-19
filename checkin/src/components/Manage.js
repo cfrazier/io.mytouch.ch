@@ -205,8 +205,11 @@ export const Manage = (props) => {
 							free to ask for help.
 						</Typography>
 					</div>
-					{checkins.length && (
+					{(checkins.length > 0) && (
 						<div className="CheckedIn">
+							<Typography variant="h6" align="center" gutterBottom>
+								Existing Check-Ins
+							</Typography>
 							{checkins.map((person) => (
 								<div
 									className="CheckedInItem"
@@ -218,7 +221,7 @@ export const Manage = (props) => {
 							))}
 						</div>
 					)}
-					{(group && group.people.length > checkins.length) && (
+					{group && group.people.length > checkins.length && (
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<Grid container spacing={3}>
 								<Grid item xs={12} className="CodeFieldset">

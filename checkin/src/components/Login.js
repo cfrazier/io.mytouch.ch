@@ -15,6 +15,28 @@ export const Login = (props) => {
 	const [pin, setPin] = useState("    ".split(""));
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
+	const updatePIN = (event, index) => {
+		const num = String.fromCharCode(event.charCode);
+		if (index < 3) pinInput[index + 1].current.focus();
+		if (/\d/g.test(num)) {
+			setPin((pin) => pin.map((value, pindex) => (pindex === index ? num : value)));
+		}
+	};
+
+	const formatPhone = ([event]) => {
+		const {
+			target: { value },
+		} = event;
+		// Numbers only
+		const clean = value.replace(/\D/g, "");
+		let output = "";
+		// Do some formatting
+		output += clean.length >= 3 ? `${clean.substring(0, 3)}` : clean;
+		output += clean.length >= 4 ? `-${clean.substring(3, 6)}` : clean.substring(3);
+		output += clean.length >= 7 ? `-${clean.substring(6)}` : "";
+		return output;
+	};
+
 	const onSubmit = (data) => {
 		data.pin = pin.join("");
 		if (data.phone && /\d{4}/g.test(data.pin)) {
@@ -68,28 +90,6 @@ export const Login = (props) => {
 				}
 			);
 		}
-	};
-
-	const updatePIN = (event, index) => {
-		const num = String.fromCharCode(event.charCode);
-		if (index < 3) pinInput[index + 1].current.focus();
-		if (/\d/g.test(num)) {
-			setPin((pin) => pin.map((value, pindex) => (pindex === index ? num : value)));
-		}
-	};
-
-	const formatPhone = ([e]) => {
-		const {
-			target: { value },
-		} = e;
-		// Numbers only
-		const clean = value.replace(/\D/g, "");
-		let output = "";
-		// Do some formatting
-		output += clean.length >= 3 ? `${clean.substring(0, 3)}` : clean;
-		output += clean.length >= 4 ? `-${clean.substring(3, 6)}` : clean.substring(3);
-		output += clean.length >= 7 ? `-${clean.substring(6)}` : "";
-		return output;
 	};
 
 	return (
