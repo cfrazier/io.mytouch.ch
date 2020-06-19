@@ -10,7 +10,7 @@ import httpFetch from "../services/http";
 export const Login = (props) => {
 	const { setGroup, setAlert } = props;
 	const history = useHistory();
-	const { handleSubmit, errors, control } = useForm();
+	const { handleSubmit, errors, control, getValues } = useForm();
 
 	const [pin, setPin] = useState("    ".split(""));
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
@@ -20,6 +20,38 @@ export const Login = (props) => {
 		if (index < 3) pinInput[index + 1].current.focus();
 		if (/\d/g.test(num)) {
 			setPin((pin) => pin.map((value, pindex) => (pindex === index ? num : value)));
+		}
+	};
+
+	const resetPIN = (e) => {
+		e.preventDefault();
+		const phone = getValues("phone");
+		if (/\d{3}-\d{3}-\d{4}/i.test(phone)) {
+			httpFetch("get", `/api/groups/reset?phone=${phone}`, null, (error, response) => {
+				if (error) {
+					console.log(error);
+					return setAlert({
+						title: "A System Error Occurred",
+						message:
+							"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
+						button: "OK",
+					});
+				}
+				if (response.error) {
+					return setAlert({
+						title: "We Couldn't Reset Your PIN",
+						message:
+							"We weren't able to find a phone number that matches the one provided. Please check the phone number and try again.",
+						button: "OK",
+					});
+				}
+				return setAlert({
+					title: "Your PIN Was Reset",
+					message:
+						"Your PIN was reset and an email sent to the email address you provided during registration. It may take a minute for the email to be delivered, so please wait a moment before requesting another PIN reset.",
+					button: "OK",
+				});
+			});
 		}
 	};
 
@@ -123,6 +155,7 @@ export const Login = (props) => {
 								onChange={formatPhone}
 								helperText={errors.phone ? "A phone number is required." : ""}
 							/>
+							<Typography variant="caption">If you need to reset your PIN, please enter your phone number and <a href="#" onClick={resetPIN}>click here.</a></Typography>
 						</Grid>
 						<Grid item xs={12} className="PINFieldset">
 							<div className="Header">
@@ -133,7 +166,6 @@ export const Login = (props) => {
 							</div>
 							<div className="Fields">
 								<TextField
-									as={TextField}
 									inputRef={pinInput[0]}
 									type="number"
 									className="PINField"
@@ -146,7 +178,6 @@ export const Login = (props) => {
 									}}
 								/>
 								<TextField
-									as={TextField}
 									inputRef={pinInput[1]}
 									type="number"
 									className="PINField"
@@ -159,7 +190,6 @@ export const Login = (props) => {
 									}}
 								/>
 								<TextField
-									as={TextField}
 									inputRef={pinInput[2]}
 									type="number"
 									className="PINField"
@@ -172,7 +202,6 @@ export const Login = (props) => {
 									}}
 								/>
 								<TextField
-									as={TextField}
 									inputRef={pinInput[3]}
 									type="number"
 									className="PINField"
