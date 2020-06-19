@@ -89,7 +89,6 @@ export const Login = (props) => {
 					const { error: resError, message } = response;
 					// Check for some errors
 					if (resError) {
-						console.log(resError);
 						// Set an alert message
 						switch (message) {
 							case "Group not found.":

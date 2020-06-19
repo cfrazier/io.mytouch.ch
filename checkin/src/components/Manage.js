@@ -230,7 +230,6 @@ export const Manage = (props) => {
 									</div>
 									<div className="Fields">
 										<TextField
-											as={TextField}
 											inputRef={codeInput[0]}
 											type="text"
 											className="CodeField"
@@ -243,7 +242,6 @@ export const Manage = (props) => {
 											}}
 										/>
 										<TextField
-											as={TextField}
 											inputRef={codeInput[1]}
 											type="text"
 											className="CodeField"
@@ -256,7 +254,6 @@ export const Manage = (props) => {
 											}}
 										/>
 										<TextField
-											as={TextField}
 											inputRef={codeInput[2]}
 											type="text"
 											className="CodeField"
@@ -269,7 +266,6 @@ export const Manage = (props) => {
 											}}
 										/>
 										<TextField
-											as={TextField}
 											inputRef={codeInput[3]}
 											type="text"
 											className="CodeField"
@@ -282,7 +278,6 @@ export const Manage = (props) => {
 											}}
 										/>
 										<TextField
-											as={TextField}
 											inputRef={codeInput[4]}
 											type="text"
 											className="CodeField"
