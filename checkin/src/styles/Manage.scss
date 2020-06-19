@@ -2,6 +2,32 @@
 	.Header {
 		margin-bottom: 1em;
 	}
+	.CheckedIn {
+		margin: 2em auto;
+		.CheckedInItem {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			color: #fff;
+			border-radius: 100px;
+			margin: 0 0 0.25em;
+			.PersonName,
+			.VenueName {
+				display: flex;
+				flex-direction: column;
+				align-self: center;
+				flex-basis: 100%;
+				flex: 1;
+				padding: 1em 2em;
+			}
+			.VenueName {
+				text-align: right;
+			}
+		}
+	}
+	.Loading {
+		margin: 1em auto;
+	}
 	.CodeFieldset {
 		margin: 1em 0;
 		text-align: center;
@@ -19,6 +45,25 @@
 			text-align: center;
 		}
 		margin: 0 0.5em;
+	}
+	.VenueDetails {
+		margin-bottom: 0.25em;
+		h5 {
+			border-bottom: 1px solid rgba(224, 224, 224, 1);
+			padding-bottom: 0.5em;
+			margin-bottom: 0.5em;
+		}
+		.VenueBadge {
+			display: block;
+			width: 100px;
+			height: 100px;
+			border-radius: 50px;
+			text-align: center;
+			line-height: 100px;
+			color: #fff;
+			font-size: 2.4em;
+			margin: 0 auto;
+		}
 	}
 	.MuiFormHelperText-root {
 		color: red;

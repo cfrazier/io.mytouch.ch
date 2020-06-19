@@ -37,7 +37,7 @@ const App = () => {
 					<Route path="/checkin">
 						<Login {...{ setGroup, setAlert }} />
 					</Route>
-					<Route exact="/">
+					<Route path="/">
 						<Redirect to="/checkin" />
 					</Route>
 				</Switch>

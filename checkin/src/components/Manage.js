@@ -22,23 +22,31 @@ import {
 
 import httpFetch from "../services/http";
 import "../styles/Manage.scss";
-import { Close } from "@material-ui/icons";
+import { Autorenew } from "@material-ui/icons";
 
 export const Manage = (props) => {
 	const { group, setGroup, setAlert } = props;
 	const history = useHistory();
 	const { register, handleSubmit } = useForm();
 
-	const [errors, setErrors] = useState({});
+	// So much state...
+	const [checkins, setCheckins] = useState([]);
 	const [code, setCode] = useState("     ".split(""));
+	const [errors, setErrors] = useState({});
+	const [loadingVenue, setLoadingVenue] = useState(false);
+	const [venue, setVenue] = useState();
+
+	// Because the input boxes are a pain
 	const codeInput = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
 
+	// Generate the actual code
 	const updateCode = (event, index) => {
 		const char = String.fromCharCode(event.charCode).toLowerCase();
 		if (index < 4) codeInput[index + 1].current.focus();
 		setCode((code) => code.map((value, cindex) => (cindex === index ? char : value)));
 	};
 
+	// Handle form submissions
 	const onSubmit = (data) => {
 		const error = {};
 		data.people = data.people ? data.people : [];
@@ -115,6 +123,7 @@ export const Manage = (props) => {
 			} else {
 				// Only update the saved group if things actually worked
 				setGroup(response);
+				setVenue(null);
 				setCode("     ".split(""));
 				setAlert({
 					title: "Check-In Received",
@@ -132,6 +141,56 @@ export const Manage = (props) => {
 	useEffect(() => {
 		if (!group._id) return history.push("/checkin");
 	}, [group._id, history]);
+
+	useEffect(() => {
+		const joinedCode = code.join("");
+		if (/[a-z0-9]{5}/g.test(joinedCode)) {
+			setLoadingVenue(true);
+			httpFetch("get", `/api/venue?code=${joinedCode}`, null, (error, response) => {
+				// HTTP error
+				if (error) {
+					setErrors({ venueCode: "An error occurred communicating with the system." });
+					setVenue(null);
+					setLoadingVenue(false);
+					return console.log(error);
+				}
+				// Server data errors
+				if (response.error) {
+					const { message } = response.error;
+					setLoadingVenue(false);
+					setVenue(null);
+					switch (message) {
+						case "Venue not found.":
+							setErrors({
+								venueCode: "The venue code does not match an existing venue.",
+							});
+							break;
+						default:
+							setErrors({
+								venueCode: "An error occurred communicating with the system.",
+							});
+							break;
+					}
+				} else {
+					setErrors((oldErrors) => {
+						delete oldErrors.venueCode;
+						return oldErrors;
+					});
+					setLoadingVenue(false);
+					setVenue(response);
+				}
+			});
+		}
+	}, [code]);
+
+	useEffect(() => {
+		if (group._id) {
+			const { people } = group;
+			setCheckins(people.filter((person) => person.checkin));
+		}
+	}, [group]);
+
+	// Let's render some check-in stuff!!!
 	return (
 		<>
 			<Card className="Manage">
@@ -141,12 +200,25 @@ export const Manage = (props) => {
 							Check-In
 						</Typography>
 						<Typography variant="body2" align="center">
-							To complete the check-in process, enter the venue code found at the
+							When you arrive for your event, enter the venue code found at the
 							entrance to your event. If you cannot find the venue code, please feel
 							free to ask for help.
 						</Typography>
 					</div>
-					{group && (
+					{checkins.length && (
+						<div className="CheckedIn">
+							{checkins.map((person) => (
+								<div
+									className="CheckedInItem"
+									style={{ backgroundColor: person.checkin.venue.color }}
+								>
+									<div className="PersonName">{person.name}</div>
+									<div className="VenueName">{person.checkin.venue.name}</div>
+								</div>
+							))}
+						</div>
+					)}
+					{(group && group.people.length > checkins.length) && (
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<Grid container spacing={3}>
 								<Grid item xs={12} className="CodeFieldset">
@@ -225,82 +297,107 @@ export const Manage = (props) => {
 											{errors.venueCode}
 										</FormHelperText>
 									)}
+									{loadingVenue && (
+										<div className="Loading">
+											<Autorenew /> Now loading venue...
+										</div>
+									)}
 								</Grid>
-								<Grid item xs={12}>
-									<div className="Header">
-										<Typography variant="h6" align="center">
-											Event Attendees
-										</Typography>
-										<Typography variant="body2" align="center">
-											Select the people from your group who will be attending
-											the event at this venue. If your group is attending at
-											different venues, you can check-in multiple times.
-										</Typography>
-										{errors.personId && (
-											<FormHelperText align="center">
-												{errors.personId}
-											</FormHelperText>
-										)}
-									</div>
-									<TableContainer component={Paper}>
-										<Table className="People">
-											<TableHead style={{ backgroundColor: "#fafafa" }}>
-												<TableRow>
-													<TableCell>Individual</TableCell>
-													<TableCell>Venue</TableCell>
-												</TableRow>
-											</TableHead>
-											<TableBody>
-												{group.people.map((person, index) =>
-													person.checkin ? (
-														<TableRow
-															key={person.name + index}
-															className="CheckedIn"
+								{venue && (
+									<Grid item xs={12}>
+										<Card className="VenueDetails">
+											<CardContent>
+												<Grid container spacing={3}>
+													<Grid item xs={12} sm={3}>
+														<div
+															className="VenueBadge"
 															style={{
-																backgroundColor:
-																	person.checkin.venue.color,
+																backgroundColor: venue.color,
 															}}
 														>
-															<TableCell>{person.name}</TableCell>
-															<TableCell>
-																{person.checkin.venue.name}
-															</TableCell>
-														</TableRow>
-													) : (
-														<TableRow key={person.name + index}>
-															<TableCell>
-																<FormControlLabel
-																	label={person.name}
-																	control={
-																		<Checkbox
-																			name={`people[${index}]`}
-																			value={person._id}
-																			color="primary"
-																			inputRef={register}
-																			inputProps={{
-																				"aria-label":
-																					"primary checkbox",
-																			}}
-																		/>
-																	}
-																/>
-															</TableCell>
-															<TableCell></TableCell>
-														</TableRow>
-													)
-												)}
-											</TableBody>
-										</Table>
-									</TableContainer>
-								</Grid>
+															{venue.available}
+														</div>
+													</Grid>
+													<Grid item xs={12} sm={9}>
+														<Typography variant="h5">
+															{venue.organization.name}
+														</Typography>
+														<Typography variant="h6">
+															{venue.name}
+														</Typography>
+														<Typography variant="body2">
+															{venue.description}
+														</Typography>
+													</Grid>
+												</Grid>
+												<Grid item xs={12}></Grid>
+											</CardContent>
+										</Card>
+										<TableContainer component={Paper}>
+											<Table className="People">
+												<TableHead>
+													<TableRow>
+														<TableCell>
+															<Typography variant="h6">
+																Event Attendees
+															</Typography>
+															<Typography variant="body2">
+																Select the people from your group
+																who will be attending the event at
+																this venue. People who are currently
+																checked-in are not shown. If your
+																group is attending at different
+																venues, you can check-in multiple
+																times.
+															</Typography>
+															{errors.personId && (
+																<FormHelperText>
+																	{errors.personId}
+																</FormHelperText>
+															)}
+														</TableCell>
+													</TableRow>
+												</TableHead>
+												<TableBody>
+													{group.people.map((person, index) =>
+														person.checkin ? null : (
+															<TableRow key={person.name + index}>
+																<TableCell>
+																	<FormControlLabel
+																		label={person.name}
+																		control={
+																			<Checkbox
+																				name={`people[${index}]`}
+																				value={person._id}
+																				color="primary"
+																				inputRef={register}
+																				inputProps={{
+																					"aria-label":
+																						"primary checkbox",
+																				}}
+																			/>
+																		}
+																	/>
+																</TableCell>
+															</TableRow>
+														)
+													)}
+												</TableBody>
+											</Table>
+										</TableContainer>
+									</Grid>
+								)}
+
 								<Grid item xs={12} className="Actions">
-									<Button
-										variant="contained"
-										color="primary"
-										onClick={handleSubmit(onSubmit)}
-									>
-										Check In
-									</Button>
+									{venue && (
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={handleSubmit(onSubmit)}
+										>
+											Check In
+										</Button>
+									)}
 									<Button
 										color="default"
 										onClick={() => {
