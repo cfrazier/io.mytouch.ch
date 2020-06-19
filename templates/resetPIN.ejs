@@ -1,0 +1,26 @@
+<html>
+<div>
+	<h1>Your PIN has Been Reset!</h1>
+	<p>Your group was updated with the following information:</p>
+	<ul>
+		<li>Phone: <%= phone %></li>
+		<li>Email: <%= email %></li>
+		<li>PIN: <%= pin %></li>
+	</ul>
+	<p>Your group members are:</p>
+	<ul>
+		<% people.forEach(function(person){ %>
+		<li><%= person.name %></li>
+		<% }); %>
+	</ul>
+	<h2>How to Check In</h2>
+	<p>When you attend an event, find the venue code for where you are attending (this should be posted at the
+		entrance) and click the link below to start the check-in process.</p>
+	<ul>
+		<li><a href="<%= url %>"><%= url %></a></li>
+	</ul>
+	<p>Remember, you will need the PIN you selected to complete your check-in, so save this message for reference
+		later.</p>
+</div>
+
+</html>

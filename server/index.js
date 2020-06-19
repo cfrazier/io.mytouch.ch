@@ -145,6 +145,7 @@ const initRoutes = (app) => {
 	// Group
 	app.get("/api/groups", Routes.group.list);
 	app.post("/api/groups", Routes.group.create);
+	app.get("/api/groups/reset", Routes.group.resetPIN);
 	app.get("/api/groups/:groupId", Routes.group.read);
 	app.put("/api/groups/:groupId", Routes.group.update);
 	app.delete("/api/groups/:groupId", Routes.group.delete);
