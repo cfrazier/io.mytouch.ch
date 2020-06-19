@@ -169,17 +169,19 @@ const initRoutes = (app) => {
 	app.get("/api/reset", Routes.user.resetPassword);
 
 	// Venue
-	app.get("/api/venue", Routes.venue.readSimple);
 	app.get("/api/organizations/:organizationId/venues", Routes.venue.list);
 	app.post("/api/organizations/:organizationId/venues", Routes.venue.create);
 	app.get("/api/organizations/:organizationId/venues/:venueId", Routes.venue.read);
 	app.put("/api/organizations/:organizationId/venues/:venueId", Routes.venue.update);
 	app.delete("/api/organizations/:organizationId/venues/:venueId", Routes.venue.delete);
+
+	// Check-In Related
+	app.get("/api/venue", Routes.venue.readSimple);
+	app.post("/api/checkin", Routes.venue.createCheckIn);
 	app.get(
 		"/api/organizations/:organizationId/venues/:venueId/checkins",
 		Routes.venue.listCheckIns
 	);
-	app.post("/api/checkin", Routes.venue.createCheckIn);
 	app.put(
 		"/api/organizations/:organizationId/venues/:venueId/clear",
 		Routes.venue.clearVenueCheckIns
