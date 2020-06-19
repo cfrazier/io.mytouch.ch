@@ -52,22 +52,15 @@ export const Kiosk = (props) => {
 			{venues ? (
 				<div className="Active">
 					<table>
-						<thead>
-							<tr>
-								<th className="Name">Check in at {serverURL}/checkin</th>
-								<th className="Code">Code</th>
-								<th className="Available">Available</th>
-							</tr>
-						</thead>
 						<tbody>
 							{venues.map((venue) => (
 								<tr key={`venue_${venue._id}`} className="Venue">
-									<td>
+									<td className="Main">
 										<div className="Name">{venue.name}</div>
 										<div className="Description">{venue.description}</div>
 									</td>
-									<td>{venue.code.toUpperCase()}</td>
-									<td>
+									<td className="Code">{venue.code.toUpperCase()}</td>
+									<td className="Available">
 										<div
 											className="Badge"
 											style={{ backgroundColor: venue.color }}

@@ -3,6 +3,9 @@
 .App {
 	display: block;
 	position: absolute;
+	background: #000;
+	overflow: hidden;
+	color: #fff;
 	left: 0;
 	top: 0;
 	right: 0;
@@ -12,52 +15,50 @@
 .Kiosk {
 	display: block;
 	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
 	font-family: "Inter", sans-serif;
-	font-size: 4vw;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	background: #000;
-	color: #fff;
+	font-size: 3.5vw;
 	table {
 		width: 100%;
-		th,
+		tr {
+			td {
+				border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+			}
+			&:last-child td {
+				border-bottom: 0px none;
+			}
+		}
 		td {
 			font-weight: 700;
+			color: #fff;
 			text-align: center;
 			vertical-align: middle;
-			padding: 2vw;
-			border-bottom: 2px solid rgba(255,255,255, 0.2);
-		}
-		thead {
-			th {
-				font-size: 0.4em;
-				opacity: 60%;
-			}
-			.Name {
-				width: 50%;
-				text-align: left;
-			}
+			padding: 1.3vw 3vw;
 		}
 		.Venue {
-			.Name {
-				margin-bottom: 0.25em;
-				text-align: left;
-			}
-			.Description {
-				text-align: left;
-				font-size: 0.4em;
-				font-weight: 400;
-				opacity: 60%;
+			.Main {
+				width: 50%;
+				.Name {
+					margin-bottom: 0.25em;
+					text-align: left;
+				}
+				.Description {
+					text-align: left;
+					font-size: 0.4em;
+					font-weight: 400;
+					opacity: 60%;
+				}
 			}
 			.Badge {
-				width: 10vw;
-				height: 10vw;
+				width: 8vw;
+				height: 8vw;
 				margin: 0 auto;
 				text-align: center;
-				line-height: 10vw;
-				border-radius: 5vw;
+				line-height: 8vw;
+				border-radius: 4vw;
 			}
 		}
 	}
