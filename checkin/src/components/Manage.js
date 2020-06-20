@@ -27,7 +27,7 @@ import { Autorenew } from "@material-ui/icons";
 export const Manage = (props) => {
 	const { group, setGroup, setAlert } = props;
 	const history = useHistory();
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, reset } = useForm();
 
 	// So much state...
 	const [checkins, setCheckins] = useState([]);
@@ -125,13 +125,16 @@ export const Manage = (props) => {
 				// Only update the saved group if things actually worked
 				setGroup(response);
 				setVenue(null);
-				setCode("     ".split(""));
 				setAlert({
 					title: "Check-In Received",
 					message:
 						"Your group was saved to our system and can be accessed later by returning to this page and logging in using your phone number and PIN.",
 					button: "Continue",
 					onClose: () => {
+						setCode("     ".split(""));
+						for (let i = 0; i < 5; i++) {
+							codeInput[i].current.value = "";
+						}
 						console.log(response);
 					},
 				});
@@ -206,7 +209,7 @@ export const Manage = (props) => {
 							free to ask for help.
 						</Typography>
 					</div>
-					{(checkins.length > 0) && (
+					{checkins.length > 0 && (
 						<div className="CheckedIn">
 							<Typography variant="h6" align="center" gutterBottom>
 								Existing Check-Ins
@@ -215,6 +218,7 @@ export const Manage = (props) => {
 								<div
 									className="CheckedInItem"
 									style={{ backgroundColor: person.checkin.venue.color }}
+									key={person._id}
 								>
 									<div className="PersonName">{person.name}</div>
 									<div className="VenueName">{person.checkin.venue.name}</div>
