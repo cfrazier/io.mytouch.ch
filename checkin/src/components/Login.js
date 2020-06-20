@@ -16,7 +16,8 @@ export const Login = (props) => {
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
 	const updatePIN = (event, index) => {
-		const num = String.fromCharCode(event.charCode);
+		let num = pinInput[index].current.value.substr(-1);
+		pinInput[index].current.value = num;
 		if (index < 3) pinInput[index + 1].current.focus();
 		if (/\d/g.test(num)) {
 			setPin((pin) => pin.map((value, pindex) => (pindex === index ? num : value)));
@@ -168,11 +169,10 @@ export const Login = (props) => {
 									inputRef={pinInput[0]}
 									type="number"
 									className="PINField"
-									value={pin[0]}
 									variant="outlined"
 									autoComplete="off"
 									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
+									onInput={(e) => {
 										updatePIN(e, 0);
 									}}
 								/>
@@ -180,11 +180,10 @@ export const Login = (props) => {
 									inputRef={pinInput[1]}
 									type="number"
 									className="PINField"
-									value={pin[1]}
 									variant="outlined"
 									autoComplete="off"
 									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
+									onInput={(e) => {
 										updatePIN(e, 1);
 									}}
 								/>
@@ -192,11 +191,10 @@ export const Login = (props) => {
 									inputRef={pinInput[2]}
 									type="number"
 									className="PINField"
-									value={pin[2]}
 									variant="outlined"
 									autoComplete="off"
 									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
+									onInput={(e) => {
 										updatePIN(e, 2);
 									}}
 								/>
@@ -204,11 +202,10 @@ export const Login = (props) => {
 									inputRef={pinInput[3]}
 									type="number"
 									className="PINField"
-									value={pin[3]}
 									variant="outlined"
 									autoComplete="off"
 									style={{ maxWidth: "3em" }}
-									onKeyPress={(e) => {
+									onInput={(e) => {
 										updatePIN(e, 3);
 									}}
 								/>

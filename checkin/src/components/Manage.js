@@ -41,8 +41,7 @@ export const Manage = (props) => {
 
 	// Generate the actual code
 	const updateCode = (event, index) => {
-		const char = String.fromCharCode(event.charCode).toUpperCase();
-		alert(char);
+		const char = codeInput[index].current.value.substr(-1).toUpperCase();
 		codeInput[index].current.value = char;
 		if (index < 4) codeInput[index + 1].current.focus();
 		setCode((code) => code.map((value, cindex) => (cindex === index ? char : value)));
@@ -233,61 +232,56 @@ export const Manage = (props) => {
 									<div className="Fields">
 										<TextField
 											inputRef={codeInput[0]}
-											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyPress={(e) => {
+											onInput={(e) => {
 												updateCode(e, 0);
 											}}
 										/>
 										<TextField
 											inputRef={codeInput[1]}
-											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyPress={(e) => {
+											onInput={(e) => {
 												updateCode(e, 1);
 											}}
 										/>
 										<TextField
 											inputRef={codeInput[2]}
-											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyPress={(e) => {
+											onInput={(e) => {
 												updateCode(e, 2);
 											}}
 										/>
 										<TextField
 											inputRef={codeInput[3]}
-											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyPress={(e) => {
+											onInput={(e) => {
 												updateCode(e, 3);
 											}}
 										/>
 										<TextField
 											inputRef={codeInput[4]}
-											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyPress={(e) => {
+											onInput={(e) => {
 												updateCode(e, 4);
 											}}
 										/>
