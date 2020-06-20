@@ -346,35 +346,43 @@ export const Manage = (props) => {
 												<Grid item xs={12}></Grid>
 											</CardContent>
 										</Card>
-										<Card className="Agreements">
-											<CardContent>
-												<div className="Header">
-													<Typography variant="h6">Agreements</Typography>
-													<Typography variant="body2">
-														Before checking in, you must agree to the
-														follow:
-													</Typography>
-												</div>
-												{venue.organization.approvals.map(
-													(approval, index) => (
-														<FormControlLabel
-															className="ApprovalItem"
-															label={approval}
-															key={`approval_${index}`}
-															control={
-																<Checkbox
-																	name={`approval_${index}`}
-																	color="primary"
-																	inputRef={register({
-																		required: true,
-																	})}
-																/>
-															}
-														/>
-													)
-												)}
-											</CardContent>
-										</Card>
+										{venue.organization.approvals.length > 0 && (
+											<Card className="Agreements">
+												<CardContent>
+													<div className="Header">
+														<Typography variant="h6">
+															Agreements
+														</Typography>
+														<Typography variant="body2">
+															Before you may check-in, please review
+															and agree to the following statements by
+															checking each one. For your privacy, we
+															will not save your answers, but your
+															check-in will not be processed without
+															these approvals.
+														</Typography>
+													</div>
+													{venue.organization.approvals.map(
+														(approval, index) => (
+															<FormControlLabel
+																className="ApprovalItem"
+																label={approval}
+																key={`approval_${index}`}
+																control={
+																	<Checkbox
+																		name={`approval_${index}`}
+																		color="primary"
+																		inputRef={register({
+																			required: true,
+																		})}
+																	/>
+																}
+															/>
+														)
+													)}
+												</CardContent>
+											</Card>
+										)}
 										<TableContainer component={Paper}>
 											<Table className="People">
 												<TableHead>
