@@ -42,6 +42,7 @@ export const Manage = (props) => {
 	// Generate the actual code
 	const updateCode = (event, index) => {
 		const char = String.fromCharCode(event.charCode).toUpperCase();
+		alert(char);
 		codeInput[index].current.value = char;
 		if (index < 4) codeInput[index + 1].current.focus();
 		setCode((code) => code.map((value, cindex) => (cindex === index ? char : value)));
