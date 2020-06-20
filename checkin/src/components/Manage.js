@@ -123,6 +123,10 @@ export const Manage = (props) => {
 				}
 			} else {
 				// Only update the saved group if things actually worked
+				setCode("     ".split(""));
+				for (let i = 0; i < 5; i++) {
+					codeInput[i].current.value = "";
+				}
 				setGroup(response);
 				setVenue(null);
 				setAlert({
@@ -131,10 +135,6 @@ export const Manage = (props) => {
 						"Your group was saved to our system and can be accessed later by returning to this page and logging in using your phone number and PIN.",
 					button: "Continue",
 					onClose: () => {
-						setCode("     ".split(""));
-						for (let i = 0; i < 5; i++) {
-							codeInput[i].current.value = "";
-						}
 						console.log(response);
 					},
 				});
@@ -344,6 +344,35 @@ export const Manage = (props) => {
 													</Grid>
 												</Grid>
 												<Grid item xs={12}></Grid>
+											</CardContent>
+										</Card>
+										<Card className="Agreements">
+											<CardContent>
+												<div className="Header">
+													<Typography variant="h6">Agreements</Typography>
+													<Typography variant="body2">
+														Before checking in, you must agree to the
+														follow:
+													</Typography>
+												</div>
+												{venue.organization.approvals.map(
+													(approval, index) => (
+														<FormControlLabel
+															className="ApprovalItem"
+															label={approval}
+															key={`approval_${index}`}
+															control={
+																<Checkbox
+																	name={`approval_${index}`}
+																	color="primary"
+																	inputRef={register({
+																		required: true,
+																	})}
+																/>
+															}
+														/>
+													)
+												)}
 											</CardContent>
 										</Card>
 										<TableContainer component={Paper}>
