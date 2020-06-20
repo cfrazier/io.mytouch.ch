@@ -7,3 +7,15 @@
 		}
 	}
 }
+
+.Reset {
+	z-index: 4;
+	display: block;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100px;
+	height: 100px;
+	background-color: red;
+	opacity: 0;
+}

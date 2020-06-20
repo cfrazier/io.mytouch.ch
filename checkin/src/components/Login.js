@@ -137,7 +137,7 @@ export const Login = (props) => {
 						<Link to="/checkin/register">get started here</Link>.
 					</Typography>
 				</div>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
 							<Controller

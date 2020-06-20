@@ -43,6 +43,21 @@ const App = () => {
 				</Switch>
 			</Container>
 			{alert && <Alert {...{ alert, setAlert }} />}
+			<div
+				className="Reset"
+				onClick={() => {
+					setGroup({
+						name: "",
+						phone: "",
+						email: "",
+						pin: "    ",
+						people: [{ name: "", birthdate: "" }],
+					});
+					window.location = "/checkin";
+				}}
+			>
+				&nbsp;
+			</div>
 		</Router>
 	);
 };

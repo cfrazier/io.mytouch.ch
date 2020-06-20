@@ -227,7 +227,7 @@ export const Manage = (props) => {
 						</div>
 					)}
 					{group && group.people.length > checkins.length && (
-						<form onSubmit={handleSubmit(onSubmit)}>
+						<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 							<Grid container spacing={3}>
 								<Grid item xs={12} className="CodeFieldset">
 									<div className="Header">
@@ -448,24 +448,6 @@ export const Manage = (props) => {
 											Check In
 										</Button>
 									)}
-									{!venue && (
-										<Button
-											variant="contained"
-											color="primary"
-											onClick={() => {
-												setGroup({
-													name: "",
-													phone: "",
-													email: "",
-													pin: "    ",
-													people: [{ name: "", birthdate: "" }],
-												});
-												history.push("/checkin");
-											}}
-										>
-											Done
-										</Button>
-									)}
 									<Button
 										color="default"
 										onClick={() => {
@@ -477,6 +459,24 @@ export const Manage = (props) => {
 								</Grid>
 							</Grid>
 						</form>
+					)}
+					{!venue && (
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={() => {
+								setGroup({
+									name: "",
+									phone: "",
+									email: "",
+									pin: "    ",
+									people: [{ name: "", birthdate: "" }],
+								});
+								history.push("/checkin");
+							}}
+						>
+							Done
+						</Button>
 					)}
 				</CardContent>
 			</Card>
