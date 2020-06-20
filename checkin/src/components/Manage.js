@@ -27,7 +27,7 @@ import { Autorenew } from "@material-ui/icons";
 export const Manage = (props) => {
 	const { group, setGroup, setAlert } = props;
 	const history = useHistory();
-	const { register, handleSubmit, reset } = useForm();
+	const { register, handleSubmit } = useForm();
 
 	// So much state...
 	const [checkins, setCheckins] = useState([]);
@@ -394,6 +394,24 @@ export const Manage = (props) => {
 											onClick={handleSubmit(onSubmit)}
 										>
 											Check In
+										</Button>
+									)}
+									{!venue && (
+										<Button
+											variant="contained"
+											color="primary"
+											onClick={() => {
+												setGroup({
+													name: "",
+													phone: "",
+													email: "",
+													pin: "    ",
+													people: [{ name: "", birthdate: "" }],
+												});
+												history.push("/checkin");
+											}}
+										>
+											Done
 										</Button>
 									)}
 									<Button
