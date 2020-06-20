@@ -117,7 +117,7 @@ export const Account = (props) => {
 					button: "Continue",
 					onClose: () => {
 						setGroup(response);
-						history.push("/checkin");
+						history.push("/checkin/manage");
 					},
 				});
 			}
@@ -282,6 +282,10 @@ export const Account = (props) => {
 														<TextField
 															label="Full Name"
 															name={`people[${index}][name]`}
+															inputProps={{
+																readOnly:
+																	person.checkedin !== undefined,
+															}}
 															defaultValue={person.name}
 															fullWidth
 															size="small"
@@ -294,6 +298,7 @@ export const Account = (props) => {
 															}}
 															helperText={
 																errors.people &&
+																errors.people[index] &&
 																errors.people[index].name
 																	? "This is required"
 																	: ""
