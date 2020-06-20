@@ -244,6 +244,9 @@ export const Manage = (props) => {
 											onInput={(e) => {
 												updateCode(e, 0);
 											}}
+											onClick={() => {
+												codeInput[0].current.select();
+											}}
 										/>
 										<TextField
 											inputRef={codeInput[1]}
@@ -254,6 +257,9 @@ export const Manage = (props) => {
 											style={{ maxWidth: "3em" }}
 											onInput={(e) => {
 												updateCode(e, 1);
+											}}
+											onClick={() => {
+												codeInput[1].current.select();
 											}}
 										/>
 										<TextField
@@ -266,6 +272,9 @@ export const Manage = (props) => {
 											onInput={(e) => {
 												updateCode(e, 2);
 											}}
+											onClick={() => {
+												codeInput[2].current.select();
+											}}
 										/>
 										<TextField
 											inputRef={codeInput[3]}
@@ -277,6 +286,9 @@ export const Manage = (props) => {
 											onInput={(e) => {
 												updateCode(e, 3);
 											}}
+											onClick={() => {
+												codeInput[3].current.select();
+											}}
 										/>
 										<TextField
 											inputRef={codeInput[4]}
@@ -287,6 +299,9 @@ export const Manage = (props) => {
 											style={{ maxWidth: "3em" }}
 											onInput={(e) => {
 												updateCode(e, 4);
+											}}
+											onClick={() => {
+												codeInput[4].current.select();
 											}}
 										/>
 									</div>

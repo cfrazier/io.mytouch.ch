@@ -155,7 +155,12 @@ export const Login = (props) => {
 								onChange={formatPhone}
 								helperText={errors.phone ? "A phone number is required." : ""}
 							/>
-							<Typography variant="caption">If you need to reset your PIN, please enter your phone number and <Link to="/checkin" onClick={resetPIN}>click here.</Link></Typography>
+							<Typography variant="caption">
+								If you need to reset your PIN, please enter your phone number and{" "}
+								<Link to="/checkin" onClick={resetPIN}>
+									click here.
+								</Link>
+							</Typography>
 						</Grid>
 						<Grid item xs={12} className="PINFieldset">
 							<div className="Header">
@@ -175,6 +180,9 @@ export const Login = (props) => {
 									onInput={(e) => {
 										updatePIN(e, 0);
 									}}
+									onClick={() => {
+										pinInput[0].current.select();
+									}}
 								/>
 								<TextField
 									inputRef={pinInput[1]}
@@ -185,6 +193,9 @@ export const Login = (props) => {
 									style={{ maxWidth: "3em" }}
 									onInput={(e) => {
 										updatePIN(e, 1);
+									}}
+									onClick={() => {
+										pinInput[1].current.select();
 									}}
 								/>
 								<TextField
@@ -197,6 +208,9 @@ export const Login = (props) => {
 									onInput={(e) => {
 										updatePIN(e, 2);
 									}}
+									onClick={() => {
+										pinInput[2].current.select();
+									}}
 								/>
 								<TextField
 									inputRef={pinInput[3]}
@@ -207,6 +221,9 @@ export const Login = (props) => {
 									style={{ maxWidth: "3em" }}
 									onInput={(e) => {
 										updatePIN(e, 3);
+									}}
+									onClick={() => {
+										pinInput[3].current.select();
 									}}
 								/>
 							</div>
