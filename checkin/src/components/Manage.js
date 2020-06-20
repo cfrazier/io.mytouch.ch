@@ -41,7 +41,8 @@ export const Manage = (props) => {
 
 	// Generate the actual code
 	const updateCode = (event, index) => {
-		const char = String.fromCharCode(event.charCode).toLowerCase();
+		const char = String.fromCharCode(event.charCode).toUpperCase();
+		codeInput[index].current.value = char;
 		if (index < 4) codeInput[index + 1].current.focus();
 		setCode((code) => code.map((value, cindex) => (cindex === index ? char : value)));
 	};
@@ -51,7 +52,7 @@ export const Manage = (props) => {
 		const error = {};
 		data.people = data.people ? data.people : [];
 		const checkin = {
-			venueCode: code.join(""),
+			venueCode: code.join("").toLowerCase(),
 			groupId: group._id,
 			personId: data.people.filter((id) => id !== false),
 		};
@@ -143,7 +144,7 @@ export const Manage = (props) => {
 	}, [group._id, history]);
 
 	useEffect(() => {
-		const joinedCode = code.join("");
+		const joinedCode = code.join("").toLowerCase();
 		if (/[a-z0-9]{5}/g.test(joinedCode)) {
 			setLoadingVenue(true);
 			httpFetch("get", `/api/venue?code=${joinedCode}`, null, (error, response) => {
@@ -231,9 +232,9 @@ export const Manage = (props) => {
 									<div className="Fields">
 										<TextField
 											inputRef={codeInput[0]}
+											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
-											value={code[0].toUpperCase()}
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
@@ -243,9 +244,9 @@ export const Manage = (props) => {
 										/>
 										<TextField
 											inputRef={codeInput[1]}
+											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
-											value={code[1].toUpperCase()}
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
@@ -255,9 +256,9 @@ export const Manage = (props) => {
 										/>
 										<TextField
 											inputRef={codeInput[2]}
+											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
-											value={code[2].toUpperCase()}
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
@@ -267,9 +268,9 @@ export const Manage = (props) => {
 										/>
 										<TextField
 											inputRef={codeInput[3]}
+											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
-											value={code[3].toUpperCase()}
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
@@ -279,9 +280,9 @@ export const Manage = (props) => {
 										/>
 										<TextField
 											inputRef={codeInput[4]}
+											inputProps={{maxLength: 1}}
 											type="text"
 											className="CodeField"
-											value={code[4].toUpperCase()}
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}

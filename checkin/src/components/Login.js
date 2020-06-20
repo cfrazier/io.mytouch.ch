@@ -154,7 +154,7 @@ export const Login = (props) => {
 								onChange={formatPhone}
 								helperText={errors.phone ? "A phone number is required." : ""}
 							/>
-							<Typography variant="caption">If you need to reset your PIN, please enter your phone number and <a href="#" onClick={resetPIN}>click here.</a></Typography>
+							<Typography variant="caption">If you need to reset your PIN, please enter your phone number and <Link to="/checkin" onClick={resetPIN}>click here.</Link></Typography>
 						</Grid>
 						<Grid item xs={12} className="PINFieldset">
 							<div className="Header">
