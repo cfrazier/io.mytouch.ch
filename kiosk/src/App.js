@@ -6,6 +6,9 @@ import httpFetch from "./services/http";
 import "./styles/App.scss";
 
 const App = () => {
+	const clientURL = new URL(process.env.PUBLIC_URL, window.location.href);
+	const { hostname } = clientURL;
+	const serverURL = `https://${hostname}`;
 	return (
 		<div className="App">
 			<Router>
@@ -16,7 +19,7 @@ const App = () => {
 					<Route path="/">Please log in to the admin to get started...</Route>
 				</Switch>
 			</Router>
-			<div className="Notice">Get started at http://churchcheck.in</div>
+			<div className="Notice">Get started at {serverURL}</div>
 		</div>
 	);
 };
@@ -26,10 +29,6 @@ export default App;
 export const Kiosk = (props) => {
 	const { organizationId } = useParams();
 	const [venues, setVenues] = useState();
-
-	const clientURL = new URL(process.env.PUBLIC_URL, window.location.href);
-	const { hostname } = clientURL;
-	const serverURL = `https://${hostname}`;
 
 	const updateOrganization = () => {
 		if (organizationId) {
