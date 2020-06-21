@@ -16,6 +16,7 @@ const App = () => {
 					<Route path="/">Please log in to the admin to get started...</Route>
 				</Switch>
 			</Router>
+			<div className="Notice">Get started at http://churchcheck.in</div>
 		</div>
 	);
 };
@@ -53,6 +54,74 @@ export const Kiosk = (props) => {
 				<div className="Active">
 					<table>
 						<tbody>
+							{venues.map((venue) => (
+								<tr key={`venue_${venue._id}`} className="Venue">
+									<td className="Main">
+										<div className="Name">{venue.name}</div>
+										<div className="Description">{venue.description}</div>
+									</td>
+									<td className="Code">{venue.code.toUpperCase()}</td>
+									<td className="Available">
+										<div
+											className="Badge"
+											style={{ backgroundColor: venue.color }}
+										>
+											{venue.available}
+										</div>
+									</td>
+								</tr>
+							))}
+							{venues.map((venue) => (
+								<tr key={`venue_${venue._id}`} className="Venue">
+									<td className="Main">
+										<div className="Name">{venue.name}</div>
+										<div className="Description">{venue.description}</div>
+									</td>
+									<td className="Code">{venue.code.toUpperCase()}</td>
+									<td className="Available">
+										<div
+											className="Badge"
+											style={{ backgroundColor: venue.color }}
+										>
+											{venue.available}
+										</div>
+									</td>
+								</tr>
+							))}
+							{venues.map((venue) => (
+								<tr key={`venue_${venue._id}`} className="Venue">
+									<td className="Main">
+										<div className="Name">{venue.name}</div>
+										<div className="Description">{venue.description}</div>
+									</td>
+									<td className="Code">{venue.code.toUpperCase()}</td>
+									<td className="Available">
+										<div
+											className="Badge"
+											style={{ backgroundColor: venue.color }}
+										>
+											{venue.available}
+										</div>
+									</td>
+								</tr>
+							))}
+							{venues.map((venue) => (
+								<tr key={`venue_${venue._id}`} className="Venue">
+									<td className="Main">
+										<div className="Name">{venue.name}</div>
+										<div className="Description">{venue.description}</div>
+									</td>
+									<td className="Code">{venue.code.toUpperCase()}</td>
+									<td className="Available">
+										<div
+											className="Badge"
+											style={{ backgroundColor: venue.color }}
+										>
+											{venue.available}
+										</div>
+									</td>
+								</tr>
+							))}
 							{venues.map((venue) => (
 								<tr key={`venue_${venue._id}`} className="Venue">
 									<td className="Main">

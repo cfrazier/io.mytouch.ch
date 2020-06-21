@@ -10,22 +10,39 @@
 	top: 0;
 	right: 0;
 	bottom: 0;
+	font-family: "Inter", sans-serif;
+	font-size: 7vh;
+	.Notice {
+		z-index: 4;
+		display: block;
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		height: 8vh;
+		background-color: rgba(255,255,255,0.2);
+		text-align: center;
+		font-size: 4vh;
+		line-height: 4vw;
+	}
 }
 
 .Kiosk {
 	display: block;
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 	width: 100%;
-	font-family: "Inter", sans-serif;
-	font-size: 3.5vw;
+	.Loading {
+		display: block;
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+	}
 	table {
 		width: 100%;
 		tr {
 			td {
-				border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+				border-bottom: 0.5vh solid rgba(255, 255, 255, 0.1);
 			}
 			&:last-child td {
 				border-bottom: 0px none;
@@ -36,32 +53,35 @@
 			color: #fff;
 			text-align: center;
 			vertical-align: middle;
-			padding: 1.3vw 3vw;
+			height: 17.5vh;
+			padding: 0 3vw;
 		}
 		.Venue {
 			.Main {
 				width: 60%;
 				.Name {
-					margin-bottom: 0.25em;
+					line-height: 1em;
+					margin-bottom: 0.025em;
 					text-align: left;
 				}
 				.Description {
+					line-height: 1.25em;
 					text-align: left;
 					font-size: 0.4em;
 					font-weight: 400;
-					color: rgba(255,255,255,0.5);
+					margin: 0;
 				}
 			}
 			.Code {
-				font-size: 1.4em;
+				font-size: 1.5em;
 			}
 			.Badge {
-				width: 8vw;
-				height: 8vw;
+				width: 15vh;
+				height: 15vh;
 				margin: 0 auto;
 				text-align: center;
-				line-height: 8vw;
-				border-radius: 4vw;
+				line-height: 15vh;
+				border-radius: 7.5vh;
 			}
 		}
 	}
