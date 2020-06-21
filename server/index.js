@@ -203,6 +203,10 @@ const initRoutes = (app) => {
 	app.get("/kiosk/*", (req, res) => {
 		res.sendFile(path.join(__dirname + "/../kiosk/build/index.html"));
 	});
+
+	app.get("/", (req, res) => {
+		res.redirect("/checkin");
+	});
 };
 
 main();
