@@ -226,9 +226,9 @@ export const Manage = (props) => {
 							))}
 						</div>
 					)}
-					{group && group.people.length > checkins.length && (
-						<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-							<Grid container spacing={3}>
+					<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+						<Grid container spacing={3}>
+							{group && group.people.length > checkins.length && (
 								<Grid item xs={12} className="CodeFieldset">
 									<div className="Header">
 										<Typography variant="h6">Venue Code</Typography>
@@ -316,168 +316,165 @@ export const Manage = (props) => {
 										</div>
 									)}
 								</Grid>
-								{venue && (
-									<Grid item xs={12}>
-										<Card className="VenueDetails">
-											<CardContent>
-												<Grid container spacing={3}>
-													<Grid item xs={12} sm={3}>
-														<div
-															className="VenueBadge"
-															style={{
-																backgroundColor: venue.color,
-															}}
-														>
-															{venue.available}
-														</div>
-													</Grid>
-													<Grid item xs={12} sm={9}>
-														<Typography variant="h5">
-															{venue.organization.name}
-														</Typography>
-														<Typography variant="h6">
-															{venue.name}
-														</Typography>
-														<Typography variant="body2">
-															{venue.description}
-														</Typography>
-													</Grid>
+							)}
+							{venue && (
+								<Grid item xs={12}>
+									<Card className="VenueDetails">
+										<CardContent>
+											<Grid container spacing={3}>
+												<Grid item xs={12} sm={3}>
+													<div
+														className="VenueBadge"
+														style={{
+															backgroundColor: venue.color,
+														}}
+													>
+														{venue.available}
+													</div>
 												</Grid>
-												<Grid item xs={12}></Grid>
+												<Grid item xs={12} sm={9}>
+													<Typography variant="h5">
+														{venue.organization.name}
+													</Typography>
+													<Typography variant="h6">
+														{venue.name}
+													</Typography>
+													<Typography variant="body2">
+														{venue.description}
+													</Typography>
+												</Grid>
+											</Grid>
+											<Grid item xs={12}></Grid>
+										</CardContent>
+									</Card>
+									{venue.organization.approvals.length > 0 && (
+										<Card className="Agreements">
+											<CardContent>
+												<div className="Header">
+													<Typography variant="h6">Agreements</Typography>
+													<Typography variant="body2">
+														Before you may check-in, please review and
+														agree to the following statements by
+														checking each one. For your privacy, we will
+														not save your answers, but your check-in
+														will not be processed without these
+														approvals.
+													</Typography>
+												</div>
+												{venue.organization.approvals.map(
+													(approval, index) => (
+														<FormControlLabel
+															className="ApprovalItem"
+															label={approval}
+															key={`approval_${index}`}
+															control={
+																<Checkbox
+																	name={`approval_${index}`}
+																	color="primary"
+																	inputRef={register({
+																		required: true,
+																	})}
+																/>
+															}
+														/>
+													)
+												)}
 											</CardContent>
 										</Card>
-										{venue.organization.approvals.length > 0 && (
-											<Card className="Agreements">
-												<CardContent>
-													<div className="Header">
+									)}
+									<TableContainer component={Paper}>
+										<Table className="People">
+											<TableHead>
+												<TableRow>
+													<TableCell>
 														<Typography variant="h6">
-															Agreements
+															Event Attendees
 														</Typography>
 														<Typography variant="body2">
-															Before you may check-in, please review
-															and agree to the following statements by
-															checking each one. For your privacy, we
-															will not save your answers, but your
-															check-in will not be processed without
-															these approvals.
+															Select the people from your group who
+															will be attending the event at this
+															venue. People who are currently
+															checked-in are not shown. If your group
+															is attending at different venues, you
+															can check-in multiple times.
 														</Typography>
-													</div>
-													{venue.organization.approvals.map(
-														(approval, index) => (
-															<FormControlLabel
-																className="ApprovalItem"
-																label={approval}
-																key={`approval_${index}`}
-																control={
-																	<Checkbox
-																		name={`approval_${index}`}
-																		color="primary"
-																		inputRef={register({
-																			required: true,
-																		})}
-																	/>
-																}
-															/>
-														)
-													)}
-												</CardContent>
-											</Card>
-										)}
-										<TableContainer component={Paper}>
-											<Table className="People">
-												<TableHead>
-													<TableRow>
-														<TableCell>
-															<Typography variant="h6">
-																Event Attendees
-															</Typography>
-															<Typography variant="body2">
-																Select the people from your group
-																who will be attending the event at
-																this venue. People who are currently
-																checked-in are not shown. If your
-																group is attending at different
-																venues, you can check-in multiple
-																times.
-															</Typography>
-															{errors.personId && (
-																<FormHelperText>
-																	{errors.personId}
-																</FormHelperText>
-															)}
-														</TableCell>
-													</TableRow>
-												</TableHead>
-												<TableBody>
-													{group.people.map((person, index) =>
-														person.checkin ? null : (
-															<TableRow key={person.name + index}>
-																<TableCell>
-																	<FormControlLabel
-																		label={person.name}
-																		control={
-																			<Checkbox
-																				name={`people[${index}]`}
-																				value={person._id}
-																				color="primary"
-																				inputRef={register}
-																				inputProps={{
-																					"aria-label":
-																						"primary checkbox",
-																				}}
-																			/>
-																		}
-																	/>
-																</TableCell>
-															</TableRow>
-														)
-													)}
-												</TableBody>
-											</Table>
-										</TableContainer>
-									</Grid>
-								)}
+														{errors.personId && (
+															<FormHelperText>
+																{errors.personId}
+															</FormHelperText>
+														)}
+													</TableCell>
+												</TableRow>
+											</TableHead>
+											<TableBody>
+												{group.people.map((person, index) =>
+													person.checkin ? null : (
+														<TableRow key={person.name + index}>
+															<TableCell>
+																<FormControlLabel
+																	label={person.name}
+																	control={
+																		<Checkbox
+																			name={`people[${index}]`}
+																			value={person._id}
+																			color="primary"
+																			inputRef={register}
+																			inputProps={{
+																				"aria-label":
+																					"primary checkbox",
+																			}}
+																		/>
+																	}
+																/>
+															</TableCell>
+														</TableRow>
+													)
+												)}
+											</TableBody>
+										</Table>
+									</TableContainer>
+								</Grid>
+							)}
 
-								<Grid item xs={12} className="Actions">
-									{venue && (
-										<Button
-											variant="contained"
-											color="primary"
-											onClick={handleSubmit(onSubmit)}
-										>
-											Check In
-										</Button>
-									)}
+							<Grid item xs={12} className="Actions">
+								{venue && (
 									<Button
-										color="default"
+										variant="contained"
+										color="primary"
+										onClick={handleSubmit(onSubmit)}
+									>
+										Check In
+									</Button>
+								)}
+								{!venue && (
+									<Button
+										variant="contained"
+										color="primary"
 										onClick={() => {
-											history.push("/checkin/account");
+											setGroup({
+												name: "",
+												phone: "",
+												email: "",
+												pin: "    ",
+												people: [{ name: "", birthdate: "" }],
+											});
+											history.push("/checkin");
 										}}
 									>
-										Update Account
+										Done
 									</Button>
-								</Grid>
+								)}
+								<Button
+									color="default"
+									onClick={() => {
+										history.push("/checkin/account");
+									}}
+								>
+									Update Account
+								</Button>
 							</Grid>
-						</form>
-					)}
-					{!venue && (
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={() => {
-								setGroup({
-									name: "",
-									phone: "",
-									email: "",
-									pin: "    ",
-									people: [{ name: "", birthdate: "" }],
-								});
-								history.push("/checkin");
-							}}
-						>
-							Done
-						</Button>
-					)}
+						</Grid>
+					</form>
 				</CardContent>
 			</Card>
 		</>
