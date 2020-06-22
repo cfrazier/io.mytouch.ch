@@ -18,11 +18,12 @@ import {
 	TableHead,
 	FormControlLabel,
 	FormHelperText,
+	Divider,
 } from "@material-ui/core";
 
 import httpFetch from "../services/http";
 import "../styles/Manage.scss";
-import { Autorenew } from "@material-ui/icons";
+import { Autorenew, Person } from "@material-ui/icons";
 
 export const Manage = (props) => {
 	const { group, setGroup, setAlert } = props;
@@ -31,6 +32,7 @@ export const Manage = (props) => {
 
 	// So much state...
 	const [checkins, setCheckins] = useState([]);
+	const [checkinsLength, setCheckinsLength] = useState(0);
 	const [code, setCode] = useState("     ".split(""));
 	const [errors, setErrors] = useState({});
 	const [loadingVenue, setLoadingVenue] = useState(false);
@@ -190,7 +192,26 @@ export const Manage = (props) => {
 	useEffect(() => {
 		if (group._id) {
 			const { people } = group;
-			setCheckins(people.filter((person) => person.checkin));
+			let newCheckins = [];
+			let checkinsLength = 0;
+			people.forEach((person) => {
+				if (!person.checkin) return;
+				checkinsLength++;
+				const venueIndex = newCheckins.findIndex(
+					(venue) => person.checkin.venue._id === venue._id
+				);
+				console.log(venueIndex);
+				if (venueIndex === -1) {
+					newCheckins.push({
+						...person.checkin.venue,
+						checkins: [person.name],
+					});
+				} else {
+					newCheckins[venueIndex].checkins.push(person.name);
+				}
+			});
+			setCheckinsLength(checkinsLength);
+			setCheckins(newCheckins);
 		}
 	}, [group]);
 
@@ -209,26 +230,49 @@ export const Manage = (props) => {
 							free to ask for help.
 						</Typography>
 					</div>
+
 					{checkins.length > 0 && (
 						<div className="CheckedIn">
 							<Typography variant="h6" align="center" gutterBottom>
 								Existing Check-Ins
 							</Typography>
-							{checkins.map((person) => (
-								<div
-									className="CheckedInItem"
-									style={{ backgroundColor: person.checkin.venue.color }}
-									key={person._id}
-								>
-									<div className="PersonName">{person.name}</div>
-									<div className="VenueName">{person.checkin.venue.name}</div>
-								</div>
+							<Typography variant="body2" align="center" gutterBottom>
+								To gain entrance to this event, please show this screen to the door
+								attendant.
+							</Typography>
+							{checkins.map((checkin) => (
+								<Card className="CheckedInVenue" key={checkin._id} variant="outlined">
+									<CardContent>
+										<Grid container spacing={3}>
+											<Grid item xs={12} sm={3}>
+												<div
+													className="VenueCheckinCount"
+													style={{ backgroundColor: checkin.color }}
+												>
+													{checkin.checkins.length}
+												</div>
+											</Grid>
+											<Grid item xs={12} sm={9}>
+												<Typography variant="h6">{checkin.name}</Typography>
+												<Typography variant="caption" gutterBottom>{checkin.description}</Typography>
+												<Divider></Divider>
+												{checkin.checkins.map((personName) => (
+													<div className="PersonName" key={personName}>
+														<Person></Person>
+														{personName}
+													</div>
+												))}
+											</Grid>
+										</Grid>
+									</CardContent>
+								</Card>
 							))}
 						</div>
 					)}
+
 					<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 						<Grid container spacing={3}>
-							{group && group.people.length > checkins.length && (
+							{group && group.people.length > checkinsLength && (
 								<Grid item xs={12} className="CodeFieldset">
 									<div className="Header">
 										<Typography variant="h6">Venue Code</Typography>

@@ -4,25 +4,30 @@
 	}
 	.CheckedIn {
 		margin: 2em auto;
-		.CheckedInItem {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			font-size: 1.25em;
-			color: #fff;
-			border-radius: 100px;
-			margin: 0 0 0.5em;
-			.PersonName,
+		.CheckedInVenue {
+			margin: 1em 0;
 			.VenueName {
-				display: flex;
-				flex-direction: column;
-				align-self: center;
-				flex-basis: 100%;
-				flex: 1;
-				padding: 1em 2em;
+
 			}
-			.VenueName {
-				text-align: right;
+			.VenueCheckinCount {
+				display: block;
+				position: relative;
+				width: 100px;
+				height: 100px;
+				line-height: 100px;
+				border-radius: 50px;
+				font-size: 3em;
+				font-weight: 700;
+				text-align: center;
+				color: #fff;
+				margin: 0 auto;
+			}
+			.PersonName {
+				margin: 0.5em 0 0;
+				svg {
+					margin: 0 0.5em 0 0;
+					vertical-align: middle;
+				}
 			}
 		}
 	}
