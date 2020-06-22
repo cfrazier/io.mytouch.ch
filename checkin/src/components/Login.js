@@ -144,6 +144,7 @@ export const Login = (props) => {
 								as={TextField}
 								label="Phone Number"
 								name="phone"
+								variant="outlined"
 								type="tel"
 								defaultValue=""
 								fullWidth

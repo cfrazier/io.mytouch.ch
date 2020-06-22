@@ -146,6 +146,7 @@ export const Account = (props) => {
 								<TextField
 									label="Group Name"
 									name="name"
+									variant="outlined"
 									defaultValue={group.name}
 									autoComplete="off"
 									fullWidth
@@ -162,6 +163,7 @@ export const Account = (props) => {
 									as={TextField}
 									label="Phone Number"
 									name="phone"
+									variant="outlined"
 									type="tel"
 									fullWidth
 									defaultValue={group.phone}
@@ -180,10 +182,11 @@ export const Account = (props) => {
 									label="Email Address"
 									name="email"
 									type="email"
+									variant="outlined"
 									autoComplete="off"
 									defaultValue={group.email}
 									fullWidth
-									inputRef={register}
+									inputRef={register({ required: true })}
 								/>
 							</Grid>
 							<Grid item xs={12} className="PINFieldset">
