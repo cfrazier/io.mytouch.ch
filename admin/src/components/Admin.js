@@ -1,21 +1,17 @@
-import React from "react";
+import React from "reactn";
 import clsx from "clsx";
 import { Switch, Route, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	CssBaseline,
 	Drawer,
-	Box,
 	AppBar,
 	Toolbar,
 	List,
 	Typography,
 	Divider,
 	IconButton,
-	Badge,
 	Container,
-	Grid,
-	Paper,
 	ListItem,
 	ListItemIcon,
 	ListItemText,
@@ -23,11 +19,18 @@ import {
 import {
 	ChevronLeft as ChevronLeftIcon,
 	Menu as MenuIcon,
-	DashboardOutlined,
+	AccountCircle,
+	ExitToApp,
+	Business,
+	Speed,
 } from "@material-ui/icons/";
 
-const drawerWidth = 240;
+import Dashboard from "./Dashboard";
+import Organization from "./Organization";
+import Account from "./Account";
+import Copyright from "./Copyright";
 
+const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
@@ -107,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function Dashboard() {
+export default function Admin() {
 	const classes = useStyles();
 	const [open, setOpen] = React.useState(true);
 	const handleDrawerOpen = () => {
@@ -116,7 +119,6 @@ export default function Dashboard() {
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
-	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
 	return (
 		<div className={classes.root}>
@@ -162,21 +164,27 @@ export default function Dashboard() {
 				<List>
 					<ListItem button component={Link} to="/admin/dashboard/">
 						<ListItemIcon>
-							<DashboardOutlined />
+							<Speed />
 						</ListItemIcon>
 						<ListItemText primary="Dashboard" />
 					</ListItem>
 					<ListItem button component={Link} to="/admin/dashboard/organizations">
 						<ListItemIcon>
-							<DashboardOutlined />
+							<Business />
 						</ListItemIcon>
-						<ListItemText primary="Organizations" />
+						<ListItemText primary="Organization" />
 					</ListItem>
 					<ListItem button component={Link} to="/admin/dashboard/account">
 						<ListItemIcon>
-							<DashboardOutlined />
+							<AccountCircle />
 						</ListItemIcon>
 						<ListItemText primary="Account" />
+					</ListItem>
+					<ListItem button>
+						<ListItemIcon>
+							<ExitToApp />
+						</ListItemIcon>
+						<ListItemText primary="Log Out" />
 					</ListItem>
 				</List>
 			</Drawer>
@@ -188,13 +196,14 @@ export default function Dashboard() {
 							Venue Editor Manager
 						</Route>
 						<Route path="/admin/dashboard/organizations/:organizationId">
-							Organization Editor
+							<Organization.Update />
 						</Route>
-						<Route path="/admin/dashboard/organizations">Organizations Overview</Route>
-						<Route path="/admin/dashboard/account">Account Tools</Route>
-						<Route path="/admin/dashboard">Dashboard with Info</Route>
+						<Route path="/admin/dashboard/organizations"><Organization.List /></Route>
+						<Route path="/admin/dashboard/account"><Account /></Route>
+						<Route path="/admin/dashboard"><Dashboard /></Route>
 					</Switch>
 				</Container>
+				<Copyright />
 			</main>
 		</div>
 	);

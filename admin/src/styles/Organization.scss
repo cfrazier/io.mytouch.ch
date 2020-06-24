@@ -1,0 +1,23 @@
+.Organizations {
+	.Organization {
+		.Statistics {
+			margin: 1em 0;
+			.Stat {
+				text-align: center;
+				border-right: 1px solid rgba(0, 0, 0, 0.12);;
+				&:last-child {
+					border: none;
+				}
+			}
+		}
+	}
+}
+
+.Organization {
+	.Navigation {
+		margin-bottom: 2em;
+	}
+	.Title {
+		flex: 1 1 100%;
+	}
+}
