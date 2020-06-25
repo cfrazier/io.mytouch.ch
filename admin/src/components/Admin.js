@@ -1,6 +1,6 @@
-import React from "reactn";
+import React, { useState, useGlobal } from "reactn";
 import clsx from "clsx";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	CssBaseline,
@@ -15,6 +15,8 @@ import {
 	ListItem,
 	ListItemIcon,
 	ListItemText,
+	Breadcrumbs,
+	Link,
 } from "@material-ui/core/";
 import {
 	ChevronLeft as ChevronLeftIcon,
@@ -25,10 +27,12 @@ import {
 	Speed,
 } from "@material-ui/icons/";
 
-import Dashboard from "./Dashboard";
-import Organization from "./Organization";
 import Account from "./Account";
 import Copyright from "./Copyright";
+import Dashboard from "./Dashboard";
+import Organization from "./Organization";
+import Venue from "./Venue";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -60,6 +64,14 @@ const useStyles = makeStyles((theme) => ({
 			duration: theme.transitions.duration.enteringScreen,
 		}),
 	},
+	breadCrumb: {
+		padding: "8px 24px",
+		width: "100%",
+		maxWidth: "100%",
+		margin: "0",
+		backgroundColor: "#fff",
+	},
+	breadCrumbShift: {},
 	menuButton: {
 		marginRight: 36,
 	},
@@ -89,7 +101,20 @@ const useStyles = makeStyles((theme) => ({
 			width: theme.spacing(9),
 		},
 	},
-	appBarSpacer: theme.mixins.toolbar,
+	menuList: {
+		marginTop: "40px",
+		transition: theme.transitions.create("margin", {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.enteringScreen,
+		}),
+	},
+	menuListOpen: {
+		marginTop: "0",
+	},
+	appBarSpacer: {
+		height: "104px",
+		...theme.mixins.toolbar,
+	},
 	content: {
 		flexGrow: 1,
 		height: "100vh",
@@ -112,13 +137,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Admin() {
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = useState(true);
+	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
+
+	useEffect(() => {
+		setBreadcrumbs([{ name: "Dashboard", path: "/admin/dashboard" }]);
+	}, []);
 
 	return (
 		<div className={classes.root}>
@@ -147,6 +177,20 @@ export default function Admin() {
 						Dashboard
 					</Typography>
 				</Toolbar>
+				<Container className={clsx(classes.breadCrumb, open && classes.breadCrumbShift)}>
+					<Breadcrumbs>
+						{breadcrumbs.map((crumb, index) => (
+							<Link
+								component={RouterLink}
+								to={crumb.path}
+								color={index === breadcrumbs.length - 1 ? "textPrimary" : "inherit"}
+								key={`crumb_${index}`}
+							>
+								{crumb.name}
+							</Link>
+						))}
+					</Breadcrumbs>
+				</Container>
 			</AppBar>
 			<Drawer
 				variant="permanent"
@@ -161,20 +205,20 @@ export default function Admin() {
 					</IconButton>
 				</div>
 				<Divider />
-				<List>
-					<ListItem button component={Link} to="/admin/dashboard/">
+				<List className={clsx(classes.menuList, open && classes.menuListOpen)}>
+					<ListItem button component={RouterLink} to="/admin/dashboard/">
 						<ListItemIcon>
 							<Speed />
 						</ListItemIcon>
 						<ListItemText primary="Dashboard" />
 					</ListItem>
-					<ListItem button component={Link} to="/admin/dashboard/organizations">
+					<ListItem button component={RouterLink} to="/admin/dashboard/organizations">
 						<ListItemIcon>
 							<Business />
 						</ListItemIcon>
 						<ListItemText primary="Organization" />
 					</ListItem>
-					<ListItem button component={Link} to="/admin/dashboard/account">
+					<ListItem button component={RouterLink} to="/admin/dashboard/account">
 						<ListItemIcon>
 							<AccountCircle />
 						</ListItemIcon>
@@ -193,14 +237,20 @@ export default function Admin() {
 				<Container maxWidth="lg" className={classes.container}>
 					<Switch>
 						<Route path="/admin/dashboard/organizations/:organizationId/venues/:venudId">
-							Venue Editor Manager
+							<Venue.Update />
 						</Route>
 						<Route path="/admin/dashboard/organizations/:organizationId">
 							<Organization.Update />
 						</Route>
-						<Route path="/admin/dashboard/organizations"><Organization.List /></Route>
-						<Route path="/admin/dashboard/account"><Account /></Route>
-						<Route path="/admin/dashboard"><Dashboard /></Route>
+						<Route path="/admin/dashboard/organizations">
+							<Organization.List />
+						</Route>
+						<Route path="/admin/dashboard/account">
+							<Account />
+						</Route>
+						<Route path="/admin/dashboard">
+							<Dashboard />
+						</Route>
 					</Switch>
 				</Container>
 				<Copyright />

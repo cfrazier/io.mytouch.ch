@@ -3,9 +3,16 @@
 		flex: 1 1 100%;
 	}
 	.ColorChip {
+		display: inline-block;
+		vertical-align: middle;
 		height: 2em;
 		width: 2em;
 		border-radius: 1em;
-		margin: 0 auto;
+		margin: 0 1em 0 0;
+	}
+}
+.Venue {
+	.Navigation {
+		margin-bottom: 2em;;
 	}
 }

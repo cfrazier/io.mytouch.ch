@@ -9,6 +9,7 @@ setGlobal({
 	organizations: [],
 	organization: null,
 	modal: null,
+	breadcrumbs: [],
 });
 
 ReactDOM.render(

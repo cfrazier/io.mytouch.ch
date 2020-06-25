@@ -22,37 +22,38 @@ import { Delete as DeleteIcon } from "@material-ui/icons";
 import Venue from "./Venue";
 
 const List = () => {
+	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+
+	useEffect(() => {
+		setBreadcrumbs([
+			{ name: "Dashboard", path: "/admin/dashboard" },
+			{ name: "Organizations", path: "/admin/dashboard/organizations" },
+		]);
+	}, []);
+
 	return (
 		<Container className="Organizations">
-			<div className="Navigation">
-				<Breadcrumbs>
-					<Link component={RouterLink} to="/admin/dashboard" color="inherit">
-						Dashboard
-					</Link>
-					<Link
-						component={RouterLink}
-						to="/admin/dashboard/organizations"
-						color="textPrimary"
-					>
-						Organizations
-					</Link>
-				</Breadcrumbs>
-				<Typography component="h1" variant="h4" gutterBottom>
-					Organizations
-				</Typography>
-			</div>
 			<Grid container spacing={3}>
 				<Grid item sm={12} md={6} lg={4} xl={3} className="Organization">
 					<Card>
+						<Toolbar
+							style={{
+								backgroundColor: "#fafafa",
+								borderBottom: "1px solid rgba(224, 224, 224, 1)",
+							}}
+						>
+							<div>
+								<Typography variant="h6">Organization Name</Typography>
+								<Typography variant="subtitle2">
+									Organization Description
+								</Typography>
+							</div>
+						</Toolbar>
 						<CardActionArea
 							component={RouterLink}
 							to="/admin/dashboard/organizations/12345"
 						>
 							<CardContent>
-								<Typography variant="h6">Organization Name</Typography>
-								<Typography variant="subtitle2">
-									Organization Description
-								</Typography>
 								<Grid container spacing={3} className="Statistics">
 									<Grid item xs={4} className="Stat">
 										<Typography variant="h5">10</Typography>
@@ -79,6 +80,7 @@ const List = () => {
 const Update = () => {
 	const [modal, setModal] = useGlobal("modal");
 	const [organizations, setOrganizations] = useGlobal("organizations");
+	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 
 	const { organizationId } = useParams();
 	const { handleSubmit, register } = useForm();
@@ -139,176 +141,169 @@ const Update = () => {
 	};
 
 	useEffect(() => {
-		console.log(organizationId);
+		setBreadcrumbs([
+			{ name: "Dashboard", path: "/admin/dashboard" },
+			{ name: "Organizations", path: "/admin/dashboard/organizations" },
+			{ name: "Organization Name", path: `/admin/dashboard/organizations/${organizationId}` },
+		]);
 	}, []);
 
 	return (
 		<Container className="Organization">
-			<div className="Navigation">
-				<Breadcrumbs>
-					<Link component={RouterLink} to="/admin/dashboard" color="inherit">
-						Dashboard
-					</Link>
-					<Link
-						component={RouterLink}
-						to="/admin/dashboard/organizations"
-						color="inherit"
-					>
-						Organizations
-					</Link>
-					<Link
-						component={RouterLink}
-						to="/admin/dashboard/organizations/12345"
-						color="textPrimary"
-					>
-						Organization Name
-					</Link>
-				</Breadcrumbs>
-				<Typography component="h1" variant="h4" gutterBottom>
-					Update Organization
-				</Typography>
-			</div>
 			<Grid container spacing={3}>
-				<Grid item className="Update" sm={12} md={7}>
-					<Grid container spacing={3}>
-						<Grid item sm={12}>
-							<form
-								className="OrganizationForm"
-								onSubmit={handleSubmit(onSubmit)}
-								autoComplete="off"
+				<Grid item sm={12}>
+					<form
+						className="OrganizationForm"
+						onSubmit={handleSubmit(onSubmit)}
+						autoComplete="off"
+					>
+						<Card>
+							<Toolbar
+								style={{
+									backgroundColor: "#fafafa",
+									borderBottom: "1px solid rgba(224, 224, 224, 1)",
+								}}
 							>
-								<Card>
-									<Toolbar>
-										<Typography variant="h5" component="div" className="Title">
-											Organization Details
+								<Typography variant="h5" component="div" className="Title">
+									Organization Details
+								</Typography>
+								<Tooltip title="Delete">
+									<IconButton aria-label="delete" onClick={onDelete}>
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</Toolbar>
+							<CardContent>
+								<Grid container spacing={3}>
+									<Grid item xs={12}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											autoFocus
+											label="Organization Name"
+											name="organization[name]"
+											type="text"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											label="Description or Tagline"
+											name="organization[description]"
+											type="text"
+											inputRef={register}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											label="Website URL"
+											name="organization[url]"
+											type="url"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+								</Grid>
+								<Grid container spacing={3}>
+									<Grid item xs={12}>
+										<Typography variant="h6">Address</Typography>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											label="Street Address 1"
+											name="organization[address][street1]"
+											type="text"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12}>
+										<TextField
+											variant="standard"
+											fullWidth
+											label="Street Address 2"
+											name="organization[address][street2]"
+											type="text"
+											inputRef={register}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											label="City"
+											name="organization[address][city]"
+											type="text"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											label="State"
+											name="organization[address][state]"
+											type="text"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											label="ZIP Code"
+											name="organization[address][postal]"
+											type="text"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											label="Country"
+											name="organization[address][country]"
+											type="text"
+											inputRef={register({
+												required: true,
+											})}
+										/>
+									</Grid>
+									<Grid item xs={12}>
+										<Typography variant="h6" gutterBottom>
+											Approvals
 										</Typography>
-										<Tooltip title="Delete">
-											<IconButton aria-label="delete" onClick={onDelete}>
-												<DeleteIcon />
-											</IconButton>
-										</Tooltip>
-									</Toolbar>
-									<CardContent>
-										<Grid container spacing={3}>
-											<Grid item xs={12}>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													autoFocus
-													label="Organization Name"
-													name="organization[name]"
-													type="text"
-													inputRef={register({ required: true })}
-												/>
-											</Grid>
-											<Grid item xs={12} md={6}>
-												<TextField
-													variant="standard"
-													fullWidth
-													label="Description or Tagline"
-													name="organization[description]"
-													type="text"
-													inputRef={register}
-												/>
-											</Grid>
-											<Grid item xs={12} md={6}>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													label="Website URL"
-													name="organization[url]"
-													type="url"
-													inputRef={register({ required: true })}
-												/>
-											</Grid>
-										</Grid>
-										<Grid container spacing={3}>
-											<Grid item xs={12}>
-												<Typography variant="h6">Address</Typography>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													label="Street Address 1"
-													name="organization[address][street1]"
-													type="text"
-													inputRef={register({ required: true })}
-												/>
-											</Grid>
-											<Grid item xs={12}>
-												<TextField
-													variant="standard"
-													fullWidth
-													label="Street Address 2"
-													name="organization[address][street2]"
-													type="text"
-													inputRef={register}
-												/>
-											</Grid>
-											<Grid item xs={12} md={6}>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													label="City"
-													name="organization[address][city]"
-													type="text"
-													inputRef={register({ required: true })}
-												/>
-											</Grid>
-											<Grid item xs={12} md={6}>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													label="State"
-													name="organization[address][state]"
-													type="text"
-													inputRef={register({ required: true })}
-												/>
-											</Grid>
-											<Grid item xs={12} md={6}>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													label="ZIP Code"
-													name="organization[address][postal]"
-													type="text"
-													inputRef={register({ required: true })}
-												/>
-											</Grid>
-											<Grid item xs={12} md={6}>
-												<TextField
-													variant="standard"
-													fullWidth
-													required
-													label="Country"
-													name="organization[address][country]"
-													type="text"
-													inputRef={register({
-														required: true,
-													})}
-												/>
-											</Grid>
-										</Grid>
-									</CardContent>
-									<CardActions>
-										<Button type="submit" color="primary">
-											Update
-										</Button>
-									</CardActions>
-								</Card>
-							</form>
-						</Grid>
-					</Grid>
-				</Grid>
-				<Grid item sm={12} md={5}>
-					<Venue.List {...{ venues, setVenues }} />
+										<TextField
+											variant="outlined"
+											fullWidth
+											multiline
+											name="organization[approvals]"
+											type="text"
+											inputRef={register}
+											helperText="Each line is treated as a separate approval."
+										/>
+									</Grid>
+								</Grid>
+							</CardContent>
+							<CardActions>
+								<Button type="submit" color="primary">
+									Update
+								</Button>
+							</CardActions>
+						</Card>
+					</form>
 				</Grid>
 			</Grid>
+			<Venue.List {...{ venues, setVenues }} />
 		</Container>
 	);
 };

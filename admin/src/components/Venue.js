@@ -18,6 +18,12 @@ import {
 	Toolbar,
 	Tooltip,
 	IconButton,
+	Breadcrumbs,
+	Link,
+	Grid,
+	Card,
+	CardContent,
+	CardActions,
 } from "@material-ui/core";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 
@@ -53,7 +59,11 @@ const List = (props) => {
 				<form className="VenuesForm" onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 					<Toolbar
 						style={{
-							backgroundColor: selected && selected.length > 0 ? "#fafafa" : "#fff",
+							backgroundColor:
+								selected && selected.length > 0
+									? "rgba(100, 181, 246, 0.2)"
+									: "#fafafa",
+							borderBottom: "1px solid rgba(224, 224, 224, 1)",
 						}}
 					>
 						<Typography variant="h5" component="div" className="Title">
@@ -80,7 +90,6 @@ const List = (props) => {
 									<TableCell padding="checkbox"></TableCell>
 									<TableCell>Name</TableCell>
 									<TableCell align="center">Capacity</TableCell>
-									<TableCell align="center">Color</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -107,28 +116,32 @@ const List = (props) => {
 												onClick={() => {
 													gotoVenue(venue._id);
 												}}
-												style={{cursor: "pointer"}}
+												style={{ cursor: "pointer" }}
 											>
-												{venue.name}
-											</TableCell>
-											<TableCell align="center">
-												{venue.available}/{venue.capacity}
-											</TableCell>
-											<TableCell align="center">
 												<div
 													className="ColorChip"
 													style={{ backgroundColor: venue.color }}
 												>
 													&nbsp;
 												</div>
+												{venue.name}
+											</TableCell>
+											<TableCell align="center">
+												{venue.available}/{venue.capacity}
 											</TableCell>
 										</TableRow>
 									))}
 							</TableBody>
 							<TableFooter>
 								<TableRow>
-									<TableCell colSpan="4">
-										<Button component={RouterLink} to={`/admin/dashboard/organizations/${organizationId}/venues/new`} color="primary">Add Venue</Button>
+									<TableCell colSpan="3">
+										<Button
+											component={RouterLink}
+											to={`/admin/dashboard/organizations/${organizationId}/venues/new`}
+											color="primary"
+										>
+											Add Venue
+										</Button>
 									</TableCell>
 								</TableRow>
 							</TableFooter>
@@ -141,7 +154,53 @@ const List = (props) => {
 };
 
 const Update = () => {
-	return <Container className="VenueUpdate">Venue Updater</Container>;
+	return (
+		<Container className="Venue">
+			<div className="Navigation">
+				<Breadcrumbs>
+					<Link component={RouterLink} to="/admin/dashboard" color="inherit">
+						Dashboard
+					</Link>
+					<Link
+						component={RouterLink}
+						to="/admin/dashboard/organizations"
+						color="inherit"
+					>
+						Organizations
+					</Link>
+					<Link
+						component={RouterLink}
+						to="/admin/dashboard/organizations/12345"
+						color="inherit"
+					>
+						Organization Name
+					</Link>
+					<Link
+						component={RouterLink}
+						to="/admin/dashboard/organizations/12345/venues/12345"
+						color="textPrimary"
+					>
+						Venue Name
+					</Link>
+				</Breadcrumbs>
+				<Typography component="h1" variant="h4" gutterBottom>
+					Update Venue
+				</Typography>
+			</div>
+			<Card>
+				<CardContent>
+					<Grid container spacing={3}>
+						<Grid item xs={12}>
+							This
+						</Grid>
+					</Grid>
+				</CardContent>
+				<CardActions>
+					<Button>Update</Button>
+				</CardActions>
+			</Card>
+		</Container>
+	);
 };
 
 export default {
