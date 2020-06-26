@@ -1,0 +1,184 @@
+{
+	"user": {
+		"active": true,
+		"isAdmin": true,
+		"_id": "5ee7de3441fed8139f1fa4a6",
+		"email": "chris.frazier@fmcsc.org",
+		"name": "Christopher Frazier",
+		"organizations": []
+	},
+	"organizations": [{
+			"_id": "5ee7de3441fed8139f1fa4a7",
+			"colors": [
+				"#391B2C",
+				"#9C3C10",
+				"#FA9A35",
+				"#E1D18C",
+				"#299380"
+			],
+			"approvals": [],
+			"users": [
+				"5ee7de3441fed8139f1fa4a6"
+			],
+			"name": "Free Methodist Church in Southern California",
+			"description": "",
+			"url": "https://fmcsc.org",
+			"active": true,
+			"__v": 0
+		},
+		{
+			"_id": "5eed1e97cea645473d4ae326",
+			"approvals": [
+				"I have not experienced any of these symptoms in the last 48 hours: Cough, shortness of breath, sore throat, loss of smell or taste.",
+				"I have not had a temperature of 100.4° F in the last 48 hours.",
+				"I have not been in close proximity to anyone who has tested positive for COVID-19.",
+				"I have not traveled outside the U.S. or had contact with anyone that has traveled outside the US in the past 14 days."
+			],
+			"users": [
+				"5ee7de3441fed8139f1fa4a6",
+				"5eed1ee1cea645473d4ae327"
+			],
+			"name": "Centerpoint Church",
+			"description": "Loving and leading people to a life-changing connection with Christ!",
+			"url": "https://mycenterpoint.tv",
+			"active": true,
+			"__v": 1,
+			"colors": [
+				"#00aec7",
+				"#6D8C2C"
+			]
+		},
+		{
+			"_id": "5ef39ccc22e00467d1d0333d",
+			"approvals": [
+				"I have not experienced any of these symptoms in the last 48 hours: Cough, shortness of breath, sore throat, loss of smell or taste.",
+				"I have not had a temperature of 100.4° F in the last 48 hours.",
+				"I have not been in close proximity to anyone who has tested positive for COVID-19.",
+				"I have not traveled outside the U.S. or had contact with anyone that has traveled outside the US in the past 14 days."
+			],
+			"users": [
+				"5ee7de3441fed8139f1fa4a6"
+			],
+			"name": "Living Stones Church",
+			"description": "Love God Love People",
+			"url": "https://livingstones.tv/",
+			"active": true,
+			"__v": 1,
+			"colors": [
+				"#40dadd",
+				"#95ce29"
+			]
+		}
+	],
+	"venues": [{
+			"_id": "5eed20a4cea645473d4ae334",
+			"active": true,
+			"code": "ee83e",
+			"name": "Venue 1",
+			"capacity": 80,
+			"ageMin": 0,
+			"ageMax": 120,
+			"description": "Please no families with children under the age of 5.",
+			"address": {
+				"street1": "24470 Washington Ave.",
+				"street2": "",
+				"city": "Murrieta",
+				"state": "CA",
+				"postal": "92562",
+				"country": "USA"
+			},
+			"color": "#40dadd",
+			"organizationId": "5eed1e97cea645473d4ae326",
+			"__v": 0,
+			"available": 77
+		},
+		{
+			"_id": "5eed26f2037c35660598fabd",
+			"active": true,
+			"name": "Venue 2",
+			"capacity": 55,
+			"ageMin": 0,
+			"ageMax": 120,
+			"description": "Near Café/Patio area.",
+			"address": {
+				"street1": "24470 Washington Ave.",
+				"street2": "",
+				"city": "Murrieta",
+				"state": "CA",
+				"postal": "92562",
+				"country": "USA"
+			},
+			"code": "8ba70",
+			"color": "#7c2eaa",
+			"organizationId": "5eed1e97cea645473d4ae326",
+			"__v": 0,
+			"available": 52
+		},
+		{
+			"_id": "5eed2724037c35660598fabe",
+			"active": true,
+			"name": "Venue 3",
+			"capacity": 65,
+			"ageMin": 0,
+			"ageMax": 120,
+			"description": "Behind Café/Patio area.",
+			"address": {
+				"street1": "24470 Washington Ave.",
+				"street2": "",
+				"city": "Murrieta",
+				"state": "CA",
+				"postal": "92562",
+				"country": "USA"
+			},
+			"code": "211d5",
+			"color": "#c42675",
+			"organizationId": "5eed1e97cea645473d4ae326",
+			"__v": 0,
+			"available": 65
+		},
+		{
+			"_id": "5eed2740037c35660598fabf",
+			"active": true,
+			"name": "Venue 4",
+			"capacity": 50,
+			"ageMin": 0,
+			"ageMax": 120,
+			"description": "In CP Kids Building. Family-friendly for children under the age of 5.",
+			"address": {
+				"street1": "24470 Washington Ave.",
+				"street2": "",
+				"city": "Murrieta",
+				"state": "CA",
+				"postal": "92562",
+				"country": "USA"
+			},
+			"code": "0e5c2",
+			"color": "#95ce29",
+			"organizationId": "5eed1e97cea645473d4ae326",
+			"__v": 0,
+			"available": 50
+		},
+		{
+			"_id": "5eed274a037c35660598fac0",
+			"active": true,
+			"name": "Venue 5",
+			"capacity": 50,
+			"ageMin": 0,
+			"ageMax": 120,
+			"description": "In CP Kids Building. Family-friendly for children under the age of 5.",
+			"address": {
+				"street1": "24470 Washington Ave.",
+				"street2": "",
+				"city": "Murrieta",
+				"state": "CA",
+				"postal": "92562",
+				"country": "USA"
+			},
+			"code": "518af",
+			"color": "#f9841f",
+			"organizationId": "5eed1e97cea645473d4ae326",
+			"__v": 0,
+			"available": 50
+		}
+	]
+}

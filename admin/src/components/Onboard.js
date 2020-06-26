@@ -64,78 +64,6 @@ const Onboard = () => {
 						/>
 					</Grid>
 				</Grid>
-				<Grid container spacing={3} className="Address">
-					<Grid item xs={12}>
-						<Typography variant="h6">Address</Typography>
-					</Grid>
-					<Grid item xs={12}>
-						<TextField
-							variant="outlined"
-							fullWidth
-							required
-							label="Street Address 1"
-							name="organization[address][street1]"
-							type="text"
-							inputRef={register({ required: true })}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<TextField
-							variant="outlined"
-							fullWidth
-							label="Street Address 2"
-							name="organization[address][street2]"
-							type="text"
-							inputRef={register}
-						/>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<TextField
-							variant="outlined"
-							fullWidth
-							required
-							label="City"
-							name="organization[address][city]"
-							type="text"
-							inputRef={register({ required: true })}
-						/>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<TextField
-							variant="outlined"
-							fullWidth
-							required
-							label="State"
-							name="organization[address][state]"
-							type="text"
-							inputRef={register({ required: true })}
-						/>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<TextField
-							variant="outlined"
-							fullWidth
-							required
-							label="ZIP Code"
-							name="organization[address][postal]"
-							type="text"
-							inputRef={register({ required: true })}
-						/>
-					</Grid>
-					<Grid item xs={12} md={6}>
-						<TextField
-							variant="outlined"
-							fullWidth
-							required
-							label="Country"
-							name="organization[address][country]"
-							type="text"
-							inputRef={register({
-								required: true,
-							})}
-						/>
-					</Grid>
-				</Grid>
 				<Grid container spacing={3} className="Venue">
 					<Grid item xs={12}>
 						<Typography variant="h6">Venue</Typography>
@@ -204,6 +132,78 @@ const Onboard = () => {
 								}}
 							/>
 						)}
+					</Grid>
+				</Grid>
+				<Grid container spacing={3} className="Address">
+					<Grid item xs={12}>
+						<Typography variant="h6">Venue Address</Typography>
+					</Grid>
+					<Grid item xs={12}>
+						<TextField
+							variant="outlined"
+							fullWidth
+							required
+							label="Street Address 1"
+							name="venue[address][street1]"
+							type="text"
+							inputRef={register({ required: true })}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<TextField
+							variant="outlined"
+							fullWidth
+							label="Street Address 2"
+							name="venue[address][street2]"
+							type="text"
+							inputRef={register}
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<TextField
+							variant="outlined"
+							fullWidth
+							required
+							label="City"
+							name="venue[address][city]"
+							type="text"
+							inputRef={register({ required: true })}
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<TextField
+							variant="outlined"
+							fullWidth
+							required
+							label="State"
+							name="venue[address][state]"
+							type="text"
+							inputRef={register({ required: true })}
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<TextField
+							variant="outlined"
+							fullWidth
+							required
+							label="ZIP Code"
+							name="venue[address][postal]"
+							type="text"
+							inputRef={register({ required: true })}
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<TextField
+							variant="outlined"
+							fullWidth
+							required
+							label="Country"
+							name="venue[address][country]"
+							type="text"
+							inputRef={register({
+								required: true,
+							})}
+						/>
 					</Grid>
 				</Grid>
 				<Grid container spacing={3} className="Actions">

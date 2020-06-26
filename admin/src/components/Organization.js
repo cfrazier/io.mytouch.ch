@@ -18,7 +18,7 @@ import {
 	Tooltip,
 	IconButton,
 } from "@material-ui/core";
-import { Delete as DeleteIcon } from "@material-ui/icons";
+import { Delete as DeleteIcon, AddCircle } from "@material-ui/icons";
 import Venue from "./Venue";
 
 const List = () => {
@@ -36,23 +36,18 @@ const List = () => {
 			<Grid container spacing={3}>
 				<Grid item sm={12} md={6} lg={4} xl={3} className="Organization">
 					<Card>
-						<Toolbar
-							style={{
-								backgroundColor: "#fafafa",
-								borderBottom: "1px solid rgba(224, 224, 224, 1)",
-							}}
-						>
-							<div>
-								<Typography variant="h6">Organization Name</Typography>
-								<Typography variant="subtitle2">
-									Organization Description
-								</Typography>
-							</div>
-						</Toolbar>
 						<CardActionArea
 							component={RouterLink}
 							to="/admin/dashboard/organizations/12345"
 						>
+							<Toolbar className="Toolbar">
+								<div>
+									<Typography variant="h5">Organization Name</Typography>
+									<Typography variant="subtitle2">
+										Organization Description
+									</Typography>
+								</div>
+							</Toolbar>
 							<CardContent>
 								<Grid container spacing={3} className="Statistics">
 									<Grid item xs={4} className="Stat">
@@ -68,6 +63,19 @@ const List = () => {
 										<Typography variant="caption">Check-Ins</Typography>
 									</Grid>
 								</Grid>
+							</CardContent>
+						</CardActionArea>
+					</Card>
+				</Grid>
+				<Grid item sm={12} md={6} lg={4} xl={3} className="NewOrganization">
+					<Card>
+						<CardActionArea
+							component={RouterLink}
+							to="/admin/dashboard/organizations/new"
+						>
+							<CardContent>
+								<AddCircle fontSize="large" />
+								<Typography variant="caption">Add an Organization</Typography>
 							</CardContent>
 						</CardActionArea>
 					</Card>
@@ -99,6 +107,15 @@ const Update = () => {
 		},
 		{
 			_id: "5ee6bf3c32aa634c0cb2057h",
+			name: "Venue 1",
+			description: "Description",
+			capacity: 100,
+			available: 90,
+			code: "ee83e",
+			color: "#2ccce4",
+		},
+		{
+			_id: "5ee6bf3c32aa634c0cb205fh",
 			name: "Venue 1",
 			description: "Description",
 			capacity: 100,
@@ -146,24 +163,19 @@ const Update = () => {
 			{ name: "Organizations", path: "/admin/dashboard/organizations" },
 			{ name: "Organization Name", path: `/admin/dashboard/organizations/${organizationId}` },
 		]);
-	}, []);
+	}, [setBreadcrumbs]);
 
 	return (
 		<Container className="Organization">
 			<Grid container spacing={3}>
-				<Grid item sm={12}>
+				<Grid item sm={12} lg={8}>
 					<form
 						className="OrganizationForm"
 						onSubmit={handleSubmit(onSubmit)}
 						autoComplete="off"
 					>
 						<Card>
-							<Toolbar
-								style={{
-									backgroundColor: "#fafafa",
-									borderBottom: "1px solid rgba(224, 224, 224, 1)",
-								}}
-							>
+							<Toolbar className="Toolbar">
 								<Typography variant="h5" component="div" className="Title">
 									Organization Details
 								</Typography>
@@ -302,8 +314,10 @@ const Update = () => {
 						</Card>
 					</form>
 				</Grid>
+				<Grid item sm={12} lg={4}>
+					<Venue.List {...{ venues, setVenues }} />
+				</Grid>
 			</Grid>
-			<Venue.List {...{ venues, setVenues }} />
 		</Container>
 	);
 };

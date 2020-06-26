@@ -7,7 +7,7 @@ const Dashboard = () => {
 
 	useEffect(() => {
 		setBreadcrumbs([{ name: "Dashboard", path: "/admin/dashboard" }]);
-	}, []);
+	}, [setBreadcrumbs]);
 
 	return <Container className="Dashboard">Dashboard Items</Container>;
 };

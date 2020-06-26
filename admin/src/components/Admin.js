@@ -1,4 +1,4 @@
-import React, { useState, useGlobal } from "reactn";
+import React, { useState, useGlobal, useEffect } from "reactn";
 import clsx from "clsx";
 import { Switch, Route, Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,8 +31,6 @@ import Account from "./Account";
 import Copyright from "./Copyright";
 import Dashboard from "./Dashboard";
 import Organization from "./Organization";
-import Venue from "./Venue";
-import { useEffect } from "react";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -148,7 +146,7 @@ export default function Admin() {
 
 	useEffect(() => {
 		setBreadcrumbs([{ name: "Dashboard", path: "/admin/dashboard" }]);
-	}, []);
+	}, [setBreadcrumbs]);
 
 	return (
 		<div className={classes.root}>
@@ -236,9 +234,6 @@ export default function Admin() {
 				<div className={classes.appBarSpacer} />
 				<Container maxWidth="lg" className={classes.container}>
 					<Switch>
-						<Route path="/admin/dashboard/organizations/:organizationId/venues/:venudId">
-							<Venue.Update />
-						</Route>
 						<Route path="/admin/dashboard/organizations/:organizationId">
 							<Organization.Update />
 						</Route>

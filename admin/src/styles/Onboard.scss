@@ -1,22 +1,5 @@
-.Dashboard {
-	display: flex;
-	.AppBar {
-		z-index: 2;
-
-		.Toolbar {
-			padding-right: 24;
-		}
-		.MenuButton {
-			display: flex;
-			align-items: center;
-			justify-content: flex-end;
-			padding: 0 8px
-		}
-		.Title {
-			flex-grow: 1;
-		}
-	}
-	.Drawer {
-		z-index: 1;
+.Onboard {
+	.Actions {
+		margin-top: 1em;
 	}
 }
