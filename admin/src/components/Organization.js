@@ -10,7 +10,6 @@ import {
 	CardContent,
 	CardActions,
 	Button,
-	CardActionArea,
 	TextField,
 	Toolbar,
 	Tooltip,
@@ -27,15 +26,17 @@ import {
 	TableFooter,
 } from "@material-ui/core";
 import { Delete as DeleteIcon, AddCircle } from "@material-ui/icons";
+
 import Venue from "./Venue";
 
 const List = () => {
 	const history = useHistory();
 	const { register, handleSubmit, watch } = useForm();
-	const [user, setUser] = useGlobal("user");
 	const [organizations, setOrganizations] = useGlobal("organizations");
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const selected = watch("selected");
+
+	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const [modal, setModal] = useGlobal("modal");
 
 	useEffect(() => {
 		setBreadcrumbs([
@@ -45,12 +46,21 @@ const List = () => {
 	}, []);
 
 	const onSubmit = (data) => {
-		console.log(data);
+		if (modal) return;
+		setModal({
+			title: "Delete Selected Organization(s)?",
+			message:
+				"Are you certain that you would like to delete the selected organization(s)? You will not be able to reverse this once completed without working directly with a system administrator.",
+			cancelText: "Cancel",
+			completeText: "Delete",
+			onComplete: () => {},
+		});
 	};
+
 	return (
 		<Paper className="Organizations">
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<Toolbar>
+				<Toolbar className="Toolbar">
 					<Typography className="Title" variant="h6">
 						Organizations
 					</Typography>
@@ -127,238 +137,105 @@ const List = () => {
 };
 
 const Update = () => {
-	const [modal, setModal] = useGlobal("modal");
-	const [organizations, setOrganizations] = useGlobal("organizations");
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const { handleSubmit, register } = useForm();
 
 	const { organizationId } = useParams();
-	const { handleSubmit, register } = useForm();
-	const history = useHistory();
+	const [organizations, setOrganizations] = useGlobal("organizations");
+	const [venues, setVenues] = useGlobal("venues");
+	const organization = organizations.find((org) => org._id === organizationId);
 
-	const [organization, setOrganization] = useState();
-	const [venues, setVenues] = useState([
-		{
-			_id: "5ee6bf3c32aa634c0cb2057d",
-			name: "Venue 1",
-			description: "Description",
-			capacity: 100,
-			available: 90,
-			code: "ee83e",
-			color: "#2ccce4",
-		},
-		{
-			_id: "5ee6bf3c32aa634c0cb2057h",
-			name: "Venue 1",
-			description: "Description",
-			capacity: 100,
-			available: 90,
-			code: "ee83e",
-			color: "#2ccce4",
-		},
-		{
-			_id: "5ee6bf3c32aa634c0cb205fh",
-			name: "Venue 1",
-			description: "Description",
-			capacity: 100,
-			available: 90,
-			code: "ee83e",
-			color: "#2ccce4",
-		},
-	]);
-	const [users, setUsers] = useState([
-		{
-			_id: "5ee29b67f705972be82f742a",
-			active: true,
-			isAdmin: true,
-			email: "chris.frazier@managedword.com",
-			name: "Christopher Frazier",
-		},
-		{
-			_id: "5ee2a04acf89722eac7a4938",
-			active: true,
-			isAdmin: false,
-			name: "Test",
-			email: "chris.frazier2@managedword.com",
-		},
-	]);
+	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const [modal, setModal] = useGlobal("modal");
+
+	const history = useHistory();
 
 	const onSubmit = (data) => {
 		console.log(data);
-	};
-
-	const onDelete = () => {
-		if (modal) return;
-		setModal({
-			title: "Delete This Organization?",
-			message:
-				"Are you certain that you would like to delete this organization? You will not be able to reverse this once completed without working directly with a system administrator.",
-			cancelText: "Cancel",
-			completeText: "Delete",
-			onComplete: () => {},
-		});
 	};
 
 	useEffect(() => {
 		setBreadcrumbs([
 			{ name: "Dashboard", path: "/admin/dashboard" },
 			{ name: "Organizations", path: "/admin/dashboard/organizations" },
-			{ name: "Organization Name", path: `/admin/dashboard/organizations/${organizationId}` },
+			{ name: organization.name, path: `/admin/dashboard/organizations/${organizationId}` },
 		]);
 	}, [setBreadcrumbs]);
 
 	return (
 		<Container className="Organization">
-			<Grid container spacing={3}>
-				<Grid item sm={12} lg={8}>
-					<form
-						className="OrganizationForm"
-						onSubmit={handleSubmit(onSubmit)}
-						autoComplete="off"
-					>
-						<Card>
-							<Toolbar className="Toolbar">
-								<Typography variant="h5" component="div" className="Title">
-									Organization Details
+			<Card>
+				<form
+					className="OrganizationForm"
+					onSubmit={handleSubmit(onSubmit)}
+					autoComplete="off"
+				>
+					<Toolbar className="Toolbar">
+						<Typography variant="h5" component="div" className="Title">
+							Organization Details
+						</Typography>
+					</Toolbar>
+					<CardContent>
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<TextField
+									variant="standard"
+									fullWidth
+									required
+									autoFocus
+									defaultValue={organization.name}
+									label="Organization Name"
+									name="organization[name]"
+									type="text"
+									inputRef={register({ required: true })}
+								/>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="standard"
+									fullWidth
+									defaultValue={organization.description}
+									label="Description or Tagline"
+									name="organization[description]"
+									type="text"
+									inputRef={register}
+								/>
+							</Grid>
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="standard"
+									fullWidth
+									required
+									defaultValue={organization.url}
+									label="Website URL"
+									name="organization[url]"
+									type="url"
+									inputRef={register({ required: true })}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography variant="h6" gutterBottom>
+									Approvals
 								</Typography>
-								<Tooltip title="Delete">
-									<IconButton aria-label="delete" onClick={onDelete}>
-										<DeleteIcon />
-									</IconButton>
-								</Tooltip>
-							</Toolbar>
-							<CardContent>
-								<Grid container spacing={3}>
-									<Grid item xs={12}>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											autoFocus
-											label="Organization Name"
-											name="organization[name]"
-											type="text"
-											inputRef={register({ required: true })}
-										/>
-									</Grid>
-									<Grid item xs={12} md={6}>
-										<TextField
-											variant="standard"
-											fullWidth
-											label="Description or Tagline"
-											name="organization[description]"
-											type="text"
-											inputRef={register}
-										/>
-									</Grid>
-									<Grid item xs={12} md={6}>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											label="Website URL"
-											name="organization[url]"
-											type="url"
-											inputRef={register({ required: true })}
-										/>
-									</Grid>
-								</Grid>
-								<Grid container spacing={3}>
-									<Grid item xs={12}>
-										<Typography variant="h6">Address</Typography>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											label="Street Address 1"
-											name="organization[address][street1]"
-											type="text"
-											inputRef={register({ required: true })}
-										/>
-									</Grid>
-									<Grid item xs={12}>
-										<TextField
-											variant="standard"
-											fullWidth
-											label="Street Address 2"
-											name="organization[address][street2]"
-											type="text"
-											inputRef={register}
-										/>
-									</Grid>
-									<Grid item xs={12} md={6}>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											label="City"
-											name="organization[address][city]"
-											type="text"
-											inputRef={register({ required: true })}
-										/>
-									</Grid>
-									<Grid item xs={12} md={6}>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											label="State"
-											name="organization[address][state]"
-											type="text"
-											inputRef={register({ required: true })}
-										/>
-									</Grid>
-									<Grid item xs={12} md={6}>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											label="ZIP Code"
-											name="organization[address][postal]"
-											type="text"
-											inputRef={register({ required: true })}
-										/>
-									</Grid>
-									<Grid item xs={12} md={6}>
-										<TextField
-											variant="standard"
-											fullWidth
-											required
-											label="Country"
-											name="organization[address][country]"
-											type="text"
-											inputRef={register({
-												required: true,
-											})}
-										/>
-									</Grid>
-									<Grid item xs={12}>
-										<Typography variant="h6" gutterBottom>
-											Approvals
-										</Typography>
-										<TextField
-											variant="outlined"
-											fullWidth
-											multiline
-											name="organization[approvals]"
-											type="text"
-											inputRef={register}
-											helperText="Each line is treated as a separate approval."
-										/>
-									</Grid>
-								</Grid>
-							</CardContent>
-							<CardActions>
-								<Button type="submit" color="primary">
-									Update
-								</Button>
-							</CardActions>
-						</Card>
-					</form>
-				</Grid>
-				<Grid item sm={12} lg={4}>
-					<Venue.List {...{ venues, setVenues }} />
-				</Grid>
-			</Grid>
+								<TextField
+									variant="outlined"
+									fullWidth
+									multiline
+									defaultValue={organization.approvals.join("\n")}
+									name="organization[approvals]"
+									type="text"
+									inputRef={register}
+									helperText="Each line is treated as a separate approval."
+								/>
+							</Grid>
+						</Grid>
+					</CardContent>
+					<CardActions>
+						<Button type="submit" color="primary">
+							Update
+						</Button>
+					</CardActions>
+				</form>
+			</Card>
 		</Container>
 	);
 };
