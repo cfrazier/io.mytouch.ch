@@ -1,6 +1,6 @@
 import React, { useState, useGlobal, useEffect } from "reactn";
 import clsx from "clsx";
-import { Switch, Route, Link as RouterLink } from "react-router-dom";
+import { Switch, Route, Link as RouterLink, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	CssBaseline,
@@ -31,6 +31,7 @@ import Account from "./Account";
 import Copyright from "./Copyright";
 import Dashboard from "./Dashboard";
 import Organization from "./Organization";
+import Venue from "./Venue";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -135,16 +136,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Admin() {
 	const classes = useStyles();
-	const [open, setOpen] = useState(true);
+	const history = useHistory();
+	const [user] = useGlobal("user");
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+
+	const [open, setOpen] = useState(true);
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
+
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
 
 	useEffect(() => {
+		if (!user) history.push('/admin');
 		setBreadcrumbs([{ name: "Dashboard", path: "/admin/dashboard" }]);
 	}, [setBreadcrumbs]);
 
@@ -172,7 +179,7 @@ export default function Admin() {
 						noWrap
 						className={classes.title}
 					>
-						Dashboard
+						Check-In Dashboard
 					</Typography>
 				</Toolbar>
 				<Container className={clsx(classes.breadCrumb, open && classes.breadCrumbShift)}>
@@ -234,6 +241,9 @@ export default function Admin() {
 				<div className={classes.appBarSpacer} />
 				<Container maxWidth="lg" className={classes.container}>
 					<Switch>
+						<Route path="/admin/dashboard/organizations/:organizationId/venues/:venueId">
+							<Venue.Update />
+						</Route>
 						<Route path="/admin/dashboard/organizations/:organizationId">
 							<Organization.Update />
 						</Route>

@@ -1,38 +1,42 @@
 .Venues {
-	.NewVenue {
-		.MuiCardContent-root {
-			min-height: 190px;
-			color: rgba(0, 0, 0, 0.12);
-			display: flex;
-			align-items: center;
-			flex-direction: column;
-			justify-content: center;
-			svg,
-			span {
-				display: flex;
-			}
-		}
+	margin-top: 2em;
+	.Toolbar {
+		background-color: #f5f5f5;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+	}
+	.Title {
+		flex: 1 1 100%;
+	}
+	.Selected {
+		background-color: #fafafa;
+	}
+	.Clickable {
+		cursor: pointer;
+	}
+	.ColorChip {
+		display: inline-block;
+		vertical-align: baseline;
+		width: 20px;
+		height: 20px;
+		border-radius: 10px;
+		margin-right: 1em;
+	}
+	.Actions {
+		text-align: right;
+		flex-direction: row-reverse;
 	}
 }
+
 .Venue {
 	.Toolbar {
-		color: #fff;
-		border-right: 1px solid rgba(0, 0, 0, 0.12);
-		line-height: 1em;
-		padding-top: 8px;
-		padding-bottom: 8px;
-		.Title {
-			flex: 1 1 100%;
-		}
+		background-color: #f5f5f5;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 	}
-	.Details {
-		margin: 0.5em 0;
-		.Detail {
-			text-align: center;
-			border-right: 1px solid rgba(0, 0, 0, 0.12);
-			&:last-child {
-				border: none;
-			}
-		}
+	.Title {
+		flex: 1 1 100%;
+	}
+	.Actions {
+		text-align: right;
+		flex-direction: row-reverse;
 	}
 }

@@ -95,7 +95,7 @@ const Register = () => {
 						) : null}
 					</Grid>
 					<Grid item xs={12}>
-						<Button type="submit" fullWidth variant="contained" color="primary">
+						<Button type="submit" size="large" fullWidth variant="contained" color="primary">
 							Register
 						</Button>
 					</Grid>

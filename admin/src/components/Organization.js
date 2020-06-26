@@ -25,7 +25,7 @@ import {
 	Link,
 	TableFooter,
 } from "@material-ui/core";
-import { Delete as DeleteIcon, AddCircle } from "@material-ui/icons";
+import { Delete as DeleteIcon, AddCircle, Airplay } from "@material-ui/icons";
 
 import Venue from "./Venue";
 
@@ -75,14 +75,16 @@ const List = () => {
 				<TableContainer>
 					<Table>
 						<colgroup>
-							<col />
+							{organizations.length > 0 && <col />}
 							<col />
 							<col width="20%" />
 							<col width="10%" />
 						</colgroup>
 						<TableHead className="TableHead">
 							<TableRow>
-								<TableCell padding="checkbox"></TableCell>
+								{organizations.length > 0 && (
+									<TableCell padding="checkbox"></TableCell>
+								)}
 								<TableCell>Organization</TableCell>
 								<TableCell>Website</TableCell>
 								<TableCell>Users</TableCell>
@@ -98,13 +100,15 @@ const List = () => {
 											: "Organization"
 									}
 								>
-									<TableCell padding="checkbox">
-										<Checkbox
-											name="selected"
-											inputRef={register}
-											value={organization._id}
-										/>
-									</TableCell>
+									{organizations.length > 0 && (
+										<TableCell padding="checkbox">
+											<Checkbox
+												name="selected"
+												inputRef={register}
+												value={organization._id}
+											/>
+										</TableCell>
+									)}
 									<TableCell
 										className="Clickable"
 										onClick={() => {
@@ -124,8 +128,14 @@ const List = () => {
 						</TableBody>
 						<TableFooter>
 							<TableRow>
-								<TableCell colSpan="4" className="TableActions">
-									<Button color="primary">Create</Button>
+								<TableCell colSpan={4} className="Actions">
+									<Button
+										component={RouterLink}
+										to="/admin/dashboard/organizations/new"
+										color="primary"
+									>
+										Create
+									</Button>
 								</TableCell>
 							</TableRow>
 						</TableFooter>
@@ -141,8 +151,18 @@ const Update = () => {
 
 	const { organizationId } = useParams();
 	const [organizations, setOrganizations] = useGlobal("organizations");
+	const [user] = useGlobal("user");
 	const [venues, setVenues] = useGlobal("venues");
-	const organization = organizations.find((org) => org._id === organizationId);
+	const organization =
+		organizationId === "new"
+			? {
+					name: "New Organization",
+					description: "",
+					url: "",
+					users: [user._id],
+					approvals: [],
+			  }
+			: organizations.find((org) => org._id === organizationId);
 
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
@@ -151,6 +171,13 @@ const Update = () => {
 
 	const onSubmit = (data) => {
 		console.log(data);
+		if (modal) return;
+		setModal({
+			title: "Organization Updated",
+			message:
+				"The update was successful. Please make sure to reload the check-in app to see changes.",
+			cancelText: "Close",
+		});
 	};
 
 	useEffect(() => {
@@ -169,10 +196,29 @@ const Update = () => {
 					onSubmit={handleSubmit(onSubmit)}
 					autoComplete="off"
 				>
+					{organization._id && (
+						<input
+							type="hidden"
+							name="organization[_id]"
+							ref={register}
+							value={organization._id}
+						/>
+					)}
 					<Toolbar className="Toolbar">
-						<Typography variant="h5" component="div" className="Title">
+						<Typography variant="h6" component="div" className="Title">
 							Organization Details
 						</Typography>
+						{organization._id && (
+							<Tooltip title="View Kiosk">
+								<IconButton
+									onClick={() => {
+										window.open(`/kiosk/${organizationId}`, "_blank");
+									}}
+								>
+									<Airplay />
+								</IconButton>
+							</Tooltip>
+						)}
 					</Toolbar>
 					<CardContent>
 						<Grid container spacing={3}>
@@ -229,19 +275,16 @@ const Update = () => {
 							</Grid>
 						</Grid>
 					</CardContent>
-					<CardActions>
+					<CardActions className="Actions">
 						<Button type="submit" color="primary">
 							Update
 						</Button>
 					</CardActions>
 				</form>
 			</Card>
+			<Venue.List />
 		</Container>
 	);
-};
-
-const Users = (props) => {
-	const { users, setUsers } = props;
 };
 
 export default {

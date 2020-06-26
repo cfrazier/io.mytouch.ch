@@ -13,12 +13,14 @@ const Login = () => {
 	const onSubmit = (data) => {
 		if (modal) return;
 		setModal({
-			title: "An Error Occurred",
-			message: "An error occurred",
-			cancelText: "Close",
-			onCancel: () => {
+			title: "We Could Not Find Your Account",
+			message: "We checked and couldn't find an account that matched your email and password combination. Would you like to try again or register for a new account?",
+			cancelText: "Try Again",
+			completeText: "Register",
+			onComplete: () => {
 				history.push("/admin/register");
-			},
+
+			}
 		});
 	};
 	return (
@@ -54,7 +56,7 @@ const Login = () => {
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<Button type="submit" fullWidth variant="contained" color="primary">
+						<Button type="submit" size="large" fullWidth variant="contained" color="primary">
 							Log In
 						</Button>
 					</Grid>
