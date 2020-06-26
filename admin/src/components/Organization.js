@@ -4,8 +4,6 @@ import { useHistory, useParams, Link as RouterLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
 	Container,
-	Breadcrumbs,
-	Link,
 	Typography,
 	Grid,
 	Card,
@@ -17,12 +15,27 @@ import {
 	Toolbar,
 	Tooltip,
 	IconButton,
+	Table,
+	Paper,
+	TableContainer,
+	TableHead,
+	TableRow,
+	TableCell,
+	TableBody,
+	Checkbox,
+	Link,
+	TableFooter,
 } from "@material-ui/core";
 import { Delete as DeleteIcon, AddCircle } from "@material-ui/icons";
 import Venue from "./Venue";
 
 const List = () => {
+	const history = useHistory();
+	const { register, handleSubmit, watch } = useForm();
+	const [user, setUser] = useGlobal("user");
+	const [organizations, setOrganizations] = useGlobal("organizations");
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const selected = watch("selected");
 
 	useEffect(() => {
 		setBreadcrumbs([
@@ -31,57 +44,85 @@ const List = () => {
 		]);
 	}, []);
 
+	const onSubmit = (data) => {
+		console.log(data);
+	};
 	return (
-		<Container className="Organizations">
-			<Grid container spacing={3}>
-				<Grid item sm={12} md={6} lg={4} xl={3} className="Organization">
-					<Card>
-						<CardActionArea
-							component={RouterLink}
-							to="/admin/dashboard/organizations/12345"
-						>
-							<Toolbar className="Toolbar">
-								<div>
-									<Typography variant="h5">Organization Name</Typography>
-									<Typography variant="subtitle2">
-										Organization Description
-									</Typography>
-								</div>
-							</Toolbar>
-							<CardContent>
-								<Grid container spacing={3} className="Statistics">
-									<Grid item xs={4} className="Stat">
-										<Typography variant="h5">10</Typography>
-										<Typography variant="caption">User(s)</Typography>
-									</Grid>
-									<Grid item xs={4} className="Stat">
-										<Typography variant="h5">4</Typography>
-										<Typography variant="caption">Venue(s)</Typography>
-									</Grid>
-									<Grid item xs={4} className="Stat">
-										<Typography variant="h5">10</Typography>
-										<Typography variant="caption">Check-Ins</Typography>
-									</Grid>
-								</Grid>
-							</CardContent>
-						</CardActionArea>
-					</Card>
-				</Grid>
-				<Grid item sm={12} md={6} lg={4} xl={3} className="NewOrganization">
-					<Card>
-						<CardActionArea
-							component={RouterLink}
-							to="/admin/dashboard/organizations/new"
-						>
-							<CardContent>
-								<AddCircle fontSize="large" />
-								<Typography variant="caption">Add an Organization</Typography>
-							</CardContent>
-						</CardActionArea>
-					</Card>
-				</Grid>
-			</Grid>
-		</Container>
+		<Paper className="Organizations">
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<Toolbar>
+					<Typography className="Title" variant="h6">
+						Organizations
+					</Typography>
+					{(selected && selected.length) > 0 && (
+						<Tooltip title="Delete">
+							<IconButton onClick={handleSubmit(onSubmit)}>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
+					)}
+				</Toolbar>
+				<TableContainer>
+					<Table>
+						<colgroup>
+							<col />
+							<col />
+							<col width="20%" />
+							<col width="10%" />
+						</colgroup>
+						<TableHead className="TableHead">
+							<TableRow>
+								<TableCell padding="checkbox"></TableCell>
+								<TableCell>Organization</TableCell>
+								<TableCell>Website</TableCell>
+								<TableCell>Users</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{organizations.map((organization, index) => (
+								<TableRow
+									key={organization._id}
+									className={
+										selected && selected.includes(organization._id)
+											? "Organization Selected"
+											: "Organization"
+									}
+								>
+									<TableCell padding="checkbox">
+										<Checkbox
+											name="selected"
+											inputRef={register}
+											value={organization._id}
+										/>
+									</TableCell>
+									<TableCell
+										className="Clickable"
+										onClick={() => {
+											history.push(
+												`/admin/dashboard/organizations/${organization._id}`
+											);
+										}}
+									>
+										{organization.name}
+									</TableCell>
+									<TableCell>
+										<Link href={organization.url}>{organization.url}</Link>
+									</TableCell>
+									<TableCell>{organization.users.length}</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TableCell colSpan="4" className="TableActions">
+									<Button color="primary">Create</Button>
+								</TableCell>
+							</TableRow>
+						</TableFooter>
+					</Table>
+				</TableContainer>
+			</form>
+		</Paper>
 	);
 };
 
