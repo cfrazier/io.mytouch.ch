@@ -25,8 +25,10 @@ import {
 	Checkbox,
 	TableFooter,
 	Divider,
+	Switch,
+	FormControlLabel,
 } from "@material-ui/core";
-import { Delete as DeleteIcon } from "@material-ui/icons";
+import { Delete as DeleteIcon, VisibilityOff } from "@material-ui/icons";
 import { TwitterPicker } from "react-color";
 import httpFetch from "../services/http";
 import Loading from "./Loading";
@@ -132,13 +134,15 @@ const List = (props) => {
 							<col />
 							<col width="10%" />
 							<col width="10%" />
+							<col width="10%" />
 						</colgroup>
 						<TableHead className="TableHead">
 							<TableRow>
 								{venues.length > 0 && <TableCell padding="checkbox"></TableCell>}
 								<TableCell>Venue</TableCell>
 								<TableCell>Description</TableCell>
-								<TableCell align="right">Code</TableCell>
+								<TableCell align="center">Hidden</TableCell>
+								<TableCell align="center">Code</TableCell>
 								<TableCell align="right">Capacity</TableCell>
 							</TableRow>
 						</TableHead>
@@ -187,7 +191,8 @@ const List = (props) => {
 									>
 										{venue.description}
 									</TableCell>
-									<TableCell align="right">{venue.code.toUpperCase()}</TableCell>
+									<TableCell align="center">{venue.hidden && <VisibilityOff />}</TableCell>
+									<TableCell align="center">{venue.code.toUpperCase()}</TableCell>
 									<TableCell align="right">
 										{venue.available}/{venue.capacity}
 									</TableCell>
@@ -196,7 +201,7 @@ const List = (props) => {
 						</TableBody>
 						<TableFooter>
 							<TableRow>
-								<TableCell colSpan="5" className="Actions">
+								<TableCell colSpan="6" className="Actions">
 									<Button
 										component={RouterLink}
 										to={`/admin/dashboard/organizations/${organizationId}/venues/new`}
@@ -215,7 +220,7 @@ const List = (props) => {
 };
 
 const Update = () => {
-	const { handleSubmit, register } = useForm();
+	const { handleSubmit, register, watch } = useForm();
 	const history = useHistory();
 
 	const { organizationId, venueId } = useParams();
@@ -226,9 +231,9 @@ const Update = () => {
 	const [venue, setVenue] = useState();
 	const [showPicker, setShowPicker] = useState(false);
 	const [color, setColor] = useState("");
+	const [hidden, setHidden] = useState(false);
 
 	const onSubmit = (data) => {
-		console.log(data);
 		const { venue } = data;
 		// Set the correct method and path
 		const method = venue._id ? "put" : "post";
@@ -287,8 +292,11 @@ const Update = () => {
 					country: "",
 				},
 				color: "#40dadd",
+				hidden: false,
 				organizationId: organizationId,
 			});
+			setColor("#40dadd");
+			setHidden(false);
 		} else {
 			httpFetch(
 				"get",
@@ -314,6 +322,8 @@ const Update = () => {
 							});
 						} else {
 							setVenue(response);
+							setColor(response.color);
+							setHidden(response.hidden);
 						}
 					}
 				}
@@ -447,6 +457,22 @@ const Update = () => {
 												}}
 											/>
 										)}
+									</Grid>
+									<Grid item xs={12} sm={6}>
+										<FormControlLabel
+											control={
+												<Switch
+													name="venue[hidden]"
+													checked={hidden}
+													onChange={() => {
+														setHidden((hidden) => !hidden);
+													}}
+													color="primary"
+													inputRef={register}
+												/>
+											}
+											label="Hide venue on kiosk"
+										/>
 									</Grid>
 								</Grid>
 								<Grid container spacing={3} className="Address">

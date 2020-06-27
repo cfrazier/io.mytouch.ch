@@ -14,7 +14,7 @@ const App = () => {
 			<Router>
 				<Switch>
 					<Route path="/kiosk/:organizationId">
-						<Kiosk />
+						<OrganizationKiosk />
 					</Route>
 					<Route path="/">Please log in to the admin to get started...</Route>
 				</Switch>
@@ -26,7 +26,7 @@ const App = () => {
 
 export default App;
 
-export const Kiosk = (props) => {
+export const OrganizationKiosk = (props) => {
 	const { organizationId } = useParams();
 	const [venues, setVenues] = useState();
 
@@ -48,28 +48,33 @@ export const Kiosk = (props) => {
 	useInterval(updateOrganization, 5000);
 
 	return (
-		<div className="Kiosk">
+		<div className="OrganizationKiosk">
 			{venues ? (
 				<div className="Active">
 					<table>
 						<tbody>
-							{venues.map((venue) => (
-								<tr key={`venue_${venue._id}`} className="Venue">
-									<td className="Main">
-										<div className="Name">{venue.name}</div>
-										<div className="Description">{venue.description}</div>
-									</td>
-									<td className="Code">{venue.code.toUpperCase()}</td>
-									<td className="Available">
-										<div
-											className="Badge"
-											style={{ backgroundColor: venue.color }}
-										>
-											{venue.available}
-										</div>
-									</td>
-								</tr>
-							))}
+							{venues.map(
+								(venue) =>
+									!venue.hidden && (
+										<tr key={`venue_${venue._id}`} className="Venue">
+											<td className="Main">
+												<div className="Name">{venue.name}</div>
+												<div className="Description">
+													{venue.description}
+												</div>
+											</td>
+											<td className="Code">{venue.code.toUpperCase()}</td>
+											<td className="Available">
+												<div
+													className="Badge"
+													style={{ backgroundColor: venue.color }}
+												>
+													{venue.available}
+												</div>
+											</td>
+										</tr>
+									)
+							)}
 						</tbody>
 					</table>
 				</div>
