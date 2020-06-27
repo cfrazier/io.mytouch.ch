@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
 	const classes = useStyles();
 	const history = useHistory();
-	const [cookies] = useCookies();
+	const [cookies, setCookie, removeCookie] = useCookies();
 
 	const [user, setUser] = useGlobal("user");
 	const [modal, setModal] = useGlobal("modal");
@@ -165,7 +165,8 @@ export default function Admin() {
 			completeText: "Log Out",
 			onComplete: () => {
 				httpFetch("get", "/api/logout", null, (error, response) => {
-					setUser(null);
+					const { hostname } = new URL(process.env.PUBLIC_URL, window.location.href);
+					removeCookie("token", { domain: `.${hostname}` });
 					history.push("/admin");
 				});
 			},
@@ -178,13 +179,18 @@ export default function Admin() {
 				window.location = "/admin";
 			} else {
 				// Let's try to log back in
-				httpFetch("get", `/api/login?token=${encodeURI(cookies.token)}`, null, (error, response) => {
-					if (error||response.error) {
-						window.location = "/admin";
-					} else {
-						setUser(response);
+				httpFetch(
+					"get",
+					`/api/login?token=${encodeURI(cookies.token)}`,
+					null,
+					(error, response) => {
+						if (error || response.error) {
+							window.location = "/admin";
+						} else {
+							setUser(response);
+						}
 					}
-				})
+				);
 			}
 		}
 	}, [user, setUser, cookies.token]);

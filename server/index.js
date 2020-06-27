@@ -158,16 +158,16 @@ const initRoutes = (app) => {
 	app.delete("/api/organizations/:organizationId", Routes.organization.delete);
 
 	// User
+	app.get("/api/login", Routes.user.login);
+	app.get("/api/logout", Routes.user.logout);
+	app.get("/api/reset", Routes.user.resetPassword);
+
 	app.post("/api/organizations/:organizationId/users", Routes.user.create);
 	app.get("/api/organizations/:organizationId/users", Routes.user.list);
 
 	app.get("/api/users/:userId", Routes.user.read);
 	app.put("/api/users/:userId", Routes.user.update);
 	app.delete("/api/users/:userId", Routes.user.delete);
-
-	app.get("/api/login", Routes.user.login);
-	app.get("/api/logout", Routes.user.logout);
-	app.get("/api/reset", Routes.user.resetPassword);
 
 	// Venue
 	app.get("/api/organizations/:organizationId/venues", Routes.venue.list);
