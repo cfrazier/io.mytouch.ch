@@ -1,6 +1,8 @@
 import React, { useState, useGlobal, useEffect } from "reactn";
 import clsx from "clsx";
 import { Switch, Route, Link as RouterLink, useHistory } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import httpFetch from "../services/http";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	CssBaseline,
@@ -137,7 +139,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
 	const classes = useStyles();
 	const history = useHistory();
-	const [user] = useGlobal("user");
+	const [cookies] = useCookies();
+
+	const [user, setUser] = useGlobal("user");
+	const [modal, setModal] = useGlobal("modal");
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 
 	const [open, setOpen] = useState(true);
@@ -150,12 +155,47 @@ export default function Admin() {
 		setOpen(false);
 	};
 
+	const handleLogOut = () => {
+		if (modal) return;
+		setModal({
+			title: "Would You Like to Log Out?",
+			message:
+				"Would you like to end your session and log out? You will need to use your email and password to log back in again.",
+			cancelText: "Cancel",
+			completeText: "Log Out",
+			onComplete: () => {
+				httpFetch("get", "/api/logout", null, (error, response) => {
+					setUser(null);
+					history.push("/admin");
+				});
+			},
+		});
+	};
+
 	useEffect(() => {
-		if (!user) history.push('/admin');
+		if (!user) {
+			if (!cookies.token) {
+				window.location = "/admin";
+			} else {
+				// Let's try to log back in
+				httpFetch("get", `/api/login?token=${encodeURI(cookies.token)}`, null, (error, response) => {
+					if (error||response.error) {
+						window.location = "/admin";
+					} else {
+						setUser(response);
+					}
+				})
+			}
+		}
+	}, [user, setUser, cookies.token]);
+
+	useEffect(() => {
 		setBreadcrumbs([{ name: "Dashboard", path: "/admin/dashboard" }]);
 	}, [setBreadcrumbs]);
 
-	return (
+	return !user ? (
+		<div></div>
+	) : (
 		<div className={classes.root}>
 			<CssBaseline />
 			<AppBar
@@ -229,7 +269,7 @@ export default function Admin() {
 						</ListItemIcon>
 						<ListItemText primary="Account" />
 					</ListItem>
-					<ListItem button>
+					<ListItem button onClick={handleLogOut}>
 						<ListItemIcon>
 							<ExitToApp />
 						</ListItemIcon>

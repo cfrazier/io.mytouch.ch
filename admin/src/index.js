@@ -7,9 +7,7 @@ import * as serviceWorker from "./serviceWorker";
 import data from "./data.json"
 
 setGlobal({
-	user: data.user,
-	organizations: data.organizations,
-	venues: data.venues,
+	user: null,
 	modal: null,
 	breadcrumbs: [],
 });

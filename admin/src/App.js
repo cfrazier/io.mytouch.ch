@@ -1,7 +1,8 @@
-import React, { useEffect } from "reactn";
+import React from "reactn";
 import "./styles/App.scss";
 import { CssBaseline } from "@material-ui/core";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import Admin from "./components/Admin";
 import Modal from "./components/Modal";
 import Login from "./components/Login";
@@ -9,8 +10,6 @@ import Register from "./components/Register";
 import Onboard from "./components/Onboard";
 
 const App = () => {
-	useEffect(() => {}, []);
-
 	return (
 		<Router>
 			<CssBaseline />

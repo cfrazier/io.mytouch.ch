@@ -13,12 +13,14 @@
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
+    "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
     "react-hook-form": "^5.7.2",
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "reactn": "^2.2.7"
+    "reactn": "^2.2.7",
+    "use-interval": "^1.2.1"
   },
   "scripts": {
     "start": "react-scripts start",

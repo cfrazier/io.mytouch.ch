@@ -25,25 +25,50 @@ import {
 	Link,
 	TableFooter,
 } from "@material-ui/core";
-import { Delete as DeleteIcon, AddCircle, Airplay } from "@material-ui/icons";
+import { Delete as DeleteIcon, Airplay } from "@material-ui/icons";
 
 import Venue from "./Venue";
+import Loading from "./Loading";
+import httpFetch from "../services/http";
 
 const List = () => {
 	const history = useHistory();
 	const { register, handleSubmit, watch } = useForm();
-	const [organizations, setOrganizations] = useGlobal("organizations");
-	const selected = watch("selected");
-
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
+
+	const [organizations, setOrganizations] = useState();
+	const selected = watch("selected");
 
 	useEffect(() => {
 		setBreadcrumbs([
 			{ name: "Dashboard", path: "/admin/dashboard" },
 			{ name: "Organizations", path: "/admin/dashboard/organizations" },
 		]);
-	}, []);
+	}, [setBreadcrumbs]);
+
+	const getOrganizations = () => {
+		httpFetch("get", "/api/organizations", null, (error, response) => {
+			if (error) {
+				if (modal) return;
+				setModal({
+					title: "An Error Occurred",
+					message:
+						"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+					cancelText: "Try Again",
+				});
+			} else {
+				console.log(response);
+				setOrganizations(response);
+			}
+		});
+	};
+
+	useEffect(() => {
+		if (!organizations) {
+			getOrganizations();
+		}
+	}, [organizations]);
 
 	const onSubmit = (data) => {
 		if (modal) return;
@@ -53,11 +78,28 @@ const List = () => {
 				"Are you certain that you would like to delete the selected organization(s)? You will not be able to reverse this once completed without working directly with a system administrator.",
 			cancelText: "Cancel",
 			completeText: "Delete",
-			onComplete: () => {},
+			onComplete: () => {
+				data.selected.forEach((organizationId) => {
+					httpFetch(
+						"delete",
+						`/api/organizations/${organizationId}`,
+						null,
+						(error, response) => {
+							if (error || response.error) {
+								console.log(error, response.error);
+							} else {
+								getOrganizations();
+							}
+						}
+					);
+				});
+			},
 		});
 	};
 
-	return (
+	return !organizations ? (
+		<Loading />
+	) : (
 		<Paper className="Organizations">
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Toolbar className="Toolbar">
@@ -77,7 +119,7 @@ const List = () => {
 						<colgroup>
 							{organizations.length > 0 && <col />}
 							<col />
-							<col width="20%" />
+							<col />
 							<col width="10%" />
 						</colgroup>
 						<TableHead className="TableHead">
@@ -148,47 +190,114 @@ const List = () => {
 
 const Update = () => {
 	const { handleSubmit, register } = useForm();
-
-	const { organizationId } = useParams();
-	const [organizations, setOrganizations] = useGlobal("organizations");
-	const [user] = useGlobal("user");
-	const [venues, setVenues] = useGlobal("venues");
-	const organization =
-		organizationId === "new"
-			? {
-					name: "New Organization",
-					description: "",
-					url: "",
-					users: [user._id],
-					approvals: [],
-			  }
-			: organizations.find((org) => org._id === organizationId);
+	const history = useHistory();
 
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
+	const { organizationId } = useParams();
 
-	const history = useHistory();
+	const [organization, setOrganization] = useState();
+	const [user] = useGlobal("user");
+	const [venues, setVenues] = useState();
 
 	const onSubmit = (data) => {
-		console.log(data);
-		if (modal) return;
-		setModal({
-			title: "Organization Updated",
-			message:
-				"The update was successful. Please make sure to reload the check-in app to see changes.",
-			cancelText: "Close",
+		const { organization } = data;
+		// Split up the approvals into an array
+		organization.approvals = organization.approvals.split("\n");
+		// Set the correct method and path
+		const method = organization._id ? "put" : "post";
+		const path = organization._id
+			? `/api/organizations/${organization._id}`
+			: "/api/organizations";
+		httpFetch(method, path, { organization }, (error, response) => {
+			if (error) {
+				if (modal) return;
+				setModal({
+					title: "An Error Occurred",
+					message:
+						"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+					cancelText: "Try Again",
+				});
+			} else {
+				if (response.error) {
+					if (modal) return;
+					setModal({
+						title: "Update Problems",
+						message: `There was a problem with your update: ${response.error.message}`,
+						cancelText: "Try Again",
+					});
+				} else {
+					setOrganization(response);
+					if (modal) return;
+					setModal({
+						title: "Organization Updated",
+						message:
+							"The update was successful. Please make sure to reload the check-in app to see changes.",
+						cancelText: "Close",
+						onCancel: () => {
+							history.push(`/admin/dashboard/organizations/${response._id}`);
+						},
+					});
+				}
+			}
 		});
 	};
 
 	useEffect(() => {
-		setBreadcrumbs([
-			{ name: "Dashboard", path: "/admin/dashboard" },
-			{ name: "Organizations", path: "/admin/dashboard/organizations" },
-			{ name: organization.name, path: `/admin/dashboard/organizations/${organizationId}` },
-		]);
-	}, [setBreadcrumbs]);
+		if (!organization) {
+			if (organizationId === "new") {
+				setOrganization({
+					name: "New Organization",
+					description: "",
+					url: "",
+					users: [user._id],
+					approvals: [""],
+				});
+			} else {
+				httpFetch(
+					"get",
+					`/api/organizations/${organizationId}`,
+					null,
+					(error, response) => {
+						if (error) {
+							if (modal) return;
+							setModal({
+								title: "An Error Occurred",
+								message:
+									"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+								cancelText: "Try Again",
+							});
+						} else {
+							if (response.error) {
+								if (modal) return;
+								setModal({
+									title: "We Could Not Load This Organization",
+									message:
+										"There was a problem accessing this organization. You may not have rights to view or edit. Please contact an administrator if this persists.",
+									cancelText: "Try Again",
+								});
+							} else {
+								setOrganization(response);
+							}
+						}
+					}
+				);
+			}
+		} else {
+			setBreadcrumbs([
+				{ name: "Dashboard", path: "/admin/dashboard" },
+				{ name: "Organizations", path: "/admin/dashboard/organizations" },
+				{
+					name: organization.name,
+					path: `/admin/dashboard/organizations/${organizationId}`,
+				},
+			]);
+		}
+	}, [organization]);
 
-	return (
+	return !organization ? (
+		<Loading />
+	) : (
 		<Container className="Organization">
 			<Card>
 				<form
@@ -282,7 +391,7 @@ const Update = () => {
 					</CardActions>
 				</form>
 			</Card>
-			<Venue.List />
+			<Venue.List {...{ venues, setVenues }} />
 		</Container>
 	);
 };

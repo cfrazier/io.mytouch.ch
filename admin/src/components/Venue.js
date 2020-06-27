@@ -2,6 +2,7 @@ import React, { useGlobal, useEffect, useState } from "reactn";
 import "../styles/Venue.scss";
 import { useHistory, useParams, Link as RouterLink } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import useInterval from "use-interval";
 import {
 	Container,
 	Typography,
@@ -22,21 +23,19 @@ import {
 	TableCell,
 	TableBody,
 	Checkbox,
-	Link,
 	TableFooter,
 	Divider,
 } from "@material-ui/core";
-import { Delete as DeleteIcon, Airplay } from "@material-ui/icons";
+import { Delete as DeleteIcon } from "@material-ui/icons";
 import { TwitterPicker } from "react-color";
+import httpFetch from "../services/http";
+import Loading from "./Loading";
 
-const List = () => {
+const List = (props) => {
 	const history = useHistory();
 	const { register, handleSubmit, watch } = useForm();
-	const { organizationId, venueId } = useParams();
-	const [organizations, setOrganizations] = useGlobal("organizations");
-	const [venues, setVenues] = useGlobal("venues");
-
-	const organization = organizations.find((org) => org._id === organizationId);
+	const [venues, setVenues] = useState();
+	const { organizationId } = useParams();
 
 	const selected = watch("selected");
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
@@ -50,11 +49,62 @@ const List = () => {
 				"Are you certain that you would like to delete the selected venue(s)? You will not be able to reverse this once completed without working directly with a system administrator.",
 			cancelText: "Cancel",
 			completeText: "Delete",
-			onComplete: () => {},
+			onComplete: () => {
+				data.selected.forEach((venueId) => {
+					httpFetch("delete", `/api/organizations/${organizationId}/venues/${venueId}`, null, (error, response) => {
+						if (error || response.error) {
+							console.log(error, response.error);
+						} else {
+							getVenues();
+						}
+					})
+				})
+			},
 		});
 	};
 
-	return (
+	const getVenues = () => {
+		if (organizationId !== "new") {
+			httpFetch(
+				"get",
+				`/api/organizations/${organizationId}/venues`,
+				null,
+				(error, response) => {
+					if (error) {
+						if (modal) return;
+						setModal({
+							title: "An Error Occurred",
+							message:
+								"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+							cancelText: "Try Again",
+						});
+					} else {
+						if (response.error) {
+							if (modal) return;
+							setModal({
+								title: "We Could Not Load This Organization",
+								message:
+									"There was a problem accessing this organization. You may not have rights to view or edit. Please contact an administrator if this persists.",
+								cancelText: "Try Again",
+							});
+						} else {
+							setVenues(response);
+						}
+					}
+				}
+			);
+		}
+	};
+
+	useEffect(() => {
+		getVenues();
+	}, []);
+
+	useInterval(getVenues, 5000);
+
+	return !venues ? (
+		<div></div>
+	) : (
 		<Paper className="Venues">
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Toolbar className="Toolbar">
@@ -110,7 +160,7 @@ const List = () => {
 										className="Clickable"
 										onClick={() => {
 											history.push(
-												`/admin/dashboard/organizations/${organization._id}/venues/${venue._id}`
+												`/admin/dashboard/organizations/${organizationId}/venues/${venue._id}`
 											);
 										}}
 									>
@@ -126,7 +176,7 @@ const List = () => {
 										className="Clickable"
 										onClick={() => {
 											history.push(
-												`/admin/dashboard/organizations/${organization._id}/venues/${venue._id}`
+												`/admin/dashboard/organizations/${organizationId}/venues/${venue._id}`
 											);
 										}}
 									>
@@ -161,65 +211,143 @@ const List = () => {
 
 const Update = () => {
 	const { handleSubmit, register } = useForm();
+	const history = useHistory();
 
 	const { organizationId, venueId } = useParams();
-	const [user] = useGlobal("user");
-	const [organizations, setOrganizations] = useGlobal("organizations");
-	const [venues, setVenues] = useGlobal("venues");
-
-	const organization = organizations.find((org) => org._id === organizationId);
-	const venue =
-		venueId === "new"
-			? {
-					name: "New Venue",
-					available: 100,
-					capacity: 100,
-					description: "",
-					address: {
-						street1: "",
-						street2: "",
-						city: "",
-						state: "",
-						postal: "",
-						country: "",
-					},
-					color: "#40dadd",
-					organizationId: organizationId,
-			  }
-			: venues.find((ven) => ven._id === venueId);
-
-	const [showPicker, setShowPicker] = useState(false);
-	const [color, setColor] = useState(venue.color);
-
 	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
 
-	const history = useHistory();
+	const [organization, setOrganization] = useState();
+	const [venue, setVenue] = useState();
+	const [showPicker, setShowPicker] = useState(false);
+	const [color, setColor] = useState("");
 
 	const onSubmit = (data) => {
 		console.log(data);
-		if (modal) return;
-		setModal({
-			title: "Venue Updated",
-			message:
-				"The update was successful. Please make sure to reload the check-in app to see changes.",
-			cancelText: "Close",
+		const { venue } = data;
+		// Set the correct method and path
+		const method = venue._id ? "put" : "post";
+		const path = venue._id
+			? `/api/organizations/${organizationId}/venues/${venue._id}`
+			: `/api/organizations/${organizationId}/venues/`;
+		httpFetch(method, path, { venue }, (error, response) => {
+			if (error) {
+				if (modal) return;
+				setModal({
+					title: "An Error Occurred",
+					message:
+						"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+					cancelText: "Try Again",
+				});
+			} else {
+				if (response.error) {
+					if (modal) return;
+					setModal({
+						title: "Update Problems",
+						message: `There was a problem with your update: ${response.error.message}`,
+						cancelText: "Try Again",
+					});
+				} else {
+					setVenue(response);
+					if (modal) return;
+					setModal({
+						title: "Venue Updated",
+						message:
+							"The update was successful. Please make sure to reload the check-in app to see changes.",
+						cancelText: "Close",
+						onCancel: () => {
+							history.push(
+								`/admin/dashboard/organizations/${organizationId}/venues/${response._id}`
+							);
+						},
+					});
+				}
+			}
 		});
 	};
 
-	useEffect(() => {
-		setBreadcrumbs([
-			{ name: "Dashboard", path: "/admin/dashboard" },
-			{ name: "Organizations", path: "/admin/dashboard/organizations" },
-			{ name: organization.name, path: `/admin/dashboard/organizations/${organizationId}` },
-			{
-				name: venue.name,
-				path: `/admin/dashboard/organizations/${organizationId}/venues/${venueId}`,
-			},
-		]);
-	}, [setBreadcrumbs]);
+	const getVenue = () => {
+		if (venueId === "new") {
+			setVenue({
+				name: "New Venue",
+				available: 100,
+				capacity: 100,
+				description: "",
+				address: {
+					street1: "",
+					street2: "",
+					city: "",
+					state: "",
+					postal: "",
+					country: "",
+				},
+				color: "#40dadd",
+				organizationId: organizationId,
+			});
+		} else {
+			httpFetch(
+				"get",
+				`/api/organizations/${organizationId}/venues/${venueId}`,
+				null,
+				(error, response) => {
+					if (error) {
+						if (modal) return;
+						setModal({
+							title: "An Error Occurred",
+							message:
+								"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+							cancelText: "Try Again",
+						});
+					} else {
+						if (response.error) {
+							if (modal) return;
+							setModal({
+								title: "We Could Not Load This Venue",
+								message:
+									"There was a problem accessing this venue. You may not have rights to view or edit. Please contact an administrator if this persists.",
+								cancelText: "Try Again",
+							});
+						} else {
+							setVenue(response);
+						}
+					}
+				}
+			);
+		}
+	};
 
-	return (
+	useEffect(() => {
+		if (!venue) {
+			getVenue();
+		}
+		if (venue && organization) {
+			setColor(venue.color);
+			setBreadcrumbs([
+				{ name: "Dashboard", path: "/admin/dashboard" },
+				{ name: "Organizations", path: "/admin/dashboard/organizations" },
+				{
+					name: organization.name,
+					path: `/admin/dashboard/organizations/${organizationId}`,
+				},
+				{
+					name: venue.name,
+					path: `/admin/dashboard/organizations/${organizationId}/venues/${venueId}`,
+				},
+			]);
+		}
+	}, [venue, organization]);
+
+	useEffect(() => {
+		if (!organization) {
+			httpFetch("get", `/api/organizations/${organizationId}`, null, (error, response) => {
+				setOrganization(response);
+			});
+		}
+	}, []);
+
+	return !venue ? (
+		<Loading />
+	) : (
 		<Container className="Venue">
 			<Grid container spacing={3}>
 				<Grid item xs={12} lg={8}>
@@ -403,29 +531,31 @@ const Update = () => {
 						</form>
 					</Card>
 				</Grid>
-				<Grid item xs={12} lg={4}>
-					<Card className="Tools">
-						<Toolbar className="Toolbar">
-							<Typography variant="h6" component="div" className="Title">
-								Tools
-							</Typography>
-						</Toolbar>
+				{venue._id && (
+					<Grid item xs={12} lg={4}>
+						<Card className="Tools">
+							<Toolbar className="Toolbar">
+								<Typography variant="h6" component="div" className="Title">
+									Tools
+								</Typography>
+							</Toolbar>
 
-						<CardContent>
-							<Grid container spacing={3}>
-								<Grid item xs={12}>
-									<EmptyVenue {...{ venue }} />
+							<CardContent>
+								<Grid container spacing={3}>
+									<Grid item xs={12}>
+										<EmptyVenue {...{ venue }} />
+									</Grid>
+									<Grid item xs={12}>
+										<Divider />
+									</Grid>
+									<Grid item xs={12}>
+										<DownloadCheckins {...{ venue }} />
+									</Grid>
 								</Grid>
-								<Grid item xs={12}>
-									<Divider />
-								</Grid>
-								<Grid item xs={12}>
-									<DownloadCheckins {...{ venue }} />
-								</Grid>
-							</Grid>
-						</CardContent>
-					</Card>
-				</Grid>
+							</CardContent>
+						</Card>
+					</Grid>
+				)}
 			</Grid>
 		</Container>
 	);
@@ -434,16 +564,42 @@ const Update = () => {
 const EmptyVenue = (venue) => {
 	const { handleSubmit, register } = useForm();
 	const [modal, setModal] = useGlobal("modal");
+	const { organizationId, venueId } = useParams();
 
 	const onSubmit = (data) => {
-		console.log(data);
-		if (modal) return;
-		setModal({
-			title: "This Venue Was Emptied",
-			message:
-				"This venue has been emptied. Your kiosk should show open spaces within 5 seconds. If not, please check the Internet connection for your kiosk.",
-			cancelText: "Close",
-		});
+		httpFetch(
+			"put",
+			`/api/organizations/${organizationId}/venues/${venueId}/clear`,
+			null,
+			(error, response) => {
+				if (error) {
+					if (modal) return;
+					setModal({
+						title: "An Error Occurred",
+						message:
+							"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+						cancelText: "Try Again",
+					});
+				} else {
+					if (response.error) {
+						if (modal) return;
+						setModal({
+							title: "There Was a Problem With the Request",
+							message: `The request was received by the server, but an error occurred: ${response.error.message}`,
+							cancelText: "Try Again",
+						});
+					} else {
+						if (modal) return;
+						setModal({
+							title: "This Venue Was Emptied",
+							message:
+								"This venue has been emptied. Your kiosk should show open spaces within 5 seconds. If not, please check the Internet connection for your kiosk.",
+							cancelText: "Close",
+						});
+					}
+				}
+			}
+		);
 	};
 	return (
 		<Grid container spacing={3}>
@@ -509,8 +665,14 @@ const CheckOutGroup = (venue) => {
 
 const DownloadCheckins = (venue) => {
 	const { handleSubmit, register } = useForm();
+	const { organizationId, venueId } = useParams();
 	const onSubmit = (data) => {
-		console.log(data);
+		window.open(
+			`/api/organizations/${organizationId}/venues/${venueId}?format=csv${
+				data.start ? `&start=${data.start}` : ""
+			}${data.end ? `&end=${data.end}` : ""}`,
+			"_blank"
+		);
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
