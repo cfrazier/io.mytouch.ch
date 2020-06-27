@@ -51,14 +51,19 @@ const List = (props) => {
 			completeText: "Delete",
 			onComplete: () => {
 				data.selected.forEach((venueId) => {
-					httpFetch("delete", `/api/organizations/${organizationId}/venues/${venueId}`, null, (error, response) => {
-						if (error || response.error) {
-							console.log(error, response.error);
-						} else {
-							getVenues();
+					httpFetch(
+						"delete",
+						`/api/organizations/${organizationId}/venues/${venueId}`,
+						null,
+						(error, response) => {
+							if (error || response.error) {
+								console.log(error, response.error);
+							} else {
+								getVenues();
+							}
 						}
-					})
-				})
+					);
+				});
 			},
 		});
 	};
@@ -668,7 +673,7 @@ const DownloadCheckins = (venue) => {
 	const { organizationId, venueId } = useParams();
 	const onSubmit = (data) => {
 		window.open(
-			`/api/organizations/${organizationId}/venues/${venueId}?format=csv${
+			`/api/organizations/${organizationId}/venues/${venueId}/checkins?format=csv${
 				data.start ? `&start=${data.start}` : ""
 			}${data.end ? `&end=${data.end}` : ""}`,
 			"_blank"
