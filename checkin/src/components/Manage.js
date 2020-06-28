@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "reactn";
+import React, { useState, useRef, useEffect, useGlobal } from "reactn";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import {
@@ -26,15 +26,15 @@ import "../styles/Manage.scss";
 import { Autorenew, Person } from "@material-ui/icons";
 
 export const Manage = (props) => {
-	const { group, setGroup, setAlert } = props;
 	const history = useHistory();
-	const { register, handleSubmit } = useForm();
+	const { register, handleSubmit, errors, setError, clearError } = useForm();
+	const { group, setGroup } = props;
 
 	// So much state...
+	const [modal, setModal] = useGlobal("modal");
 	const [checkins, setCheckins] = useState([]);
 	const [checkinsLength, setCheckinsLength] = useState(0);
 	const [code, setCode] = useState("     ".split(""));
-	const [errors, setErrors] = useState({});
 	const [loadingVenue, setLoadingVenue] = useState(false);
 	const [venue, setVenue] = useState();
 
@@ -60,66 +60,70 @@ export const Manage = (props) => {
 		};
 		// Check for a venueCode
 		if (!/[a-z0-9]{5}/g.test(checkin.venueCode))
-			error.venueCode = "Please provide the code for the venue.";
+			setError("venueCode", "notMatch", "Please provide the code for the venue.");
 		// Check that someone was selected to attend
 		if (checkin.personId.length === 0)
-			error.personId = "Please select at least one person to check into this venue.";
-		if (Object.keys(error).length > 0) return setErrors(error);
-		setErrors({});
+			return setError(
+				"personId",
+				"notMatch",
+				"Please select at least one person to check into this venue."
+			);
 		httpFetch("post", "/api/checkin", checkin, (error, response) => {
 			if (error) {
-				setAlert({
-					title: "An Error Occurred",
-					message:
-						"Unfortunately, this happens sometimes. There was a problem communicating with the server and your information wasn't saved correctly. You can close this window and try again.",
-					button: "Close",
-				});
+				if (!modal)
+					setModal({
+						title: "An Error Occurred",
+						message:
+							"Unfortunately, this happens sometimes. There was a problem communicating with the server and your information wasn't saved correctly. You can close this window and try again.",
+						cancelText: "Close",
+					});
 				return console.log(error);
 			}
 			// A server error occurred
 			if (response.error) {
 				switch (response.error.message) {
 					case "Group not found.":
-						setAlert({
-							title: "Your Group Wasn't Found",
-							message:
-								"This is a weird one. Despite our best efforts, it looks like your group data has some issues and the information for the people in your group has been corrupted. Please update your group information.",
-							button: "Close",
-						});
+						if (!modal)
+							setModal({
+								title: "Your Group Wasn't Found",
+								message:
+									"This is a weird one. Despite our best efforts, it looks like your group data has some issues and the information for the people in your group has been corrupted. Please update your group information.",
+								cancelText: "Close",
+							});
 
 						break;
 					case "Person not found.":
-						setAlert({
+						setModal({
 							title: "A Person in Your Group is Invalid",
 							message:
 								"This is a weird one. Despite our best efforts, it looks like your group data has some issues and the information for the people in your group has been corrupted. Please update your group information.",
-							button: "Close",
+							cancelText: "Close",
 						});
 
 						break;
 					case "Venue not found.":
-						setAlert({
+						setModal({
 							title: "Incorrect Venue Code",
 							message:
 								"It appears that the venue code provided is not assigned to any venue in our records. Please check the code and try again.",
-							button: "Close",
+							cancelText: "Close",
 						});
 
 						break;
 					case "Venue full.":
-						setAlert({
+						setModal({
 							title: "The Venue is Full",
 							message:
 								"The venue you chose does not have enough open seats for your selected group. Please ask an attendant for information about additional venue options.",
-							button: "Close",
+							cancelText: "Close",
 						});
 
 						break;
 					default:
-						setAlert({
+						setModal({
 							title: "There Was a Problem",
 							message: response.error.message,
-							button: "Close",
+							cancelText: "Close",
 						});
 						break;
 				}
@@ -131,12 +135,12 @@ export const Manage = (props) => {
 				}
 				setGroup(response);
 				setVenue(null);
-				setAlert({
+				setModal({
 					title: "Check-In Received",
 					message:
 						"Your group was saved to our system and can be accessed later by returning to this page and logging in using your phone number and PIN.",
-					button: "Continue",
-					onClose: () => {
+					cancelText: "Continue",
+					onCancel: () => {
 						console.log(response);
 					},
 				});
@@ -155,7 +159,11 @@ export const Manage = (props) => {
 			httpFetch("get", `/api/venue?code=${joinedCode}`, null, (error, response) => {
 				// HTTP error
 				if (error) {
-					setErrors({ venueCode: "An error occurred communicating with the system." });
+					setError(
+						"venueCode",
+						"notMatch",
+						"An error occurred communicating with the system."
+					);
 					setVenue(null);
 					setLoadingVenue(false);
 					return console.log(error);
@@ -167,21 +175,22 @@ export const Manage = (props) => {
 					setVenue(null);
 					switch (message) {
 						case "Venue not found.":
-							setErrors({
-								venueCode: "The venue code does not match an existing venue.",
-							});
+							setError(
+								"venueCode",
+								"notMatch",
+								"The venue code does not match an existing venue."
+							);
 							break;
 						default:
-							setErrors({
-								venueCode: "An error occurred communicating with the system.",
-							});
+							setError(
+								"venueCode",
+								"notMatch",
+								"An error occurred communicating with the system."
+							);
 							break;
 					}
 				} else {
-					setErrors((oldErrors) => {
-						delete oldErrors.venueCode;
-						return oldErrors;
-					});
+					clearError("venueCode");
 					setLoadingVenue(false);
 					setVenue(response);
 				}
@@ -215,6 +224,9 @@ export const Manage = (props) => {
 		}
 	}, [group]);
 
+	useEffect(() => {
+		console.log(errors);
+	}, [errors]);
 	// Let's render some check-in stuff!!!
 	return (
 		<>
@@ -241,7 +253,11 @@ export const Manage = (props) => {
 								attendant.
 							</Typography>
 							{checkins.map((checkin) => (
-								<Card className="CheckedInVenue" key={checkin._id} variant="outlined">
+								<Card
+									className="CheckedInVenue"
+									key={checkin._id}
+									variant="outlined"
+								>
 									<CardContent>
 										<Grid container spacing={3}>
 											<Grid item xs={12} sm={3}>
@@ -254,7 +270,9 @@ export const Manage = (props) => {
 											</Grid>
 											<Grid item xs={12} sm={9}>
 												<Typography variant="h6">{checkin.name}</Typography>
-												<Typography variant="caption" gutterBottom>{checkin.description}</Typography>
+												<Typography variant="caption" gutterBottom>
+													{checkin.description}
+												</Typography>
 												<Divider></Divider>
 												{checkin.checkins.map((personName) => (
 													<div className="PersonName" key={personName}>
@@ -351,7 +369,7 @@ export const Manage = (props) => {
 									</div>
 									{errors.venueCode && (
 										<FormHelperText align="center">
-											{errors.venueCode}
+											{errors.venueCode.message}
 										</FormHelperText>
 									)}
 									{loadingVenue && (
@@ -413,7 +431,7 @@ export const Manage = (props) => {
 															key={`approval_${index}`}
 															control={
 																<Checkbox
-																	name={`approval_${index}`}
+																	name={`approval[${index}]`}
 																	color="primary"
 																	inputRef={register({
 																		required: true,
@@ -422,6 +440,11 @@ export const Manage = (props) => {
 															}
 														/>
 													)
+												)}
+												{errors.approval && (
+													<FormHelperText>
+														You must check all of the above to continue.
+													</FormHelperText>
 												)}
 											</CardContent>
 										</Card>
@@ -444,7 +467,7 @@ export const Manage = (props) => {
 														</Typography>
 														{errors.personId && (
 															<FormHelperText>
-																{errors.personId}
+																{errors.personId.message}
 															</FormHelperText>
 														)}
 													</TableCell>
@@ -505,7 +528,7 @@ export const Manage = (props) => {
 											history.push("/checkin");
 										}}
 									>
-										Done
+										Log Out
 									</Button>
 								)}
 								<Button

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "reactn";
+import React, { useState, useRef, useGlobal } from "reactn";
 import { Link, useHistory } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
@@ -8,10 +8,11 @@ import { Button, Card, CardContent, Grid, TextField, Typography } from "@materia
 import httpFetch from "../services/http";
 
 export const Login = (props) => {
-	const { setGroup, setAlert } = props;
+	const { setGroup } = props;
 	const history = useHistory();
 	const { handleSubmit, errors, control, getValues } = useForm();
 
+	const [modal, setModal] = useGlobal("modal");
 	const [pin, setPin] = useState("    ".split(""));
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
@@ -31,26 +32,26 @@ export const Login = (props) => {
 			httpFetch("get", `/api/groups/reset?phone=${phone}`, null, (error, response) => {
 				if (error) {
 					console.log(error);
-					return setAlert({
+					return setModal({
 						title: "A System Error Occurred",
 						message:
 							"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
-						button: "OK",
+						cancelText: "OK",
 					});
 				}
 				if (response.error) {
-					return setAlert({
+					return setModal({
 						title: "We Couldn't Reset Your PIN",
 						message:
 							"We weren't able to find a phone number that matches the one provided. Please check the phone number and try again.",
-						button: "OK",
+						cancelText: "OK",
 					});
 				}
-				return setAlert({
+				return setModal({
 					title: "Your PIN Was Reset",
 					message:
 						"Your PIN was reset and an email sent to the email address you provided during registration. It may take a minute for the email to be delivered, so please wait a moment before requesting another PIN reset.",
-					button: "OK",
+					cancelText: "OK",
 				});
 			});
 		}
@@ -80,11 +81,11 @@ export const Login = (props) => {
 				(error, response) => {
 					if (error) {
 						console.log(error);
-						return setAlert({
+						return setModal({
 							title: "A System Error Occurred",
 							message:
 								"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
-							button: "OK",
+							cancelText: "OK",
 						});
 					}
 					const { error: resError, message } = response;
@@ -93,29 +94,29 @@ export const Login = (props) => {
 						// Set an alert message
 						switch (message) {
 							case "Group not found.":
-								return setAlert({
+								return setModal({
 									title: "We Couldn't Find You...",
 									message:
 										"We couldn't find a group that matches both the phone number and PIN. If you haven't registered yet, please click the register link below to get started.",
-									button: "OK",
+									cancelText: "OK",
 								});
 							default:
-								return setAlert({
+								return setModal({
 									title: "A System Error Occurred",
 									message:
 										"It happens sometimes... there was a problem communicating with the server so your information couldn't be processed. Please try again later.",
-									button: "OK",
+									cancelText: "OK",
 								});
 						}
 					}
 					// We've got a group!
 					setGroup(response);
-					return setAlert({
+					return setModal({
 						title: `Welcome Back, ${response.name}!`,
 						message:
 							"We're glad to have you back. To complete your check-in process, you will need a venue code, usually displayed at the entrance of the venue. If you need assistance, please feel free to ask for help.",
-						button: "OK",
-						onClose: () => {
+						cancelText: "OK",
+						onCancel: () => {
 							history.push("/checkin/manage");
 						},
 					});

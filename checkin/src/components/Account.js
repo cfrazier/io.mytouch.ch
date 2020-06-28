@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "reactn";
+import React, { useState, useRef, useGlobal } from "reactn";
 import { useForm, Controller } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import {
@@ -23,10 +23,11 @@ import httpFetch from "../services/http";
 import "../styles/Account.scss";
 
 export const Account = (props) => {
-	const { group, setGroup, setAlert } = props;
+	const { group, setGroup } = props;
 	const history = useHistory();
 	const { register, handleSubmit, errors, control } = useForm();
 
+	const [modal, setModal] = useGlobal("modal");
 	const [pin, setPin] = useState(props.group.pin.split(""));
 	const [people, setPeople] = useState(props.group.people);
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
@@ -90,11 +91,11 @@ export const Account = (props) => {
 		httpFetch(options.method, options.path, { group: updatedGroup }, (error, response) => {
 			// An actual HTTP error occurred
 			if (error) {
-				setAlert({
+				setModal({
 					title: "An Error Occurred",
 					message:
 						"Unfortunately, this happens sometimes. There was a problem communicating with the server and your information wasn't saved correctly. You can close this window and try again.",
-					button: "Close",
+					cancelText: "Close",
 				});
 				return console.log(error);
 			}
@@ -103,20 +104,20 @@ export const Account = (props) => {
 				const { errors } = response.error;
 				// console.log(response);
 				if (errors && errors.phone)
-					setAlert({
+					setModal({
 						title: "Duplicate Phone Number",
 						message:
-							"Your group could not be created because the phone number is already in use. Please change the number or log in instead.",
-						button: "Close",
+							"Your group could not be created because the phone number is already in use. You may have already registered with this system, possibly for another event. Please try loggin in instead.",
+						cancelText: "Close",
 					});
 			} else {
 				// Only update the saved group if things actually worked
-				setAlert({
+				setModal({
 					title: "Group Updated",
 					message:
 						"Your group was saved to our system and can be accessed later by returning to this page and logging in using your phone number and PIN.",
-					button: "Continue",
-					onClose: () => {
+					cancelText: "Continue",
+					onCancel: () => {
 						setGroup(response);
 						history.push("/checkin/manage");
 					},
