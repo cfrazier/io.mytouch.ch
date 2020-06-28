@@ -302,6 +302,7 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
+											autoFocus
 											style={{ maxWidth: "3em" }}
 											onInput={(e) => {
 												updateCode(e, 0);

@@ -151,6 +151,8 @@ export const Account = (props) => {
 									defaultValue={group.name}
 									autoComplete="off"
 									fullWidth
+									required
+									autoFocus
 									inputRef={register({ required: true })}
 									helperText={errors.name ? "A group name is required." : ""}
 								/>
@@ -167,6 +169,7 @@ export const Account = (props) => {
 									variant="outlined"
 									type="tel"
 									fullWidth
+									required
 									defaultValue={group.phone}
 									autoComplete="off"
 									control={control}
@@ -187,6 +190,7 @@ export const Account = (props) => {
 									autoComplete="off"
 									defaultValue={group.email}
 									fullWidth
+									required
 									inputRef={register({ required: true })}
 								/>
 							</Grid>
@@ -297,6 +301,7 @@ export const Account = (props) => {
 															}}
 															defaultValue={person.name}
 															fullWidth
+															required
 															size="small"
 															onChange={(e) => {
 																updatePerson(

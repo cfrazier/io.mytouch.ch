@@ -149,6 +149,8 @@ export const Login = (props) => {
 								type="tel"
 								defaultValue=""
 								fullWidth
+								required
+								autoFocus
 								control={control}
 								rules={{
 									required: true,
