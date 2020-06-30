@@ -28,7 +28,7 @@ import {
 	Switch,
 	FormControlLabel,
 } from "@material-ui/core";
-import { Delete as DeleteIcon, VisibilityOff } from "@material-ui/icons";
+import { Delete as DeleteIcon, VisibilityOff, Airplay } from "@material-ui/icons";
 import { TwitterPicker } from "react-color";
 import httpFetch from "../services/http";
 import Loading from "./Loading";
@@ -191,7 +191,9 @@ const List = (props) => {
 									>
 										{venue.description}
 									</TableCell>
-									<TableCell align="center">{venue.hidden && <VisibilityOff />}</TableCell>
+									<TableCell align="center">
+										{venue.hidden && <VisibilityOff />}
+									</TableCell>
 									<TableCell align="center">{venue.code.toUpperCase()}</TableCell>
 									<TableCell align="right">
 										{venue.available}/{venue.capacity}
@@ -379,6 +381,17 @@ const Update = () => {
 								<Typography variant="h6" component="div">
 									{venue.available}/{venue.capacity}
 								</Typography>
+								{venue._id && (
+									<Tooltip title="View Kiosk">
+										<IconButton
+											onClick={() => {
+												window.open(`/kiosk/organizations/${organizationId}/venues/${venueId}`, "_blank");
+											}}
+										>
+											<Airplay />
+										</IconButton>
+									</Tooltip>
+								)}
 							</Toolbar>
 							<CardContent>
 								<Grid container spacing={3} className="Venue">

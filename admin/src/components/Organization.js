@@ -321,7 +321,7 @@ const Update = () => {
 							<Tooltip title="View Kiosk">
 								<IconButton
 									onClick={() => {
-										window.open(`/kiosk/${organizationId}`, "_blank");
+										window.open(`/kiosk/organizations/${organizationId}`, "_blank");
 									}}
 								>
 									<Airplay />
