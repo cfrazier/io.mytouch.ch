@@ -13,6 +13,12 @@ const App = () => {
 		<div className="App">
 			<Router>
 				<Switch>
+					<Route path="/kiosk/organizations/:organizationId/venues/:venueId">
+						<VenueKiosk />
+					</Route>
+					<Route path="/kiosk/organizations/:organizationId">
+						<OrganizationKiosk />
+					</Route>
 					<Route path="/kiosk/:organizationId">
 						<OrganizationKiosk />
 					</Route>
@@ -77,6 +83,48 @@ export const OrganizationKiosk = (props) => {
 							)}
 						</tbody>
 					</table>
+				</div>
+			) : (
+				<div className="Loading">Loading</div>
+			)}
+		</div>
+	);
+};
+
+export const VenueKiosk = (props) => {
+	const { organizationId, venueId } = useParams();
+	const [venue, setVenue] = useState();
+
+	const updateOrganization = () => {
+		if (organizationId) {
+			httpFetch(
+				"get",
+				`/api/organizations/${organizationId}/venues/${venueId}`,
+				null,
+				(error, response) => {
+					if (error) return console.log(error);
+					if (response.error) return console.log(response.error);
+					setVenue(response);
+				}
+			);
+		}
+	};
+
+	useInterval(updateOrganization, 5000);
+
+	return (
+		<div className="VenueKiosk">
+			{venue ? (
+				<div className="Kiosk">
+					<div className="Available" style={{ backgroundColor: venue.color }}>
+						{venue.available}
+					</div>
+					<div className="Meta">
+						<div className="Name">{venue.name}</div>
+						<div className="Description">{venue.description}</div>
+						<div className="Code">{venue.code.toUpperCase()}</div>
+						<div className="Caption">Venue Code</div>
+					</div>
 				</div>
 			) : (
 				<div className="Loading">Loading</div>
