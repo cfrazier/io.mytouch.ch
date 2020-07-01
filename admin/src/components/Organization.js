@@ -227,7 +227,6 @@ const Update = () => {
 						cancelText: "Try Again",
 					});
 				} else {
-					setOrganization(response);
 					if (modal) return;
 					setModal({
 						title: "Organization Updated",
@@ -235,6 +234,7 @@ const Update = () => {
 							"The update was successful. Please make sure to reload the check-in app to see changes.",
 						cancelText: "Close",
 						onCancel: () => {
+							setOrganization(response);
 							history.push(`/admin/dashboard/organizations/${response._id}`);
 						},
 					});
@@ -299,100 +299,200 @@ const Update = () => {
 		<Loading />
 	) : (
 		<Container className="Organization">
-			<Card>
-				<form
-					className="OrganizationForm"
-					onSubmit={handleSubmit(onSubmit)}
-					autoComplete="off"
-				>
-					{organization._id && (
-						<input
-							type="hidden"
-							name="organization[_id]"
-							ref={register}
-							value={organization._id}
-						/>
-					)}
-					<Toolbar className="Toolbar">
-						<Typography variant="h6" component="div" className="Title">
-							Organization Details
-						</Typography>
-						{organization._id && (
-							<Tooltip title="View Kiosk">
-								<IconButton
-									onClick={() => {
-										window.open(`/kiosk/organizations/${organizationId}`, "_blank");
-									}}
-								>
-									<Airplay />
-								</IconButton>
-							</Tooltip>
-						)}
-					</Toolbar>
-					<CardContent>
-						<Grid container spacing={3}>
-							<Grid item xs={12}>
-								<TextField
-									variant="standard"
-									fullWidth
-									required
-									autoFocus
-									defaultValue={organization.name}
-									label="Organization Name"
-									name="organization[name]"
-									type="text"
-									inputRef={register({ required: true })}
+			<Grid container spacing={3}>
+				<Grid item xs={12} sm={8}>
+					<Card>
+						<form
+							className="OrganizationForm"
+							onSubmit={handleSubmit(onSubmit)}
+							autoComplete="off"
+						>
+							{organization._id && (
+								<input
+									type="hidden"
+									name="organization[_id]"
+									ref={register}
+									value={organization._id}
 								/>
-							</Grid>
-							<Grid item xs={12} md={6}>
-								<TextField
-									variant="standard"
-									fullWidth
-									defaultValue={organization.description}
-									label="Description or Tagline"
-									name="organization[description]"
-									type="text"
-									inputRef={register}
-								/>
-							</Grid>
-							<Grid item xs={12} md={6}>
-								<TextField
-									variant="standard"
-									fullWidth
-									required
-									defaultValue={organization.url}
-									label="Website URL"
-									name="organization[url]"
-									type="url"
-									inputRef={register({ required: true })}
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<Typography variant="h6" gutterBottom>
-									Approvals
+							)}
+							<Toolbar className="Toolbar">
+								<Typography variant="h6" component="div" className="Title">
+									Organization Details
 								</Typography>
-								<TextField
-									variant="outlined"
-									fullWidth
-									multiline
-									defaultValue={organization.approvals.join("\n")}
-									name="organization[approvals]"
-									type="text"
-									inputRef={register}
-									helperText="Each line is treated as a separate approval."
-								/>
-							</Grid>
-						</Grid>
-					</CardContent>
-					<CardActions className="Actions">
-						<Button type="submit" color="primary">
-							Update
-						</Button>
-					</CardActions>
-				</form>
-			</Card>
+								{organization._id && (
+									<Tooltip title="View Kiosk">
+										<IconButton
+											onClick={() => {
+												window.open(
+													`/kiosk/organizations/${organizationId}`,
+													"_blank"
+												);
+											}}
+										>
+											<Airplay />
+										</IconButton>
+									</Tooltip>
+								)}
+							</Toolbar>
+							<CardContent>
+								<Grid container spacing={3}>
+									<Grid item xs={12}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											defaultValue={organization.name}
+											label="Organization Name"
+											name="organization[name]"
+											type="text"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											defaultValue={organization.description}
+											label="Description or Tagline"
+											name="organization[description]"
+											type="text"
+											inputRef={register}
+										/>
+									</Grid>
+									<Grid item xs={12} md={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											required
+											defaultValue={organization.url}
+											label="Website URL"
+											name="organization[url]"
+											type="url"
+											inputRef={register({ required: true })}
+										/>
+									</Grid>
+									<Grid item xs={12}>
+										<Typography variant="h6" gutterBottom>
+											Approvals
+										</Typography>
+										<TextField
+											variant="outlined"
+											fullWidth
+											multiline
+											defaultValue={organization.approvals.join("\n")}
+											name="organization[approvals]"
+											type="text"
+											inputRef={register}
+											helperText="Each line is treated as a separate approval."
+										/>
+									</Grid>
+								</Grid>
+							</CardContent>
+							<CardActions className="Actions">
+								<Button type="submit" color="primary">
+									Update
+								</Button>
+							</CardActions>
+						</form>
+					</Card>
+				</Grid>
+				{organization._id && (
+					<Grid item xs={12} sm={4}>
+						<Users userIds={organization.users} />
+					</Grid>
+				)}
+			</Grid>
 			<Venue.List {...{ venues, setVenues }} />
 		</Container>
+	);
+};
+
+const Users = () => {
+	const { organizationId } = useParams();
+	const [modal, setModal] = useGlobal("modal");
+	const [auth] = useGlobal("user");
+	const { register, handleSubmit, watch } = useForm();
+	const selected = watch("selected");
+
+	const [users, setUsers] = useState([]);
+
+	useEffect(() => {
+		httpFetch("get", `/api/organizations/${organizationId}/users`, null, (error, response) => {
+			if (error) {
+				if (modal) return;
+				setModal({
+					title: "An Error Occurred",
+					message:
+						"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+					cancelText: "Try Again",
+				});
+			} else {
+				if (response.error) {
+					if (modal) return;
+					setModal({
+						title: "We Could Not Load This Organization",
+						message:
+							"There was a problem accessing this organization. You may not have rights to view or edit. Please contact an administrator if this persists.",
+						cancelText: "Try Again",
+					});
+				} else {
+					setUsers(response);
+				}
+			}
+		});
+	}, [organizationId]);
+
+	const onSubmit = (data) => {
+		console.log(data);
+	};
+	return (
+		<Paper className="Users">
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<Toolbar className="Toolbar">
+					<Typography variant="h6" component="div" className="Title">
+						Users
+					</Typography>
+					{(selected && selected.length) > 0 && (
+						<Tooltip title="Delete">
+							<IconButton onClick={handleSubmit(onSubmit)}>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
+					)}
+				</Toolbar>
+				<TableContainer>
+					<Table>
+						<TableBody>
+							{users.map((user) =>
+								auth._id !== user._id ? (
+									<TableRow key={user._id}>
+										<TableCell padding="checkbox">
+											<Checkbox
+												name="selected"
+												inputRef={register}
+												value={user._id}
+											/>
+										</TableCell>
+										<TableCell>{user.name}</TableCell>
+									</TableRow>
+								) : (
+									<TableRow key={user._id}>
+										<TableCell colSpan={2}>{user.name}</TableCell>
+									</TableRow>
+								)
+							)}
+						</TableBody>
+						<TableFooter>
+							<TableRow>
+								<TableCell colSpan="6" className="Actions">
+									<Button color="primary">Add User</Button>
+								</TableCell>
+							</TableRow>
+						</TableFooter>
+					</Table>
+				</TableContainer>
+			</form>
+		</Paper>
 	);
 };
 

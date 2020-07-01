@@ -173,6 +173,7 @@ const initRoutes = (app) => {
 	app.get("/api/organizations/:organizationId/venues", Routes.venue.list);
 	app.post("/api/organizations/:organizationId/venues", Routes.venue.create);
 	app.get("/api/organizations/:organizationId/venues/:venueId", Routes.venue.read);
+	app.put("/api/organizations/:organizationId/venues/:venueId/code", Routes.venue.updateCode);
 	app.put("/api/organizations/:organizationId/venues/:venueId", Routes.venue.update);
 	app.delete("/api/organizations/:organizationId/venues/:venueId", Routes.venue.delete);
 

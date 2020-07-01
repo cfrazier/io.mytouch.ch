@@ -278,6 +278,44 @@ const Update = () => {
 		});
 	};
 
+	const onResetCode = () => {
+		httpFetch(
+			"put",
+			`/api/organizations/${organizationId}/venues/${venueId}/code`,
+			null,
+			(error, response) => {
+				if (error) {
+					if (modal) return;
+					setModal({
+						title: "An Error Occurred",
+						message:
+							"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+						cancelText: "Try Again",
+					});
+				} else {
+					if (response.error) {
+						if (modal) return;
+						setModal({
+							title: "Update Problems",
+							message: `There was a problem with your update: ${response.error.message}`,
+							cancelText: "Try Again",
+						});
+					} else {
+						console.log(response);
+						setVenue(response);
+						if (modal) return;
+						setModal({
+							title: "Venue Code Updated",
+							message:
+								"The update was successful. Please make sure to reload the check-in app to see changes.",
+							cancelText: "Close",
+						});
+					}
+				}
+			}
+		);
+	};
+
 	const getVenue = () => {
 		if (venueId === "new") {
 			setVenue({
@@ -295,6 +333,7 @@ const Update = () => {
 				},
 				color: "#40dadd",
 				hidden: false,
+				code: "",
 				organizationId: organizationId,
 			});
 			setColor("#40dadd");
@@ -385,7 +424,10 @@ const Update = () => {
 									<Tooltip title="View Kiosk">
 										<IconButton
 											onClick={() => {
-												window.open(`/kiosk/organizations/${organizationId}/venues/${venueId}`, "_blank");
+												window.open(
+													`/kiosk/organizations/${organizationId}/venues/${venueId}`,
+													"_blank"
+												);
 											}}
 										>
 											<Airplay />
@@ -440,6 +482,17 @@ const Update = () => {
 											helperText="The maximum number of people allowed in this venue."
 										/>
 									</Grid>
+									<Grid item xs={12} sm={6}>
+										<TextField
+											variant="standard"
+											fullWidth
+											disabled
+											value={venue.code}
+											label="Venue Code"
+											name="venue[capacity]"
+											helperText="You can reset the code using the link below."
+										/>
+									</Grid>
 									<Grid item xs={6}>
 										<TextField
 											variant="outlined"
@@ -459,7 +512,6 @@ const Update = () => {
 													borderRadius: "5px",
 												},
 											}}
-											helperText="Click to select a color."
 										/>
 										{showPicker && (
 											<TwitterPicker
@@ -571,6 +623,11 @@ const Update = () => {
 								<Button type="submit" color="primary">
 									Update
 								</Button>
+								{venue._id && (
+									<Button color="inherit" onClick={onResetCode}>
+										Reset Code
+									</Button>
+								)}
 							</CardActions>
 						</form>
 					</Card>
