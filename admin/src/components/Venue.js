@@ -232,7 +232,7 @@ const Update = () => {
 	const [venue, setVenue] = useState();
 	const [showPicker, setShowPicker] = useState(false);
 	const [color, setColor] = useState("");
-	const [hidden, setHidden] = useState(false);
+	const [hidden, setHidden] = useState(true);
 
 	const onSubmit = (data) => {
 		const { venue } = data;
