@@ -300,7 +300,6 @@ const Update = () => {
 							cancelText: "Try Again",
 						});
 					} else {
-						console.log(response);
 						setVenue(response);
 						if (modal) return;
 						setModal({

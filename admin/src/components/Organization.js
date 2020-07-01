@@ -58,7 +58,6 @@ const List = () => {
 					cancelText: "Try Again",
 				});
 			} else {
-				console.log(response);
 				setOrganizations(response);
 			}
 		});
