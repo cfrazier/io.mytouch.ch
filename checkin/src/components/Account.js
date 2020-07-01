@@ -33,13 +33,20 @@ export const Account = (props) => {
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
 	const updatePIN = (event, index) => {
-		let num = pinInput[index].current.value.substr(-1);
-		pinInput[index].current.value = num;
-		if (index < 3) pinInput[index + 1].current.focus();
-		if (/\d/g.test(num)) {
-			setPin((pin) => pin.map((value, pindex) => (pindex === index ? num : value)));
+		const { key } = event;
+		event.preventDefault();
+		if (key === "Backspace") {
+			pinInput[index].current.value = "";
+			if (index > 0) pinInput[index - 1].current.focus();
+			return;
+		}
+		if (/[0-9]/g.test(key)) {
+			pinInput[index].current.value = key;
+			setPin((pin) => pin.map((value, pindex) => (pindex === index ? key : value)));
+			if (index < 3) pinInput[index + 1].current.focus();
 		}
 	};
+
 
 	const formatPhone = ([e]) => {
 		const {
@@ -192,6 +199,7 @@ export const Account = (props) => {
 									fullWidth
 									required
 									inputRef={register({ required: true })}
+									helperText={errors.email ? "An email is required." : ""}
 								/>
 							</Grid>
 							<Grid item xs={12} className="PINFieldset">
@@ -210,11 +218,8 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
-										onInput={(e) => {
+										onKeyDown={(e) => {
 											updatePIN(e, 0);
-										}}
-										onClick={() => {
-											pinInput[0].current.select();
 										}}
 									/>
 									<TextField
@@ -224,11 +229,8 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
-										onInput={(e) => {
+										onKeyDown={(e) => {
 											updatePIN(e, 1);
-										}}
-										onClick={() => {
-											pinInput[1].current.select();
 										}}
 									/>
 									<TextField
@@ -238,11 +240,8 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
-										onInput={(e) => {
+										onKeyDown={(e) => {
 											updatePIN(e, 2);
-										}}
-										onClick={() => {
-											pinInput[2].current.select();
 										}}
 									/>
 									<TextField
@@ -252,11 +251,8 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
-										onInput={(e) => {
+										onKeyDown={(e) => {
 											updatePIN(e, 3);
-										}}
-										onClick={() => {
-											pinInput[3].current.select();
 										}}
 									/>
 								</div>

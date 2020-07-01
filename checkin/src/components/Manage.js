@@ -43,10 +43,18 @@ export const Manage = (props) => {
 
 	// Generate the actual code
 	const updateCode = (event, index) => {
-		const char = codeInput[index].current.value.substr(-1).toUpperCase();
-		codeInput[index].current.value = char;
-		if (index < 4) codeInput[index + 1].current.focus();
-		setCode((code) => code.map((value, cindex) => (cindex === index ? char : value)));
+		const { key } = event;
+		event.preventDefault();
+		if (key === "Backspace") {
+			codeInput[index].current.value = "";
+			if (index > 0) codeInput[index - 1].current.focus();
+			return;
+		}
+		if (/[a-zA-Z]/g.test(key)) {
+			codeInput[index].current.value = key.toUpperCase();
+			setCode((code) => code.map((value, cindex) => (cindex === index ? key.toUpperCase() : value)));
+			if (index < 4) codeInput[index + 1].current.focus();
+		}
 	};
 
 	// Handle form submissions
@@ -54,7 +62,7 @@ export const Manage = (props) => {
 		const error = {};
 		data.people = data.people ? data.people : [];
 		const checkin = {
-			venueCode: code.join("").toLowerCase(),
+			venueCode: code.join(""),
 			groupId: group._id,
 			personId: data.people.filter((id) => id !== false),
 		};
@@ -153,8 +161,9 @@ export const Manage = (props) => {
 	}, [group._id, history]);
 
 	useEffect(() => {
-		const joinedCode = code.join("").toLowerCase();
-		if (/[a-z0-9]{5}/g.test(joinedCode)) {
+		const joinedCode = code.join("");
+		console.log(joinedCode);
+		if (/[A-Z]{5}/g.test(joinedCode)) {
 			setLoadingVenue(true);
 			httpFetch("get", `/api/venue?code=${joinedCode}`, null, (error, response) => {
 				// HTTP error
@@ -304,7 +313,7 @@ export const Manage = (props) => {
 											autoComplete="off"
 											autoFocus
 											style={{ maxWidth: "3em" }}
-											onInput={(e) => {
+											onKeyDown={(e) => {
 												updateCode(e, 0);
 											}}
 											onClick={() => {
@@ -318,7 +327,7 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onInput={(e) => {
+											onKeyDown={(e) => {
 												updateCode(e, 1);
 											}}
 											onClick={() => {
@@ -332,7 +341,7 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onInput={(e) => {
+											onKeyDown={(e) => {
 												updateCode(e, 2);
 											}}
 											onClick={() => {
@@ -346,7 +355,7 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onInput={(e) => {
+											onKeyDown={(e) => {
 												updateCode(e, 3);
 											}}
 											onClick={() => {
@@ -360,7 +369,7 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onInput={(e) => {
+											onKeyDown={(e) => {
 												updateCode(e, 4);
 											}}
 											onClick={() => {
