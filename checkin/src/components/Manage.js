@@ -48,6 +48,7 @@ export const Manage = (props) => {
 			target: { value },
 		} = event;
 		const key = value.substr(-1).toUpperCase();
+		console.log(key);
 		if (/[A-Z]/g.test(key)) {
 			codeInput[index].current.value = key;
 			setCode((code) => code.map((value, cindex) => (cindex === index ? key : value)));
@@ -58,7 +59,6 @@ export const Manage = (props) => {
 	};
 
 	const handleCodeKeyDown = (event, index) => {
-		event.preventDefault();
 		const { key } = event;
 		if (key == "Backspace") {
 			codeInput[index].current.value = "";
