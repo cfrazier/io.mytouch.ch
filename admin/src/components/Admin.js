@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Admin() {
 	const classes = useStyles();
 	const history = useHistory();
-	const [cookies, setCookie, removeCookie] = useCookies();
+	const [cookies, , removeCookie] = useCookies();
 
 	const [user, setUser] = useGlobal("user");
 	const [modal, setModal] = useGlobal("modal");

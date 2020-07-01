@@ -3,15 +3,13 @@ import "../styles/Login.scss";
 import { useHistory, Link as RouterLink } from "react-router-dom";
 import { Container, Typography, TextField, Grid, Button, Link } from "@material-ui/core";
 import { useForm } from "react-hook-form";
-import { useCookies } from "react-cookie";
 import Copyright from "./Copyright";
 import httpFetch from "../services/http";
 
 const Login = () => {
 	const history = useHistory();
 	const { handleSubmit, register, getValues } = useForm();
-	const [cookies, setCookie, removeCookie] = useCookies();
-	const [user, setUser] = useGlobal("user");
+	const [, setUser] = useGlobal("user");
 	const [modal, setModal] = useGlobal("modal");
 
 	const sendUserToken = () => {

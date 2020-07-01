@@ -1,4 +1,4 @@
-import React, { useState, useRef, useGlobal, useEffect } from "reactn";
+import React, { useState, useRef, useGlobal } from "reactn";
 import { Link, useHistory } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
@@ -12,7 +12,7 @@ export const Login = (props) => {
 	const history = useHistory();
 	const { handleSubmit, errors, control, getValues } = useForm();
 
-	const [modal, setModal] = useGlobal("modal");
+	const [, setModal] = useGlobal("modal");
 	const [pin, setPin] = useState("    ".split(""));
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
@@ -33,7 +33,7 @@ export const Login = (props) => {
 
 	const handlePinKeyDown = (event, index) => {
 		const { key } = event;
-		if (key == "Backspace") {
+		if (key === "Backspace") {
 			pinInput[index].current.value = "";
 			setPin((pin) => pin.map((value, pindex) => (pindex === index ? "" : value)));
 			if (index > 0) pinInput[index - 1].current.focus();

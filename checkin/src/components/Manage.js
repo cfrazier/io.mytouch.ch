@@ -59,7 +59,7 @@ export const Manage = (props) => {
 
 	const handleCodeKeyDown = (event, index) => {
 		const { key } = event;
-		if (key == "Backspace") {
+		if (key === "Backspace") {
 			codeInput[index].current.value = "";
 			setCode((code) => code.map((value, cindex) => (cindex === index ? "" : value)));
 			if (index > 0) codeInput[index - 1].current.focus();
@@ -73,7 +73,6 @@ export const Manage = (props) => {
 
 	// Handle form submissions
 	const onSubmit = (data) => {
-		const error = {};
 		data.people = data.people ? data.people : [];
 		const checkin = {
 			venueCode: code.join(""),
@@ -222,7 +221,7 @@ export const Manage = (props) => {
 			setLoadingVenue(false);
 			setVenue();
 		}
-	}, [code]);
+	}, [code]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		if (group._id) {

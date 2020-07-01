@@ -27,7 +27,7 @@ export const Account = (props) => {
 	const history = useHistory();
 	const { register, handleSubmit, errors, control } = useForm();
 
-	const [modal, setModal] = useGlobal("modal");
+	const [, setModal] = useGlobal("modal");
 	const [pin, setPin] = useState(props.group.pin.split(""));
 	const [people, setPeople] = useState(props.group.people);
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
@@ -49,7 +49,7 @@ export const Account = (props) => {
 
 	const handlePinKeyDown = (event, index) => {
 		const { key } = event;
-		if (key == "Backspace") {
+		if (key === "Backspace") {
 			pinInput[index].current.value = "";
 			setPin((pin) => pin.map((value, pindex) => (pindex === index ? "" : value)));
 			if (index > 0) pinInput[index - 1].current.focus();

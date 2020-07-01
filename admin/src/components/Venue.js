@@ -40,7 +40,6 @@ const List = (props) => {
 	const { organizationId } = useParams();
 
 	const selected = watch("selected");
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
 
 	const onSubmit = (data) => {
@@ -105,7 +104,7 @@ const List = (props) => {
 
 	useEffect(() => {
 		getVenues();
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useInterval(getVenues, 5000);
 
@@ -222,11 +221,11 @@ const List = (props) => {
 };
 
 const Update = () => {
-	const { handleSubmit, register, watch } = useForm();
+	const { handleSubmit, register } = useForm();
 	const history = useHistory();
 
 	const { organizationId, venueId } = useParams();
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const [, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
 
 	const [organization, setOrganization] = useState();
@@ -391,7 +390,7 @@ const Update = () => {
 				},
 			]);
 		}
-	}, [venue, organization]);
+	}, [venue, organization, venueId, organizationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		if (!organization) {
@@ -399,7 +398,7 @@ const Update = () => {
 				setOrganization(response);
 			});
 		}
-	}, []);
+	}, [organization, organizationId]);
 
 	return !venue ? (
 		<Loading />
@@ -663,7 +662,6 @@ const Update = () => {
 };
 
 const EmptyVenue = (venue) => {
-	const { handleSubmit, register } = useForm();
 	const [modal, setModal] = useGlobal("modal");
 	const { organizationId, venueId } = useParams();
 
@@ -720,6 +718,7 @@ const EmptyVenue = (venue) => {
 	);
 };
 
+/*
 const CheckOutGroup = (venue) => {
 	const { handleSubmit, register } = useForm();
 	const [modal, setModal] = useGlobal("modal");
@@ -763,6 +762,7 @@ const CheckOutGroup = (venue) => {
 		</form>
 	);
 };
+*/
 
 const DownloadCheckins = (venue) => {
 	const { handleSubmit, register } = useForm();

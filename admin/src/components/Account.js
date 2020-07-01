@@ -18,7 +18,7 @@ const Account = () => {
 	const { handleSubmit, register, watch, errors } = useForm();
 	const [user, setUser] = useGlobal("user");
 	const [modal, setModal] = useGlobal("modal");
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const [, setBreadcrumbs] = useGlobal("breadcrumbs");
 
 	const password = watch("user[password]");
 

@@ -34,7 +34,7 @@ import httpFetch from "../services/http";
 const List = () => {
 	const history = useHistory();
 	const { register, handleSubmit, watch } = useForm();
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const [, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
 
 	const [organizations, setOrganizations] = useState();
@@ -68,7 +68,7 @@ const List = () => {
 		if (!organizations) {
 			getOrganizations();
 		}
-	}, [organizations]);
+	}, [organizations]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const onSubmit = (data) => {
 		if (modal) return;
@@ -192,7 +192,7 @@ const Update = () => {
 	const { handleSubmit, register } = useForm();
 	const history = useHistory();
 
-	const [breadcrumbs, setBreadcrumbs] = useGlobal("breadcrumbs");
+	const [, setBreadcrumbs] = useGlobal("breadcrumbs");
 	const [modal, setModal] = useGlobal("modal");
 	const { organizationId } = useParams();
 
@@ -293,7 +293,7 @@ const Update = () => {
 				},
 			]);
 		}
-	}, [organization]);
+	}, [organization, organizationId, modal, user._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return !organization ? (
 		<Loading />
@@ -440,7 +440,7 @@ const Users = () => {
 				}
 			}
 		});
-	}, [organizationId]);
+	}, [organizationId, modal]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const onSubmit = (data) => {
 		console.log(data);

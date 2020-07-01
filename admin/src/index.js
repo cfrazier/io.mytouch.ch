@@ -4,8 +4,6 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-import data from "./data.json"
-
 setGlobal({
 	user: null,
 	modal: null,
