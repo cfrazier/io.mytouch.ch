@@ -37,6 +37,7 @@ export const Account = (props) => {
 		event.preventDefault();
 		if (key === "Backspace") {
 			pinInput[index].current.value = "";
+			setPin((pin) => pin.map((value, pindex) => (pindex === index ? "" : value)));
 			if (index > 0) pinInput[index - 1].current.focus();
 			return;
 		}
@@ -86,6 +87,16 @@ export const Account = (props) => {
 	const onSubmit = (updatedGroup) => {
 		// Join up the PIN into something... pin-ish
 		updatedGroup.pin = pin.join("");
+
+		if (!group._id && !/\d{4}/g.test(updatedGroup.pin)) {
+			setModal({
+				title: "A PIN is required to continue",
+				message:
+					"In order to check in to your event, you will need to have a valid PIN to log into your account. Please provide a 4 digit PIN that you will remember in the space provided.",
+				cancelText: "Try Again",
+			});
+			return;
+		}
 
 		// Save the ID so we can sync things back up
 		if (group._id) updatedGroup._id = group._id;

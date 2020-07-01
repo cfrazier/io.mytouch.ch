@@ -67,7 +67,7 @@ export const Manage = (props) => {
 			personId: data.people.filter((id) => id !== false),
 		};
 		// Check for a venueCode
-		if (!/[a-z0-9]{5}/g.test(checkin.venueCode))
+		if (!/[A-Z]{5}/g.test(checkin.venueCode))
 			setError("venueCode", "notMatch", "Please provide the code for the venue.");
 		// Check that someone was selected to attend
 		if (checkin.personId.length === 0)
