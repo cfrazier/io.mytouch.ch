@@ -32,22 +32,34 @@ export const Account = (props) => {
 	const [people, setPeople] = useState(props.group.people);
 	const pinInput = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
-	const updatePIN = (event, index) => {
-		const { key } = event;
+	const handlePinChange = (event, index) => {
 		event.preventDefault();
-		if (key === "Backspace") {
-			pinInput[index].current.value = "";
-			setPin((pin) => pin.map((value, pindex) => (pindex === index ? "" : value)));
-			if (index > 0) pinInput[index - 1].current.focus();
-			return;
-		}
+		const {
+			target: { value },
+		} = event;
+		const key = value.substr(-1);
 		if (/[0-9]/g.test(key)) {
 			pinInput[index].current.value = key;
 			setPin((pin) => pin.map((value, pindex) => (pindex === index ? key : value)));
 			if (index < 3) pinInput[index + 1].current.focus();
+		} else {
+			pinInput[index].current.value = "";
 		}
 	};
 
+	const handlePinKeyDown = (event, index) => {
+		const { key } = event;
+		if (key == "Backspace") {
+			pinInput[index].current.value = "";
+			setPin((pin) => pin.map((value, pindex) => (pindex === index ? "" : value)));
+			if (index > 0) pinInput[index - 1].current.focus();
+		}
+	};
+
+	const handlePinFocus = (event, index) => {
+		event.preventDefault();
+		event.target.select();
+	};
 
 	const formatPhone = ([e]) => {
 		const {
@@ -229,8 +241,14 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
+										onChange={(e) => {
+											handlePinChange(e, 0);
+										}}
+										onFocus={(e) => {
+											handlePinFocus(e, 0);
+										}}
 										onKeyDown={(e) => {
-											updatePIN(e, 0);
+											handlePinKeyDown(e, 0);
 										}}
 									/>
 									<TextField
@@ -240,8 +258,14 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
+										onChange={(e) => {
+											handlePinChange(e, 1);
+										}}
+										onFocus={(e) => {
+											handlePinFocus(e, 1);
+										}}
 										onKeyDown={(e) => {
-											updatePIN(e, 1);
+											handlePinKeyDown(e, 1);
 										}}
 									/>
 									<TextField
@@ -251,8 +275,14 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
+										onChange={(e) => {
+											handlePinChange(e, 2);
+										}}
+										onFocus={(e) => {
+											handlePinFocus(e, 2);
+										}}
 										onKeyDown={(e) => {
-											updatePIN(e, 2);
+											handlePinKeyDown(e, 2);
 										}}
 									/>
 									<TextField
@@ -262,8 +292,14 @@ export const Account = (props) => {
 										variant="outlined"
 										autoComplete="off"
 										style={{ maxWidth: "3em" }}
+										onChange={(e) => {
+											handlePinChange(e, 3);
+										}}
+										onFocus={(e) => {
+											handlePinFocus(e, 3);
+										}}
 										onKeyDown={(e) => {
-											updatePIN(e, 3);
+											handlePinKeyDown(e, 3);
 										}}
 									/>
 								</div>

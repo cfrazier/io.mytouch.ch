@@ -37,7 +37,7 @@ const initHTTP = (callback) => {
 	// Get CORS out of the way
 	app.use(
 		cors({
-			origin: [new RegExp(`${config.server.hostname}(\:[0-9]+)?`)],
+			origin: [new RegExp(`(${config.server.hostname}|192.168.[0-9]+.[0-9]+)(\:[0-9]+)?`)],
 			credentials: true,
 		})
 	);

@@ -42,19 +42,34 @@ export const Manage = (props) => {
 	const codeInput = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
 
 	// Generate the actual code
-	const updateCode = (event, index) => {
-		const { key } = event;
+	const handleCodeChange = (event, index) => {
 		event.preventDefault();
-		if (key === "Backspace") {
-			codeInput[index].current.value = "";
-			if (index > 0) codeInput[index - 1].current.focus();
-			return;
-		}
-		if (/[a-zA-Z]/g.test(key)) {
-			codeInput[index].current.value = key.toUpperCase();
-			setCode((code) => code.map((value, cindex) => (cindex === index ? key.toUpperCase() : value)));
+		const {
+			target: { value },
+		} = event;
+		const key = value.substr(-1).toUpperCase();
+		if (/[A-Z]/g.test(key)) {
+			codeInput[index].current.value = key;
+			setCode((code) => code.map((value, cindex) => (cindex === index ? key : value)));
 			if (index < 4) codeInput[index + 1].current.focus();
+		} else {
+			codeInput[index].current.value = "";
 		}
+	};
+
+	const handleCodeKeyDown = (event, index) => {
+		event.preventDefault();
+		const { key } = event;
+		if (key == "Backspace") {
+			codeInput[index].current.value = "";
+			setCode((code) => code.map((value, cindex) => (cindex === index ? "" : value)));
+			if (index > 0) codeInput[index - 1].current.focus();
+		}
+	};
+
+	const handleCodeFocus = (event, index) => {
+		event.preventDefault();
+		event.target.select();
 	};
 
 	// Handle form submissions
@@ -162,7 +177,6 @@ export const Manage = (props) => {
 
 	useEffect(() => {
 		const joinedCode = code.join("");
-		console.log(joinedCode);
 		if (/[A-Z]{5}/g.test(joinedCode)) {
 			setLoadingVenue(true);
 			httpFetch("get", `/api/venue?code=${joinedCode}`, null, (error, response) => {
@@ -204,6 +218,10 @@ export const Manage = (props) => {
 					setVenue(response);
 				}
 			});
+		} else {
+			clearError("venueCode");
+			setLoadingVenue(false);
+			setVenue();
 		}
 	}, [code]);
 
@@ -311,13 +329,15 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
-											autoFocus
 											style={{ maxWidth: "3em" }}
-											onKeyDown={(e) => {
-												updateCode(e, 0);
+											onChange={(e) => {
+												handleCodeChange(e, 0);
 											}}
-											onClick={() => {
-												codeInput[0].current.select();
+											onFocus={(e) => {
+												handleCodeFocus(e, 0);
+											}}
+											onKeyDown={(e) => {
+												handleCodeKeyDown(e, 0);
 											}}
 										/>
 										<TextField
@@ -327,11 +347,14 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyDown={(e) => {
-												updateCode(e, 1);
+											onChange={(e) => {
+												handleCodeChange(e, 1);
 											}}
-											onClick={() => {
-												codeInput[1].current.select();
+											onFocus={(e) => {
+												handleCodeFocus(e, 1);
+											}}
+											onKeyDown={(e) => {
+												handleCodeKeyDown(e, 1);
 											}}
 										/>
 										<TextField
@@ -341,11 +364,14 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyDown={(e) => {
-												updateCode(e, 2);
+											onChange={(e) => {
+												handleCodeChange(e, 2);
 											}}
-											onClick={() => {
-												codeInput[2].current.select();
+											onFocus={(e) => {
+												handleCodeFocus(e, 2);
+											}}
+											onKeyDown={(e) => {
+												handleCodeKeyDown(e, 2);
 											}}
 										/>
 										<TextField
@@ -355,11 +381,14 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyDown={(e) => {
-												updateCode(e, 3);
+											onChange={(e) => {
+												handleCodeChange(e, 3);
 											}}
-											onClick={() => {
-												codeInput[3].current.select();
+											onFocus={(e) => {
+												handleCodeFocus(e, 3);
+											}}
+											onKeyDown={(e) => {
+												handleCodeKeyDown(e, 3);
 											}}
 										/>
 										<TextField
@@ -369,11 +398,14 @@ export const Manage = (props) => {
 											variant="outlined"
 											autoComplete="off"
 											style={{ maxWidth: "3em" }}
-											onKeyDown={(e) => {
-												updateCode(e, 4);
+											onChange={(e) => {
+												handleCodeChange(e, 4);
 											}}
-											onClick={() => {
-												codeInput[4].current.select();
+											onFocus={(e) => {
+												handleCodeFocus(e, 4);
+											}}
+											onKeyDown={(e) => {
+												handleCodeKeyDown(e, 4);
 											}}
 										/>
 									</div>
