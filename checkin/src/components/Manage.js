@@ -329,6 +329,7 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
+											autoCapitalize="on"
 											style={{ maxWidth: "3em" }}
 											onChange={(e) => {
 												handleCodeChange(e, 0);
@@ -346,6 +347,7 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
+											autoCapitalize="on"
 											style={{ maxWidth: "3em" }}
 											onChange={(e) => {
 												handleCodeChange(e, 1);
@@ -363,6 +365,7 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
+											autoCapitalize="on"
 											style={{ maxWidth: "3em" }}
 											onChange={(e) => {
 												handleCodeChange(e, 2);
@@ -380,6 +383,7 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
+											autoCapitalize="on"
 											style={{ maxWidth: "3em" }}
 											onChange={(e) => {
 												handleCodeChange(e, 3);
@@ -397,6 +401,7 @@ export const Manage = (props) => {
 											className="CodeField"
 											variant="outlined"
 											autoComplete="off"
+											autoCapitalize="on"
 											style={{ maxWidth: "3em" }}
 											onChange={(e) => {
 												handleCodeChange(e, 4);
