@@ -38,7 +38,7 @@ const Login = () => {
 						});
 					} else {
 						if (response.error) {
-							console.log(response.error)
+							console.log(response.error);
 							if (modal) return;
 							setModal({
 								title: "We Could Not Find Your Account",
@@ -151,7 +151,9 @@ const Login = () => {
 						<Link onClick={sendUserToken}>Forgot password?</Link>
 					</Grid>
 					<Grid item xs={6} style={{ textAlign: "center" }}>
-						<Link component={RouterLink} to="/admin/register">Create an account.</Link>
+						<Link component={RouterLink} to="/admin/register">
+							Create an account.
+						</Link>
 					</Grid>
 				</Grid>
 			</form>

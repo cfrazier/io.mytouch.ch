@@ -47,7 +47,8 @@ const Account = () => {
 					if (modal) return;
 					setModal({
 						title: "Update Complete",
-						message: "Your account details were saved correctly. If you changed your password, make sure to keep track of the change.",
+						message:
+							"Your account details were saved correctly. If you changed your password, make sure to keep track of the change.",
 						cancelText: "Close",
 					});
 				}
