@@ -48,7 +48,6 @@ export const Manage = (props) => {
 			target: { value },
 		} = event;
 		const key = value.substr(-1).toUpperCase();
-		console.log(key);
 		if (/[A-Z]/g.test(key)) {
 			codeInput[index].current.value = key;
 			setCode((code) => code.map((value, cindex) => (cindex === index ? key : value)));
@@ -236,7 +235,6 @@ export const Manage = (props) => {
 				const venueIndex = newCheckins.findIndex(
 					(venue) => person.checkin.venue._id === venue._id
 				);
-				console.log(venueIndex);
 				if (venueIndex === -1) {
 					newCheckins.push({
 						...person.checkin.venue,
