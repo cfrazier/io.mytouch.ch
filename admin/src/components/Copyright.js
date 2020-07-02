@@ -8,7 +8,8 @@ const Copyright = () => {
 		<Container className="Copyright">
 			<Typography variant="body2" color="textSecondary" align="center">
 				A service of the{" "}
-				<Link to="https://fmcsc.org">Free Methodist Church in Southern California</Link>. Copyright © {new Date().getFullYear()}.
+				<Link to="https://fmcsc.org">Free Methodist Church in Southern California</Link>.{" "}
+				<br></br>Copyright © {new Date().getFullYear()}.
 			</Typography>
 		</Container>
 	);

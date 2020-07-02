@@ -39,7 +39,7 @@ const Account = () => {
 					if (modal) return;
 					setModal({
 						title: "Update Problems",
-						message: `There was a problem with your update: ${response.error.message}`,
+						message: `There was a problem with your update: ${response.error._message}`,
 						cancelText: "Try Again",
 					});
 				} else {

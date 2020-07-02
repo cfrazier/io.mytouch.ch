@@ -1,4 +1,4 @@
-import React from "reactn";
+import React, { useGlobal } from "reactn";
 import "../styles/Register.scss";
 import { useHistory, Link } from "react-router-dom";
 import {
@@ -13,13 +13,80 @@ import {
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import Copyright from "./Copyright";
+import httpFetch from "../services/http";
 
 const Register = () => {
 	const history = useHistory();
 	const { handleSubmit, errors, register } = useForm();
 
+	const [modal, setModal] = useGlobal("modal");
+	const [, setUser] = useGlobal("user");
+
 	const onSubmit = (data) => {
-		history.push("/admin/onboard");
+		httpFetch("post", "/api/users", { user: data }, (error, response) => {
+			if (error) {
+				if (modal) return;
+				setModal({
+					title: "An Error Occurred",
+					message:
+						"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+					cancelText: "Try Again",
+				});
+			} else {
+				if (response.error) {
+					if (response.error.errors.email) {
+						if (modal) return;
+						setModal({
+							title: "Duplicate Email",
+							message:
+								"An account with the provided email address already exists in the system. To reset the password for an existing account, visit the login page and select 'Forgot password?'",
+							cancelText: "Try Again",
+							completeText: "Log In",
+							onComplete: () => {
+								history.push("/admin/");
+							},
+						});
+					}
+				} else {
+					// Now we need to actually log in!
+					httpFetch(
+						"get",
+						`/api/login/?email=${encodeURIComponent(
+							data.email
+						)}&password=${encodeURIComponent(data.password)}`,
+						null,
+						(error, response) => {
+							if (error) {
+								if (modal) return;
+								setModal({
+									title: "An Error Occurred",
+									message:
+										"There was an error communicating with the server. Please check your Internet connection to make sure everything is working correctly.",
+									cancelText: "Try Again",
+								});
+							} else {
+								if (response.error) {
+									console.log(response.error);
+								} else {
+									setUser(response);
+									if (modal) return;
+									setModal({
+										title: "Welcome!",
+										message:
+											"Your account was created and you are now ready to begin the next step: setting up your first organization and meeting venue. Just click 'Continue' below to get started.",
+										cancelText: "continue",
+										onCancel: () => {
+											history.push("/admin/dashboard");
+										},
+									});
+								}
+							}
+						}
+					);
+				}
+			}
+		});
+		// history.push("/admin/onboard");
 	};
 
 	return (
@@ -95,7 +162,13 @@ const Register = () => {
 						) : null}
 					</Grid>
 					<Grid item xs={12}>
-						<Button type="submit" size="large" fullWidth variant="contained" color="primary">
+						<Button
+							type="submit"
+							size="large"
+							fullWidth
+							variant="contained"
+							color="primary"
+						>
 							Register
 						</Button>
 					</Grid>

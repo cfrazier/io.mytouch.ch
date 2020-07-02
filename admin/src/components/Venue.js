@@ -262,9 +262,9 @@ const Update = () => {
 					setVenue(response);
 					if (modal) return;
 					setModal({
-						title: "Venue Updated",
+						title: "Venue Saved",
 						message:
-							"The update was successful. Please make sure to reload the check-in app to see changes.",
+							"The venue was saved successfully. Please make sure to reload the check-in app to see changes.",
 						cancelText: "Close",
 						onCancel: () => {
 							history.push(
@@ -619,7 +619,7 @@ const Update = () => {
 							</CardContent>
 							<CardActions className="Actions">
 								<Button type="submit" color="primary">
-									Update
+									{venue._id ? "Update" : "Create"}
 								</Button>
 								{venue._id && (
 									<Button color="inherit" onClick={onResetCode}>

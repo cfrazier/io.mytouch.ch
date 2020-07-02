@@ -228,9 +228,9 @@ const Update = () => {
 				} else {
 					if (modal) return;
 					setModal({
-						title: "Organization Updated",
+						title: "Organization Saved",
 						message:
-							"The update was successful. Please make sure to reload the check-in app to see changes.",
+							"The organization information was saved. Please make sure to reload the check-in app to see changes.",
 						cancelText: "Close",
 						onCancel: () => {
 							setOrganization(response);
@@ -389,7 +389,7 @@ const Update = () => {
 							</CardContent>
 							<CardActions className="Actions">
 								<Button type="submit" color="primary">
-									Update
+									{organization._id ? "Update" : "Create"}
 								</Button>
 							</CardActions>
 						</form>
