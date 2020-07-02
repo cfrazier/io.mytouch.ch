@@ -25,7 +25,7 @@ import {
 	Link,
 	TableFooter,
 } from "@material-ui/core";
-import { Delete as DeleteIcon, Airplay } from "@material-ui/icons";
+import { Delete as DeleteIcon, Airplay, Help } from "@material-ui/icons";
 
 import Venue from "./Venue";
 import Loading from "./Loading";
@@ -59,6 +59,18 @@ const List = () => {
 				});
 			} else {
 				setOrganizations(response);
+				if (response.length === 0) {
+					if (modal) return;
+					setModal({
+						title: "Welcome to Your Dashboard",
+						message:
+							"This is your organization's dashboard. From here, you can quickly navigate the organizations you manage and create new organizations as needed. Click 'Create Organization' below to begin setting up your first organization.",
+						cancelText: "Create Organization",
+						onCancel: () => {
+							history.push("/admin/dashboard/organizations/new");
+						},
+					});
+				}
 			}
 		});
 	};
@@ -78,7 +90,8 @@ const List = () => {
 			cancelText: "Cancel",
 			completeText: "Delete",
 			onComplete: () => {
-				data.selected.forEach((organizationId) => {
+				const selected = Array.isArray(data.selected) ? data.selected : [data.selected];
+				selected.forEach((organizationId) => {
 					httpFetch(
 						"delete",
 						`/api/organizations/${organizationId}`,
@@ -395,9 +408,47 @@ const Update = () => {
 						</form>
 					</Card>
 				</Grid>
-				{organization._id && (
+				{organization._id ? (
 					<Grid item xs={12} sm={4}>
 						<Users userIds={organization.users} />
+					</Grid>
+				) : (
+					<Grid item xs={12} sm={4}>
+						<Card className="GettingStarted">
+							<Toolbar className="Toolbar">
+								<Typography variant="h6" component="div" className="Title">
+									<Help className="Icon" /> Getting Started
+								</Typography>
+							</Toolbar>
+							<CardContent>
+								<Typography variant="body2">
+									Organizations are how we organize event venues. An organization
+									can be a single location like a church or office building, or it
+									can be a collection of different locations. The choice is yours.
+									The main thing to keep in mind is that approvals are shared
+									between venues in an organization.
+								</Typography>
+								<Typography variant="h6">Approvals</Typography>
+								<Typography variant="body2">
+									Approvals are the statements an attendee must agree to before
+									attending an event. These can include terms of service, photo
+									releases, health screenings, etc. Each new line of your
+									approvals is treated as a separate question.
+								</Typography>
+								<Typography variant="h6">
+									<Airplay className="Icon" />
+									Kiosks
+								</Typography>
+								<Typography variant="body2">
+									To help attendees check-in, a kiosk screen is provided for you
+									to display at your event. The organization kiosk displays all of
+									the available venues, while the venue kiosk displays only the
+									information for a single kiosk. The links for these screens are
+									available by clicking on the screen icon after saving your
+									organization information.
+								</Typography>
+							</CardContent>
+						</Card>
 					</Grid>
 				)}
 			</Grid>

@@ -39,4 +39,16 @@
 		text-align: right;
 		flex-direction: row-reverse;
 	}
+	.GettingStarted {
+		.Icon {
+			vertical-align: middle;
+			margin-right: 0.25em;
+		}
+		p {
+			margin-bottom: 1em;
+		}
+		h6 {
+			margin-bottom: 0.25em;
+		}
+	}
 }

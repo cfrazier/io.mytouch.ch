@@ -28,7 +28,7 @@ import {
 	Switch,
 	FormControlLabel,
 } from "@material-ui/core";
-import { Delete as DeleteIcon, VisibilityOff, Airplay } from "@material-ui/icons";
+import { Delete as DeleteIcon, VisibilityOff, Airplay, Help } from "@material-ui/icons";
 import { TwitterPicker } from "react-color";
 import httpFetch from "../services/http";
 import Loading from "./Loading";
@@ -95,6 +95,20 @@ const List = (props) => {
 							});
 						} else {
 							setVenues(response);
+							if (response.length === 0) {
+								if (modal) return;
+								setModal({
+									title: "Let's Create a Venue",
+									message:
+										"You're ready to take the next step in setting up your check-in system: creating a venue. Just click 'Create a Venue' below to start the process.",
+									cancelText: "Create a Venue",
+									onCancel: () => {
+										history.push(
+											`/admin/dashboard/organizations/${organizationId}/venues/new`
+										);
+									},
+								});
+							}
 						}
 					}
 				}
@@ -260,11 +274,14 @@ const Update = () => {
 					});
 				} else {
 					setVenue(response);
+					const message =
+						method === "put"
+							? "The venue was saved successfully. Please make sure to reload the check-in app to see changes."
+							: "Your new venue is ready for events. The next step is to review your kiosk by clicking on the kiosk icon at the top of this page. The kiosk is used to display information about the venue, available spots for attendees, and the venue code used to check in. We suggest testing your venue code by creating a check-in account and going through the check-in process before your event. You will also want to train your venue attendants in how to instruct people during the check-in process.";
 					if (modal) return;
 					setModal({
 						title: "Venue Saved",
-						message:
-							"The venue was saved successfully. Please make sure to reload the check-in app to see changes.",
+						message,
 						cancelText: "Close",
 						onCancel: () => {
 							history.push(
@@ -510,6 +527,7 @@ const Update = () => {
 													borderRadius: "5px",
 												},
 											}}
+											helperText="Choose a color for this venue by clicking above."
 										/>
 										{showPicker && (
 											<TwitterPicker
@@ -630,7 +648,7 @@ const Update = () => {
 						</form>
 					</Card>
 				</Grid>
-				{venue._id && (
+				{venue._id ? (
 					<Grid item xs={12} lg={4}>
 						<Card className="Tools">
 							<Toolbar className="Toolbar">
@@ -651,6 +669,35 @@ const Update = () => {
 										<DownloadCheckins {...{ venue }} />
 									</Grid>
 								</Grid>
+							</CardContent>
+						</Card>
+					</Grid>
+				) : (
+					<Grid item xs={12} sm={4}>
+						<Card className="GettingStarted">
+							<Toolbar className="Toolbar">
+								<Typography variant="h6" component="div" className="Title">
+									<Help className="Icon" /> Creating a Venue
+								</Typography>
+							</Toolbar>
+							<CardContent>
+								<Typography variant="body2">
+									When people attend your events, they will be attending in a
+									venue: a meeting hall, auditorium, sanctuary, or similar space.
+									To help people correctly check-in to your event, it’s important
+									that you provide detailed information about the venue: an easily
+									identifiable name, a description with additional location
+									information, and an address. Additionally, you will need to
+									provide a venue capacity to ensure that maximum attendance
+									numbers are not exceeded.
+								</Typography>
+								<Typography variant="h6">Venue Codes</Typography>
+								<Typography variant="body2">
+									Each venue has a unique venue code used during check-in that is
+									generated automatically. Once your venue is created the venue
+									code will be assigned. If you would like to change the code in
+									the future, you can do so by clicking “Reset Code.”
+								</Typography>
 							</CardContent>
 						</Card>
 					</Grid>
