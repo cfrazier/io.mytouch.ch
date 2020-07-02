@@ -76,7 +76,7 @@ const Register = () => {
 											"Your account was created and you are now ready to begin the next step: setting up your first organization and meeting venue. Just click 'Continue' below to get started.",
 										cancelText: "continue",
 										onCancel: () => {
-											history.push("/admin/dashboard");
+											history.push("/admin/dashboard/organizations");
 										},
 									});
 								}
